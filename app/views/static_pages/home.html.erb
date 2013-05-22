@@ -1,2 +1,16 @@
-<h1>Staybl/h1>
-<p>The future home of staybl.com </p>
+<% provide(:title, 'Home') %>
+<header>
+	<div id="sitle-title">
+		<h1>Staybl</h1>
+	</div>
+</header>
+
+<div id = "search">
+
+	<%= form_tag("/search", :method => "get") do %>
+	<%= label_tag(:search, "Find a good place to stay in") %>
+	<%= text_field_tag(:search) %>
+	<%= submit_tag("Search") %>
+	<% end %>
+
+</div>
