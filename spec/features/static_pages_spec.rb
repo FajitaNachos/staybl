@@ -3,41 +3,27 @@ require 'spec_helper'
 describe "Static pages" do
  
   let(:base_title) { "Stabyl" } 
+  subject { page }
 
   describe "Home page" do 
- 
-    it "should not have the title 'Home'" do
-      visit '/static_pages/home'
-      page.should_not have_title('Home') 
-    end
+    before { visit root_path }
 
-    it "should have the base title" do
-      visit '/static_pages/home'  
-      page.should have_title("Staybl")
-    end
+      it { should have_title("Staybl")}
+      it { should_not have_title ('Home') }
   end
 
   describe "Privacy Policy" do
-
-    it "should have the title 'Privacy'" do
-      visit '/static_pages/privacy'
-      page.should have_title("Staybl | Privacy")
-    end
+    before { visit privacy_path }
+      it{ should have_title("Staybl | Privacy")}
   end
 
-  describe "About page" do
-
-    it "should have the title 'About Us'" do
-      visit '/static_pages/about'
-      page.should have_title('Staybl | About')
-    end
+  describe "About Page" do
+    before { visit about_path }
+      it{ should have_title("Staybl | About Us")}
   end
 
-  describe "Contact page" do
-
-    it "should have the title 'Contact'" do
-      visit '/static_pages/contact'
-      page.should have_title('Staybl | Contact')
-    end
+  describe "Contact Page" do
+    before { visit contact_path }
+      it{ should have_title("Staybl | Contact")}
   end
 end

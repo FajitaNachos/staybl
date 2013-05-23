@@ -6,6 +6,7 @@ gem 'rails', '3.2.13'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.15.1'
+gem 'bootstrap-sass', '~>2.3.1'
 
 
 
