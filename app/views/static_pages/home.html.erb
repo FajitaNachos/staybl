@@ -1,15 +1,14 @@
-<header>
-	<div id="sitle-title">
-		<h1>Staybl</h1>
+
+<div class="center hero-unit">
+  <h1>Welcome to the Sample App</h1>
+
+
+	<div id = "search">
+
+		<%= form_tag("/search", :method => "get") do %>
+		<%= text_field_tag(:search) %>
+		<%= submit_tag("Search") %>
+		<% end %>
+
 	</div>
-</header>
-
-<div id = "search">
-
-	<%= form_tag("/search", :method => "get") do %>
-	<%= label_tag(:search, "Find a good place to stay in") %>
-	<%= text_field_tag(:search) %>
-	<%= submit_tag("Search") %>
-	<% end %>
-
 </div>
