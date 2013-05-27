@@ -1,5 +1,9 @@
 class SearchController < ApplicationController
-	def index
-    	# Use params[:query] to perform the search
-  	end
+
+  def index
+    @search = Geocoder.search(params[:search])
+
+    
+  end
+
 end
