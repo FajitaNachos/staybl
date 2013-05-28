@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  padding-top: 60px;
+  padding-top: 40px;
 }
 
 section {
@@ -31,6 +31,10 @@ textarea {
   h1 {
     margin-bottom: 10px;
   }
+}
+
+.no-padding{
+  padding:0;
 }
 
 /* typography */

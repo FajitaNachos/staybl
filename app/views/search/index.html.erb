@@ -1,6 +1,13 @@
-
-<div id = "map">
-  <div id="map-canvas">
+<div id = "container-fluid" class = "no-padding">
+  <div id = "map">
+    <div id="map-canvas">
+    </div>
+      <div id = "map-search">
+      <%= form_tag(search_path, :method => 'get') do %>
+      <%= text_field_tag(:map_search_bar) %>
+      <%= submit_tag("Search" , :name => nil, :class => "map-search-submit btn") %>
+      <% end %>
+    </div>
   </div>
 </div>
 
