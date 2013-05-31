@@ -1,25 +1,17 @@
 $(document).ready(function(){
-var geocoder, initialize, address, getURLParam;;
-
+var markers = [];
 function initialize() {
-  geocoder = new google.maps.Geocoder();
   google.maps.visualRefresh = true;
 
-  geocoder.geocode({address: address}, function(results, status) {
-    var input, map, markers, myOptions, searchBox;
-    if (status === google.maps.GeocoderStatus.OK) {
-      myOptions = {
-        zoom: 12,
-        center: results[0].geometry.location,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
-       var marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location
-        });
-    }
-  
+  var geocoder = new google.maps.Geocoder();
+  var address = getURLParam("place");
+  var mapOptions = {
+    zoom: 13,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+
+  map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+  addMarker(address);
   
   var input = document.getElementById('map-search-box');
   var options = {
@@ -27,15 +19,14 @@ function initialize() {
   };
 
   var mapSearch = new google.maps.places.Autocomplete(input, options);
+  
   mapSearch.bindTo('bounds', map);
-  $(".pac-container").remove().appendTo("#map-autocomplete");
-  var infowindow = new google.maps.InfoWindow();
 
   google.maps.event.addListener(mapSearch, 'place_changed', function() {
+    removeMarkers();
     var searchParam = document.getElementById('map-search-box').value;
     window.history.pushState("http://www.staybl.com/", "Staybl | "+searchParam, "/search?utf8=✓&place="+searchParam);
-    infowindow.close();
-    marker.setVisible(false);
+   
     input.className = '';
     var place = mapSearch.getPlace();
     if (!place.geometry) {
@@ -44,39 +35,49 @@ function initialize() {
       return;
     }
 
-    // If the place has a geometry, then present it on a map.
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(17);  // Why 17? Because it looks good.
-    }
-
-    marker.setPosition(place.geometry.location);
-    marker.setVisible(true);
-
-    var address = '';
-    if (place.address_components) {
-      address = [
-        (place.address_components[0] && place.address_components[0].short_name || ''),
-        (place.address_components[1] && place.address_components[1].short_name || ''),
-        (place.address_components[2] && place.address_components[2].short_name || '')
-      ].join(' ');
-    }
-
-    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' + address);
-    infowindow.open(map, marker);
-
+    addMarker(searchParam);
   });
-});
 }
 
 function getURLParam(name) {
   return decodeURIComponent((new RegExp("[?|&]" + name + "=([^&;]+?)(&|##|;|$)").exec(location.search) || [null, ""])[1].replace(/\+/g, "%20")) || null;
 };
 
+// Used to detect initial (useless) popstate.
+// If history.state exists, assume browser isn't going to fire initial popstate.
+var popped = ('state' in window.history && window.history.state !== null), initialURL = location.href;
 
-address = getURLParam("place");
+$(window).bind('popstate', function (event) {
+  // Ignore inital popstate that some browsers fire on page load
+  var initialPop = !popped && location.href == initialURL
+  popped = true
+  if (initialPop) return;
+  var poppedAddress = getURLParam("place");
+  removeMarkers();
+  addMarker(poppedAddress);
+  // showMailOverview(); // exmaple function to display all email since the user has click Back.
+});
+
+function addMarker(address){
+  geocoder = new google.maps.Geocoder();
+  geocoder.geocode({address: address}, function(results, status) {
+          var location = results[0].geometry.location;
+
+          var marker = new google.maps.Marker({
+            position: location,
+            map: map
+          });
+
+          markers.push(marker);
+          map.panTo(location);
+    });
+  };
+
+  function removeMarkers(){
+    for (var i = 0; i < markers.length; i++) {
+     markers[i].setMap(null);
+    }
+  };
 
 initialize();
 });

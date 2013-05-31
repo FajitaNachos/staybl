@@ -15,7 +15,7 @@ html {
 }
 
 body {
-  padding-top: 40px;
+  padding-top: 45px;
 }
 
 section {
@@ -37,6 +37,9 @@ textarea {
   padding:0;
 }
 
+.navbar-fixed-top {
+  z-index:999;
+}
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -69,17 +72,31 @@ p {
 
 #logo {
   float: left;
-  margin-right: 10px;
   font-size: 1.7em;
   color: white;
   text-transform: uppercase;
   letter-spacing: -1px;
-  padding-top: 9px;
+  padding-top: 11px;
   font-weight: bold;
   line-height: 1;
   &:hover {
     color: white;
     text-decoration: none;
   }
+}
+
+/* Nav */
+
+.top-navbar {
+  height:45px;
+}
+
+.home-nav li{
+  height:45px;
+  line-height:45px;
+}
+
+.home-nav li a{
+  padding:0 !important;
 }
 

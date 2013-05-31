@@ -1,12 +1,17 @@
-<header class="navbar navbar-fixed-top navbar-inverse">
+<header class="navbar navbar-fixed-top navbar-inverse ">
   <div class="navbar-inner">
-    <div class="container-fluid">
+    <div class="container-fluid top-navbar">
       <%= link_to "Staybl", root_path, id: "logo" %>
       <nav>
-        <ul class="nav pull-right">
+          <ul class="nav pull-right home-nav">
           <li><%= link_to "Sign in", '#' %></li>
         </ul>
       </nav>
+      <% if @map_search %>
+      <div id = "map-search">
+        <input id="map-search-box" type="text" placeholder="Search" />
+      </div>
+      <% end %>
     </div>
   </div>
 </header>
