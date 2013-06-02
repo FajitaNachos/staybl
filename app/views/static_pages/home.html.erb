@@ -1,8 +1,10 @@
 <div id = "container-fluid">
+  <div id = "background-map">
+  </div>
   <div class="center hero-unit">
     <h1>Find the best places to stay</h1>
   	<div id = "search-bar">
-  		<%= form_tag(search_path, :method => 'get', :id=>'home-search') do %>
+  		<%= form_tag(map_path, :method => 'get', :id=>'home-search') do %>
   		<%= text_field_tag(:place, nil, :placeholder => 'Enter a city') %>
   		<%= submit_tag("Search" , :name => nil, :class => "search-submit btn") %>
   		<% end %>

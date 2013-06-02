@@ -4,7 +4,7 @@ Staybl::Application.routes.draw do
   match '/about',   to: 'static_pages#about'
   match '/contact', to: 'static_pages#contact'
   match '/privacy', to: 'static_pages#privacy'
-  match '/search', to: 'search#index'
+  match '/map', to: 'map#index'
   
 
   # The priority is based upon order of creation:

@@ -1,18 +1,20 @@
 $(document).ready(function(){
- if (document.getElementById('place')) {
-  var input = document.getElementById("place");
-  var options = {
-    types: ["(cities)"]
-  };
+ //only loads this js if we are on the home page
+  var place = document.getElementById('place');
+  if (place) {
 
-  var autocomplete = new google.maps.places.Autocomplete(input, options);
+    // Set options for the autocomplete
+    var options = {
+      types: ["(cities)"]
+    };
 
- 
+    var autocomplete = new google.maps.places.Autocomplete(place, options);
 
-  google.maps.event.addListener(autocomplete, "place_changed", function() {
-    $('#home-search').submit();
-  });
-}
+    //Submit the form when a user selects an option from the autocomplete list
+    google.maps.event.addListener(autocomplete, "place_changed", function() {
+      $('#home-search').submit();
+    });
+  }
 });
 
 

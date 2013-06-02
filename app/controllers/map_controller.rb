@@ -1,4 +1,4 @@
-class SearchController < ApplicationController
+class MapController < ApplicationController
 
   def index
     @search = Geocoder.search(params[:search])
