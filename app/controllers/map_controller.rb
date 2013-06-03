@@ -1,7 +1,7 @@
 class MapController < ApplicationController
 
   def index
-    @search = Geocoder.search(params[:search])
+    @search = params[:place];
     @map_search = true;
     
   end

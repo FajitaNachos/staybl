@@ -32,7 +32,7 @@ $(document).ready(function(){
       var input = document.getElementById('map-search-box');
 
       // Fills the search box with the current address the user searched for
-      $('map-search-box').val(address);
+      $('#map-search-box').val(address);
       
 
       // Set options for the places autocomplete. 
@@ -57,7 +57,15 @@ $(document).ready(function(){
         // Add a new marker and center the map on it
         addMarker(searchParam);
       });
-    }
+
+      // Create the DIV to hold the control and call the HomeControl() constructor
+      // passing in this DIV.
+      var homeControlDiv = document.createElement('div');
+      var homeControl = new HomeControl(homeControlDiv, map);
+
+      homeControlDiv.index = 1;
+      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(homeControlDiv);
+  }
 
     // Used to detect initial (useless) popstate.
     // If history.state exists, assume browser isn't going to fire initial popstate.
@@ -107,6 +115,31 @@ $(document).ready(function(){
          markers[i].setMap(null);
         }
       };
+
+      function HomeControl(controlDiv, map) {
+
+        // Set CSS styles for the DIV containing the control
+        // Setting padding to 5 px will offset the control
+        // from the edge of the map.
+        controlDiv.style.padding = '15px';
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.className = 'control-ui';
+        controlUI.title = 'Click to show recommended hotels';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.className = 'control-text';
+        controlText.innerHTML = '<strong>Show Hotels</strong>';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        google.maps.event.addDomListener(controlUI, 'click', function() {
+         
+        });
+      }
 
       // This simulates a down arrow before a user hits the return key on the search box
       // It's directly from stack overflow 
