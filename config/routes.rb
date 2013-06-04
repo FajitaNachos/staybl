@@ -1,10 +1,25 @@
 Staybl::Application.routes.draw do
+
+  devise_for :administrators, :path => '', :path_names => { :sign_in => "signin", :sign_out => "logout"}, :controllers => { :sessions => "admin/sessions" }
+
+  namespace :admin do
+    root to: "dashboard#index"
+
+    resources :overlays
+    resources :places
+    match '/map', to: 'map#index'
+
+  end
+
+
   root to: 'static_pages#home'
   match '/help',    to: 'static_pages#help'
   match '/about',   to: 'static_pages#about'
   match '/contact', to: 'static_pages#contact'
   match '/privacy', to: 'static_pages#privacy'
   match '/map', to: 'map#index'
+
+  
   
 
   # The priority is based upon order of creation:

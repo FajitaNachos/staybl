@@ -2,8 +2,8 @@
 <html>
 <head>
   <title><%= full_title(yield(:title)) %></title>
-   <%= stylesheet_link_tag    "application", :media => "all" %>
-    <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places" %>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places" %>
   <%= javascript_include_tag "application" %>
 
 
@@ -16,13 +16,14 @@
 </head>
 <body>
 
- <%= render 'layouts/header' %>
+  <%= render 'layouts/header' %>
 
+  <%= render 'layouts/messages' %>
 
 
   <%= yield %>
 
- <%= render 'layouts/footer' %>
+  <%= render 'layouts/footer' %>
 
 </body>
 </html>
