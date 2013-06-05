@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title><%= full_title(yield(:title)) %></title>
+  <%= stylesheet_link_tag    "admin/application", :media => "all" %>
+  <%= javascript_include_tag "https://maps.googleapis.com/maps/api/js?sensor=false&libraries=places" %>
+  <%= javascript_include_tag "admin/application" %>
+
+
+  <%= csrf_meta_tags %>
+  <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+
+</head>
+<body>
+
+  <%= render 'layouts/admin/header' %>
+
+  <%= render 'layouts/admin/messages' %>
+
+
+  <%= yield %>
+
+  <%= render 'layouts/admin/footer' %>
+
+</body>
+</html>

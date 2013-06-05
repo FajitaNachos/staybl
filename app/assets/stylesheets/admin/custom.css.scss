@@ -19,7 +19,7 @@ html {
 }
 
 body {
- 
+
 }
 
 section {
@@ -36,7 +36,14 @@ textarea {
     margin-bottom: 10px;
   }
 }
-
+.admin {
+  float:left;
+  padding-top:15px;
+  padding-left:10px;
+  color:#fff;
+  font-size:18px;
+  font-style:italic;
+}
 .no-padding{
   padding:0;
 }
@@ -103,4 +110,3 @@ p {
 .home-nav li a{
   padding:0 !important;
 }
-

@@ -1,8 +1,7 @@
-class Admin::MapController < Admin::ApplicationController
+class Admin::MapController < Admin::BaseController
 
   def index
-    
-    
+    @map_search = true;
   end
 
 end
