@@ -4,9 +4,7 @@
       <%= link_to "Staybl", root_path, id: "logo" %>
       <nav>
           <ul class="nav pull-right home-nav">
-          <% if administrator_signed_in? %>
-          <li><%= link_to "Sign Out", destroy_administrator_session_path, :method => :delete %></li>
-          <% end %>
+          
         </ul>
       </nav>
       <% if @map_search %>

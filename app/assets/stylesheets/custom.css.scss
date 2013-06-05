@@ -18,8 +18,7 @@ html {
   overflow-y: scroll;
 }
 
-body {
- 
+body{
 }
 
 section {
@@ -104,3 +103,9 @@ p {
   padding:0 !important;
 }
 
+
+/* Alerts */
+
+.alert, .alert-success{
+  margin-top:45px;
+}
