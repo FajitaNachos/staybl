@@ -13,7 +13,7 @@ feature "the map search" do
   scenario "submits an invalid search request to the map controller" do
     visit root_path
     within("#home-search") do
-      fill_in 'place', :with => ''
+      fill_in 'place', :with => '' 
     end
     click_button 'Search'
     page.should have_content ('Please enter a city')
