@@ -13,8 +13,10 @@
 # gem 'pg'
 #
 development:
-  adapter: postgresql
+  adapter: postgis
   encoding: unicode
+  postgis_extension: true
+  schema_search_path: public,postgis
   database: staybl_development
   pool: 5
   username: staybl

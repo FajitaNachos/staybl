@@ -52,7 +52,7 @@ $(document).ready(function(){
         var searchParam = document.getElementById('map-search-box').value;
 
         // use push state to chane the URL so it can be book marked/shared
-        window.history.pushState("http://www.staybl.com/", "Staybl | "+searchParam, "/search?utf8=✓&place="+searchParam);
+        window.history.pushState("http://www.staybl.com/", "Staybl | "+searchParam, "map?place="+searchParam);
        
         // Add a new marker and center the map on it
         addMarker(searchParam);
@@ -140,42 +140,6 @@ $(document).ready(function(){
          
         });
       }
-
-      // This simulates a down arrow before a user hits the return key on the search box
-      // It's directly from stack overflow 
-      //http://stackoverflow.com/questions/7865446/google-maps-places-api-v3-autocomplete-select-first-option-on-enter/11703018#11703018
-      var pac_input = document.getElementById('map-search-box');
-
-      (function pacSelectFirst(input) {
-          // store the original event binding function
-          var _addEventListener = (input.addEventListener) ? input.addEventListener : input.attachEvent;
-
-          function addEventListenerWrapper(type, listener) {
-              // Simulate a 'down arrow' keypress on hitting 'return' when no pac suggestion is selected,
-              // and then trigger the original listener.
-              if (type == "keydown") {
-                  var orig_listener = listener;
-                  listener = function(event) {
-                      var suggestion_selected = $(".pac-item.pac-selected").length > 0;
-                      if (event.which == 13 && !suggestion_selected) {
-                          var simulated_downarrow = $.Event("keydown", {
-                              keyCode: 40,
-                              which: 40
-                          });
-                          orig_listener.apply(input, [simulated_downarrow]);
-                      }
-                      orig_listener.apply(input, [event]);
-                  };
-              }
-              _addEventListener.apply(input, [type, listener]);
-          }
-
-          input.addEventListener = addEventListenerWrapper;
-          input.attachEvent = addEventListenerWrapper;
-
-          var autocomplete = new google.maps.places.Autocomplete(input);
-
-      })(pac_input);
 
     //initialize the map
     initialize();

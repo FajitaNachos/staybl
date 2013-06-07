@@ -7,7 +7,9 @@ gem 'rails', '3.2.13'
 
 gem 'pg', '~> 0.15.1'
 gem 'bootstrap-sass', '~>2.3.1'
-gem "devise", "~> 2.2.4"
+gem 'jquery-rails', '~> 2.2.1'
+gem 'devise', '~> 2.2.4'
+gem "activerecord-postgis-adapter", "~> 0.6.4"
 
 
 
@@ -35,9 +37,10 @@ end
 
 group :test do
   gem 'capybara', '~>2.1.0'
+  gem "selenium-webdriver", "~> 2.33.0"
 end
 
-gem 'jquery-rails', '~> 2.2.1'
+
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
