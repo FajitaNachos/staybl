@@ -25,6 +25,9 @@ $(document).ready(function(){
       };
 
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+
+      var drawingManager = new google.maps.drawing.DrawingManager();
+      drawingManager.setMap(map);
       
       // Add a marker and center the map on the new marker. 
       addMarker(address);
