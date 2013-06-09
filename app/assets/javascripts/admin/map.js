@@ -5,6 +5,33 @@ $(document).ready(function(){
 
     // Set up an empty array to hold all of our markers
     var markers = [];
+    var polygons = [];
+    var infoWindow;
+    var saveOverlay;
+    var drawingManager;
+    var selectedShape;
+    var colors = ['#FF3333', '#32CD32'];
+    var selectedColor;
+    var colorButtons = {};
+
+       // Used to detect initial (useless) popstate.
+    // If history.state exists, assume browser isn't going to fire initial popstate.
+    var popped = ('state' in window.history && window.history.state !== null), initialURL = location.href;
+
+    $(window).bind('popstate', function (event) {
+      
+      // Ignore inital popstate that some browsers fire on page load
+      var initialPop = !popped && location.href == initialURL
+      popped = true
+
+      if (initialPop) return;
+
+      removeMarkers();
+      var poppedAddress = getURLParam("place");
+      
+      addMarker(poppedAddress);
+      
+    });
 
     // initialize the Google Map
     function initialize() {
@@ -54,6 +81,45 @@ $(document).ready(function(){
       
       var input = document.getElementById('map-search-box');
 
+      var layerTitle = document.createElement('input');
+      layerTitle.id = 'layer-title';
+
+
+      var titleLabel = document.createElement('label');
+      titleLabel.setAttribute('for','layer-title');
+      titleLabel.innerHTML = "Neighborhood";
+
+      var layerDesc = document.createElement('textarea');
+      layerDesc.id = 'layer-desc';
+
+      var descLabel = document.createElement('label');
+      descLabel.setAttribute('for','layer-desc');
+      descLabel.innerHTML = "Neighborhood Description";
+
+      var saveButton = document.createElement('button');
+      saveButton.id = "save-button";
+      saveButton.type = "button";
+      saveButton.innerHTML = "Save Layer";
+
+      var deleteButton = document.createElement('button');
+      deleteButton.id = "delete-button";
+      deleteButton.type = "button";
+      deleteButton.innerHTML = "Remove Layer";
+
+      var formContent = document.createElement('form');
+      formContent.id = 'edit-layer';
+
+      formContent.appendChild(titleLabel);
+      formContent.appendChild(layerTitle);
+      formContent.appendChild(descLabel);
+      formContent.appendChild(layerDesc);
+      formContent.appendChild(saveButton);
+      formContent.appendChild(deleteButton);
+
+      var infoWindow = new google.maps.InfoWindow({
+          content: formContent
+      });
+
       // Fills the search box with the current address the user searched for
       $('#map-search-box').val(address);
       
@@ -61,6 +127,8 @@ $(document).ready(function(){
       var autoOptions = {
         types: ['geocode'],
       };
+
+      
 
       var mapSearch = new google.maps.places.Autocomplete(input, autoOptions);
       
@@ -76,8 +144,22 @@ $(document).ready(function(){
           // mouses down on it.
           var newShape = e.overlay;
           newShape.type = e.type;
-          google.maps.event.addListener(newShape, 'click', function() {
+          
+          google.maps.event.addListener(newShape, 'click', function(e) {
             setSelection(newShape);
+            infoWindow.setPosition(e.latLng);
+            infoWindow.open(map);
+
+            google.maps.event.addDomListener(document.getElementById('save-button'), 'click', function() {
+                var newPath = selectedShape.getPath().getArray();
+                console.log(newPath);
+            });
+
+            google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
+              infoWindow.close();
+              deleteSelectedShape();
+            });
+
           });
           setSelection(newShape);
         }
@@ -100,44 +182,23 @@ $(document).ready(function(){
       // map is clicked.
       google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
       google.maps.event.addListener(map, 'click', clearSelection);
-      google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', deleteSelectedShape);
-
-      buildColorPalette();
-
+      
       // Create the DIV to hold the control and call the HomeControl() constructor
       // passing in this DIV.
       var homeControlDiv = document.createElement('div');
+
+       
+
       var homeControl = new HomeControl(homeControlDiv, map);
 
       homeControlDiv.index = 1;
       map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(homeControlDiv);
+      
+      
+      buildColorPalette();
+
     }
 
-    // Used to detect initial (useless) popstate.
-    // If history.state exists, assume browser isn't going to fire initial popstate.
-    var popped = ('state' in window.history && window.history.state !== null), initialURL = location.href;
-
-    $(window).bind('popstate', function (event) {
-      
-      // Ignore inital popstate that some browsers fire on page load
-      var initialPop = !popped && location.href == initialURL
-      popped = true
-
-      if (initialPop) return;
-
-      removeMarkers();
-      var poppedAddress = getURLParam("place");
-      
-      addMarker(poppedAddress);
-      
-    });
-
-
-    var drawingManager;
-    var selectedShape;
-    var colors = ['#FF3333', '#32CD32'];
-    var selectedColor;
-    var colorButtons = {};
 
     function clearSelection() {
       if (selectedShape) {
@@ -156,6 +217,7 @@ $(document).ready(function(){
     function deleteSelectedShape() {
       if (selectedShape) {
         selectedShape.setMap(null);
+        
       }
     }
 
@@ -163,7 +225,7 @@ $(document).ready(function(){
       selectedColor = color;
       for (var i = 0; i < colors.length; ++i) {
         var currColor = colors[i];
-        colorButtons[currColor].style.border = currColor == color ? '2px solid #789' : '2px solid #fff';
+        colorButtons[currColor].style.border = currColor == color ? '1px solid #777' : '1px solid #ddd';
       }
 
       // Retrieves the current options from the drawing manager and replaces the
@@ -195,6 +257,10 @@ $(document).ready(function(){
       }
     }
 
+    function getPath(){
+      
+    }
+
     function makeColorButton(color) {
       var button = document.createElement('span');
       button.className = 'overlay-button';
@@ -208,13 +274,15 @@ $(document).ready(function(){
     }
 
      function buildColorPalette() {
-       var colorPalette = document.getElementById('color-palette');
+       var  colorPalette = document.createElement('div');
+       colorPalette.id = 'color-palette';
        for (var i = 0; i < colors.length; ++i) {
          var currColor = colors[i];
          var colorButton = makeColorButton(currColor);
          colorPalette.appendChild(colorButton);
          colorButtons[currColor] = colorButton;
        }
+       map.controls[google.maps.ControlPosition.TOP_LEFT].push(colorPalette);
        selectColor(colors[0]);
      }
 
