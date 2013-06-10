@@ -99,11 +99,13 @@ $(document).ready(function(){
       var saveButton = document.createElement('button');
       saveButton.id = "save-button";
       saveButton.type = "button";
+      saveButton.className = "btn btn-small";
       saveButton.innerHTML = "Save Layer";
 
       var deleteButton = document.createElement('button');
       deleteButton.id = "delete-button";
       deleteButton.type = "button";
+      deleteButton.className = "btn btn-small";
       deleteButton.innerHTML = "Remove Layer";
 
       var formContent = document.createElement('form');
@@ -151,9 +153,32 @@ $(document).ready(function(){
             infoWindow.open(map);
 
             google.maps.event.addDomListener(document.getElementById('save-button'), 'click', function() {
-                var newPath = selectedShape.getPath().getArray();
-                console.log(newPath);
-            });
+                 var newPath = selectedShape.getPath();
+                  var xy;
+                  var coordinates = '';
+                        // Iterate over the polygonBounds vertices.
+                        for (var i = 0; i < newPath.length; i++) {
+                            xy = newPath.getAt(i);
+                            coordinates += xy.lat() + ' ' + xy.lng() + ',';
+                        }
+                var polygon = coordinates.slice(0, - 1);
+                var coordinates = '"POLYGON((' + polygon + '))"';
+                var layerTitle = $("#layer-title").val();
+                var layerShortDesc = $("#layer-desc").val();
+
+                console.log(polygon);
+                console.log(layerTitle);
+                console.log(layerShortDesc);
+
+                $.ajax({
+                      type: 'POST',
+                      url: '/admin/layers',
+                      data: 'name='+layerTitle+'&short_desc=' + layerShortDesc +'&coordinates=' + coordinates
+                    }).done(function() {
+                      alert('I wonder if that worked?');
+                      infoWindow.close();
+                  });
+                });
 
             google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
               infoWindow.close();
@@ -296,6 +321,7 @@ $(document).ready(function(){
     // function to geocode an address and add a market to the map
     function addMarker(address){
       geocoder = new google.maps.Geocoder();
+      if(address){
       geocoder.geocode({address: address}, function(results, status) {
         var location = results[0].geometry.location;
 
@@ -307,6 +333,21 @@ $(document).ready(function(){
         markers.push(marker);
         map.panTo(location);
       });
+      }
+      else{
+        geocoder.geocode({address: 'San Francisco'}, function(results, status) {
+        var location = results[0].geometry.location;
+
+        var marker = new google.maps.Marker({
+          position: location,
+          map: map
+        });
+
+        markers.push(marker);
+        map.panTo(location);
+        map.setZoom(4);
+      });
+      }
     };
 
 
