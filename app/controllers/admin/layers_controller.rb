@@ -1,54 +1,54 @@
-class Admin::LayersController < Admin::BaseController
+class Admin::LayersController < ApplicationController
   # GET /admin/layers
   # GET /admin/layers.json
   def index
-    @admin_layers = Admin::Layer.all
+    @layers = Layer.all
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @admin_layers }
+      format.json { render json: @layers }
     end
   end
 
   # GET /admin/layers/1
   # GET /admin/layers/1.json
   def show
-    @admin_layer = Admin::Layer.find(params[:id])
+    @layer = Layer.find(params[:id])
 
     respond_to do |format|
       format.html # show.html.erb
-      format.json { render json: @admin_layer }
+      format.json { render json: @layer }
     end
   end
 
   # GET /admin/layers/new
   # GET /admin/layers/new.json
   def new
-    @admin_layer = Admin::Layer.new
+    @layer = Layer.new
 
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render json: @admin_layer }
+      format.json { render json: @layer }
     end
   end
 
   # GET /admin/layers/1/edit
   def edit
-    @admin_layer = Admin::Layer.find(params[:id])
+    @layer = Layer.find(params[:id])
   end
 
   # POST /admin/layers
   # POST /admin/layers.json
   def create
-    @admin_layer = Admin::Layer.new(params[:admin_layer])
+    @layer = Layer.new(params[:layer])
 
     respond_to do |format|
-      if @admin_layer.save
-        format.html { redirect_to @admin_layer, notice: 'Layer was successfully created.' }
-        format.json { render json: @admin_layer, status: :created, location: @admin_layer }
+      if @layer.save
+        format.html { redirect_to [:admin,@layer], notice: 'Layer was successfully created.' }
+        format.json { render json: [:admin,@layer], status: :created, location: [:admin,@layer] }
       else
         format.html { render action: "new" }
-        format.json { render json: @admin_layer.errors, status: :unprocessable_entity }
+        format.json { render json: @layer.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -56,15 +56,15 @@ class Admin::LayersController < Admin::BaseController
   # PUT /admin/layers/1
   # PUT /admin/layers/1.json
   def update
-    @admin_layer = Admin::Layer.find(params[:id])
+    @layer = Layer.find(params[:id])
 
     respond_to do |format|
-      if @admin_layer.update_attributes(params[:admin_layer])
-        format.html { redirect_to @admin_layer, notice: 'Layer was successfully updated.' }
+      if @layer.update_attributes(params[:layer])
+        format.html { redirect_to @layer, notice: 'Layer was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
-        format.json { render json: @admin_layer.errors, status: :unprocessable_entity }
+        format.json { render json: @layer.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -72,11 +72,11 @@ class Admin::LayersController < Admin::BaseController
   # DELETE /admin/layers/1
   # DELETE /admin/layers/1.json
   def destroy
-    @admin_layer = Admin::Layer.find(params[:id])
-    @admin_layer.destroy
+    @layer = Layer.find(params[:id])
+    @layer.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_layers_url }
+      format.html { redirect_to [:admin, @layer] }
       format.json { head :no_content }
     end
   end

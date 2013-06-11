@@ -2,18 +2,16 @@
 
 <table>
   <tr>
-    <th>Layer</th>
     <th></th>
     <th></th>
     <th></th>
   </tr>
 
-<% @admin_layers.each do |admin_layer| %>
+<% @layers.each do |layer| %>
   <tr>
-    <td><%= admin_layer.Layer %></td>
-    <td><%= link_to 'Show', admin_layer %></td>
-    <td><%= link_to 'Edit', edit_admin_layer_path(admin_layer) %></td>
-    <td><%= link_to 'Destroy', admin_layer, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td><%= link_to 'Show', ([:admin, layer]) %></td>
+    <td><%= link_to 'Edit', edit_admin_layer_path(layer) %></td>
+    <td><%= link_to 'Destroy', [:admin, layer], method: :delete, data: { confirm: 'Are you sure?' } %></td>
   </tr>
 <% end %>
 </table>

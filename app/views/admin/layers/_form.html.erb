@@ -1,20 +1,16 @@
-<%= form_for(@admin_layer) do |f| %>
-  <% if @admin_layer.errors.any? %>
+<%= form_for([:admin, @layer]) do |f| %>
+  <% if @layer.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@admin_layer.errors.count, "error") %> prohibited this admin_layer from being saved:</h2>
+      <h2><%= pluralize(@layer.errors.count, "error") %> prohibited this layer from being saved:</h2>
 
       <ul>
-      <% @admin_layer.errors.full_messages.each do |msg| %>
+      <% @layer.errors.full_messages.each do |msg| %>
         <li><%= msg %></li>
       <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="field">
-    <%= f.label :Layer %><br />
-    <%= f.text_field :Layer %>
-  </div>
   <div class="actions">
     <%= f.submit %>
   </div>
