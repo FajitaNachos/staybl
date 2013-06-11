@@ -8,7 +8,7 @@
   <div><%= f.label :password %><br />
   <%= f.password_field :password %></div>
 
-  <div><%= f.submit :class=>"btn btn-large" "Sign in" %></div>
+  <div><%= f.submit "Sign in", :class=>"btn btn-large", :id=>"sign-in" %></div>
 <% end %>
 </div>
 <%= render "admin/shared/links" %>

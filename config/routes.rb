@@ -10,7 +10,7 @@ Staybl::Application.routes.draw do
   end
 
   root to: 'home#index'
-  match '/map', to: 'map#index'
+  match '/map', to: 'map#index' 
 
   
   

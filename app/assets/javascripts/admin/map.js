@@ -81,13 +81,13 @@ $(document).ready(function(){
       
       var input = document.getElementById('map-search-box');
 
-      var layerTitle = document.createElement('input');
-      layerTitle.id = 'layer-title';
+      var layerName = document.createElement('input');
+      layerName.id = 'layer-name';
 
 
-      var titleLabel = document.createElement('label');
-      titleLabel.setAttribute('for','layer-title');
-      titleLabel.innerHTML = "Neighborhood";
+      var nameLabel = document.createElement('label');
+      nameLabel.setAttribute('for','layer-name');
+      nameLabel.innerHTML = "Neighborhood";
 
       var layerDesc = document.createElement('textarea');
       layerDesc.id = 'layer-desc';
@@ -111,8 +111,8 @@ $(document).ready(function(){
       var formContent = document.createElement('form');
       formContent.id = 'edit-layer';
 
-      formContent.appendChild(titleLabel);
-      formContent.appendChild(layerTitle);
+      formContent.appendChild(nameLabel);
+      formContent.appendChild(layerName);
       formContent.appendChild(descLabel);
       formContent.appendChild(layerDesc);
       formContent.appendChild(saveButton);
@@ -159,21 +159,21 @@ $(document).ready(function(){
                         // Iterate over the polygonBounds vertices.
                         for (var i = 0; i < newPath.length; i++) {
                             xy = newPath.getAt(i);
-                            coordinates += xy.lat() + ' ' + xy.lng() + ',';
+                            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
                         }
-                var polygon = coordinates.slice(0, - 1);
-                var coordinates = '"POLYGON((' + polygon + '))"';
-                var layerTitle = $("#layer-title").val();
+                var final_xy = newPath.getAt(0);
+                coordinates += final_xy.lat() + ' ' + final_xy.lng();
+             
+                var polyCoordinates = 'POLYGON((' + coordinates + '))';
+                var layerName = $("#layer-name").val();
                 var layerShortDesc = $("#layer-desc").val();
 
-                console.log(polygon);
-                console.log(layerTitle);
-                console.log(layerShortDesc);
+                
 
                 $.ajax({
                       type: 'POST',
                       url: '/admin/layers',
-                      data: 'name='+layerTitle+'&short_desc=' + layerShortDesc +'&coordinates=' + coordinates
+                      data: 'name='+layerName+'&short_desc=' + layerShortDesc +'&coordinates=' + polyCoordinates
                     }).done(function() {
                       alert('I wonder if that worked?');
                       infoWindow.close();
@@ -345,7 +345,7 @@ $(document).ready(function(){
 
         markers.push(marker);
         map.panTo(location);
-        map.setZoom(4);
+        
       });
       }
     };

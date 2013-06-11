@@ -40,7 +40,7 @@ class Admin::LayersController < ApplicationController
   # POST /admin/layers
   # POST /admin/layers.json
   def create
-    @layer = Layer.new(params[:layer])
+    @layer = Layer.new(:name => params[:name], :short_desc => params[:short_desc], :coordinates => params[:coordinates])
 
     respond_to do |format|
       if @layer.save
