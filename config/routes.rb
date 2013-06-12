@@ -4,7 +4,7 @@ Staybl::Application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    resources :layers
+    resources :overlays
     match '/map', to: 'map#index'
 
   end

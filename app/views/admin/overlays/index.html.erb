@@ -1,0 +1,21 @@
+<h1>Listing admin_overlays</h1>
+
+<table>
+  <tr>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @overlays.each do |overlay| %>
+  <tr>
+    <td><%= link_to 'Show', ([:admin, overlay]) %></td>
+    <td><%= link_to 'Edit', edit_admin_overlay_path(overlay) %></td>
+    <td><%= link_to 'Destroy', [:admin, overlay], method: :delete, data: { confirm: 'Are you sure?' } %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Overlay', new_admin_overlay_path %>

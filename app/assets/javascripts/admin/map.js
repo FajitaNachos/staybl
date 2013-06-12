@@ -39,6 +39,7 @@ $(document).ready(function(){
       // turns on the new google maps
       google.maps.visualRefresh = true;
 
+      getOverlays();
       // Geocode the address tha the user
       // searched for from the home page
       var geocoder = new google.maps.Geocoder();
@@ -81,40 +82,40 @@ $(document).ready(function(){
       
       var input = document.getElementById('map-search-box');
 
-      var layerName = document.createElement('input');
-      layerName.id = 'layer-name';
+      var overlayName = document.createElement('input');
+      overlayName.id = 'overlay-name';
 
 
       var nameLabel = document.createElement('label');
-      nameLabel.setAttribute('for','layer-name');
+      nameLabel.setAttribute('for','overlay-name');
       nameLabel.innerHTML = "Neighborhood";
 
-      var layerDesc = document.createElement('textarea');
-      layerDesc.id = 'layer-desc';
+      var overlayDesc = document.createElement('textarea');
+      overlayDesc.id = 'overlay-desc';
 
       var descLabel = document.createElement('label');
-      descLabel.setAttribute('for','layer-desc');
+      descLabel.setAttribute('for','overlay-desc');
       descLabel.innerHTML = "Neighborhood Description";
 
       var saveButton = document.createElement('button');
       saveButton.id = "save-button";
       saveButton.type = "button";
       saveButton.className = "btn btn-small";
-      saveButton.innerHTML = "Save Layer";
+      saveButton.innerHTML = "Save Overlay";
 
       var deleteButton = document.createElement('button');
       deleteButton.id = "delete-button";
       deleteButton.type = "button";
       deleteButton.className = "btn btn-small";
-      deleteButton.innerHTML = "Remove Layer";
+      deleteButton.innerHTML = "Remove Overlay";
 
       var formContent = document.createElement('form');
-      formContent.id = 'edit-layer';
+      formContent.id = 'edit-overlay';
 
       formContent.appendChild(nameLabel);
-      formContent.appendChild(layerName);
+      formContent.appendChild(overlayName);
       formContent.appendChild(descLabel);
-      formContent.appendChild(layerDesc);
+      formContent.appendChild(overlayDesc);
       formContent.appendChild(saveButton);
       formContent.appendChild(deleteButton);
 
@@ -165,18 +166,18 @@ $(document).ready(function(){
                 coordinates += final_xy.lat() + ' ' + final_xy.lng();
              
                 var polyCoordinates = 'POLYGON((' + coordinates + '))';
-                var layerName = $("#layer-name").val();
-                var layerShortDesc = $("#layer-desc").val();
+                var overlayName = $("#overlay-name").val();
+                var overlayShortDesc = $("#overlay-desc").val();
 
                 
 
                 $.ajax({
                       type: 'POST',
-                      url: '/admin/layers',
-                      data: 'name='+layerName+'&short_desc=' + layerShortDesc +'&coordinates=' + polyCoordinates
+                      url: '/admin/overlays',
+                      data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates
                     }).done(function() {
-                      alert('I wonder if that worked?');
                       infoWindow.close();
+                      alert('Saved!');
                   });
                 });
 
@@ -356,6 +357,17 @@ $(document).ready(function(){
       for (var i = 0; i < markers.length; i++) {
        markers[i].setMap(null);
       }
+    };
+
+    function getOverlays(bounds){
+      $.ajax({
+              type: 'GET',
+              url: '/admin/overlays.json',
+              data: 'bounds='+ bounds
+            }).done(function(data) {
+              console.log(data)
+              
+          });
     };
 
     function HomeControl(controlDiv, map) {

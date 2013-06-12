@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130610070647) do
+ActiveRecord::Schema.define(:version => 20130612225554) do
 
   create_table "administrators", :force => true do |t|
     t.string   "username",           :default => "", :null => false
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(:version => 20130610070647) do
   add_index "administrators", ["email"], :name => "index_admins_on_email", :unique => true
   add_index "administrators", ["username"], :name => "index_admins_on_username", :unique => true
 
-  create_table "layers", :force => true do |t|
+  create_table "overlays", :force => true do |t|
     t.string   "name"
     t.text     "short_desc"
     t.text     "tags",                                                   :default => ""

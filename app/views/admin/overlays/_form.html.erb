@@ -1,0 +1,17 @@
+<%= form_for([:admin, @overlay]) do |f| %>
+  <% if @overlay.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@overlay.errors.count, "error") %> prohibited this overlay from being saved:</h2>
+
+      <ul>
+      <% @overlay.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

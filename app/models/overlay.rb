@@ -1,6 +1,5 @@
-class Layer < ActiveRecord::Base
+class Overlay < ActiveRecord::Base
  
-
   attr_accessible :name, :coordinates, :short_desc, :tags
   
 end
