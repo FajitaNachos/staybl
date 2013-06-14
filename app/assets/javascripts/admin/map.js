@@ -39,7 +39,7 @@ $(document).ready(function(){
       // turns on the new google maps
       google.maps.visualRefresh = true;
 
-      getOverlays();
+      
       // Geocode the address tha the user
       // searched for from the home page
       var geocoder = new google.maps.Geocoder();
@@ -59,7 +59,7 @@ $(document).ready(function(){
       };
 
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-
+      
       // Creates a drawing manager attached to the map that allows the user to draw
       // markers, lines, and shapes.
       drawingManager = new google.maps.drawing.DrawingManager({
@@ -130,6 +130,18 @@ $(document).ready(function(){
       var autoOptions = {
         types: ['geocode'],
       };
+
+       google.maps.event.addListener(map, 'bounds_changed', function() {
+         var bounds = map.getBounds();
+         var bounds = map.getBounds();
+          var ne = bounds.getNorthEast();
+          var sw = bounds.getSouthWest();
+          var yMaxLat = ne.lat();
+          var xMaxLng = ne.lng();
+          var yMinLat = sw.lat();
+          var xMinLng = sw.lng();
+
+      });
 
       
 
@@ -360,13 +372,34 @@ $(document).ready(function(){
     };
 
     function getOverlays(bounds){
+
+    
       $.ajax({
               type: 'GET',
               url: '/admin/overlays.json',
-              data: 'bounds='+ bounds
+              data: 'minLat='+ minLat + '&minLng='+minLng+'&maxLat='+maxLat+'&maxLng='+maxLng
             }).done(function(data) {
-              console.log(data)
-              
+              for (var i=0;i<data.length;i++){
+                var coordinates = data[i].coordinates.slice(10, -2);
+                var newCoordinates = coordinates.split(',');
+                var polygonPath = new Array();
+                for(var j=0; j<newCoordinates.length;j++){
+                  var point = newCoordinates[j].trim().split(' ');
+                  var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
+                  polygonPath.push(gPoint);
+              }
+              var polygon = new google.maps.Polygon({
+                  paths: polygonPath,
+                  strokeColor: "#FF0000",
+                  strokeOpacity: 0.8,
+                  strokeWeight: 2,
+                  fillColor: "#FF0000",
+                  fillOpacity: 0.35,
+                  map: map 
+                });
+            
+               
+            }
           });
     };
 

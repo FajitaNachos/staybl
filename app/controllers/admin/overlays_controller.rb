@@ -10,6 +10,20 @@ class Admin::OverlaysController < Admin::BaseController
     end
   end
 
+  def fetch
+    minLat = params[:minLat]
+    maxLat = params[:maxLat]
+    minLng = params[:minLng]
+    maxLng = params[:maxLng]
+   
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.json { render json: @overlays }
+    end
+
+  end
+
   # GET /admin/overlays/1
   # GET /admin/overlays/1.json
   def show
