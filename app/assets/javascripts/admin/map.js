@@ -132,14 +132,18 @@ $(document).ready(function(){
       };
 
        google.maps.event.addListener(map, 'bounds_changed', function() {
-         var bounds = map.getBounds();
-         var bounds = map.getBounds();
+          var bounds = map.getBounds();
+          var bounds = map.getBounds();
           var ne = bounds.getNorthEast();
           var sw = bounds.getSouthWest();
           var yMaxLat = ne.lat();
           var xMaxLng = ne.lng();
           var yMinLat = sw.lat();
           var xMinLng = sw.lng();
+
+          var bounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMinLng+'))';
+          
+          getOverlays(bounds);
 
       });
 
@@ -373,33 +377,34 @@ $(document).ready(function(){
 
     function getOverlays(bounds){
 
-    
-      $.ajax({
-              type: 'GET',
-              url: '/admin/overlays.json',
-              data: 'minLat='+ minLat + '&minLng='+minLng+'&maxLat='+maxLat+'&maxLng='+maxLng
-            }).done(function(data) {
+      $.getJSON("/admin/fetch.json?bounds="+bounds, function(data) {
               for (var i=0;i<data.length;i++){
-                var coordinates = data[i].coordinates.slice(10, -2);
-                var newCoordinates = coordinates.split(',');
+                var coordinates = data[i].coordinates.slice(10, -2).split(',');
                 var polygonPath = new Array();
-                for(var j=0; j<newCoordinates.length;j++){
-                  var point = newCoordinates[j].trim().split(' ');
+                for(var j=0; j<coordinates.length;j++){
+                  var point = coordinates[j].trim().split(' ');
                   var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
                   polygonPath.push(gPoint);
               }
-              var polygon = new google.maps.Polygon({
-                  paths: polygonPath,
-                  strokeColor: "#FF0000",
-                  strokeOpacity: 0.8,
-                  strokeWeight: 2,
-                  fillColor: "#FF0000",
-                  fillOpacity: 0.35,
-                  map: map 
-                });
-            
+
+                polygonId = data[i].id;
+                var polygonData = {};
+                polygonData.id = polygonId;
+                polygonData.path = polygonPath;
+                polygons.push(polygonData);
+
                
+                var polygon = new google.maps.Polygon({
+                    paths: polygonPath,
+                    strokeColor: "#FF0000",
+                    strokeOpacity: 0.8,
+                    strokeWeight: 2,
+                    fillColor: "#FF0000",
+                    fillOpacity: 0.35,
+                    map: map 
+                  }); 
             }
+             console.log(polygons);
           });
     };
 
