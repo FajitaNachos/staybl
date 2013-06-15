@@ -125,7 +125,12 @@ $(document).ready(function(){
       });
 
       google.maps.event.addListener(infoWindow, 'domready', function() {
-      // whatever you want to do once the DOM is ready
+      if(selectedShape.id){
+        $("#overlay-name").val(selectedShape.name); 
+        $("#overlay-desc").val(selectedShape.shortDesc); 
+      }
+      
+
       google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
                   
                  var newPath = selectedShape.getPath();
@@ -152,21 +157,38 @@ $(document).ready(function(){
                 }
                 else{
                   var saveType = 'POST';
-                  var savePath = '/admin/overlays'
+                  var savePath = '/admin/overlays.json'
                 }
                 $.ajax({
                       type: saveType,
                       url: savePath,
                       data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
-                    }).done(function() {
+                    }).done(function(data) {
+                      if(!selectedShape.id){
+                        console.log(data);
+                        
+                      }
+                      selectedShape.name = data.name;
+                      selectedShape.shortDesc = data.short_desc;
                       infoWindow.close();
-                      alert('Saved!');
                   });
                 });
 
             google.maps.event.addDomListenerOnce(document.getElementById('delete-button'), 'click', function(){
-              infoWindow.close();
-              deleteSelectedShape();
+              if(selectedShape.id){
+                   $.ajax({
+                      type: 'DELETE',
+                      url: '/admin/overlays/'+selectedShape.id+'.json'
+                    });   
+                }
+                infoWindow.close();
+                deleteSelectedShape();
+            });
+
+            google.maps.event.addListener(infoWindow,'closeclick',function(){
+              if(!selectedShape.id){
+                  deleteSelectedShape();
+              }
             });
       });
 
@@ -434,6 +456,8 @@ $(document).ready(function(){
                       fillColor: data.color,
                       fillOpacity: 0.5,
                       id:polygonId,
+                      name: data.name,
+                      shortDesc: data.short_desc,
                       map: map 
                     }); 
 
