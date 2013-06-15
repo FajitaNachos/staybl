@@ -171,6 +171,7 @@ $(document).ready(function(){
             infoWindow.open(map);
 
             google.maps.event.addDomListener(document.getElementById('save-button'), 'click', function() {
+                  
                  var newPath = selectedShape.getPath();
                   var xy;
                   var coordinates = '';
@@ -185,13 +186,14 @@ $(document).ready(function(){
                 var polyCoordinates = 'POLYGON((' + coordinates + '))';
                 var overlayName = $("#overlay-name").val();
                 var overlayShortDesc = $("#overlay-desc").val();
+                var overlayColor = selectedShape.fillColor;
 
                 
 
                 $.ajax({
                       type: 'POST',
                       url: '/admin/overlays',
-                      data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates
+                      data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
                     }).done(function() {
                       infoWindow.close();
                       alert('Saved!');
@@ -409,15 +411,18 @@ $(document).ready(function(){
                   var polygonId = data.id;
                   var polygon = new google.maps.Polygon({
                       paths: polygonPath,
-                      strokeColor: "#FF0000",
+                      strokeColor: data.color,
                       strokeOpacity: 0.5,
                       strokeWeight: 1,
-                      fillColor: "#FF0000",
+                      fillColor: data.color,
                       fillOpacity: 0.25,
                       map: map 
                     }); 
-                  polygons[polygonId] = polygon;
                   
+                  polygons[polygonId] = polygon;
+                  google.maps.event.addListener(polygon, 'click', function(){
+                    alert('I got clicked!');
+                  })
 
     };
 

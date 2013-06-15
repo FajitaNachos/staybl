@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130612225554) do
+ActiveRecord::Schema.define(:version => 20130615030634) do
 
   create_table "administrators", :force => true do |t|
     t.string   "username",           :default => "", :null => false
@@ -36,6 +36,7 @@ ActiveRecord::Schema.define(:version => 20130612225554) do
     t.datetime "created_at",                                                             :null => false
     t.datetime "updated_at",                                                             :null => false
     t.spatial  "coordinates", :limit => {:srid=>4326, :type=>"polygon"}
+    t.string   "color"
   end
 
 end

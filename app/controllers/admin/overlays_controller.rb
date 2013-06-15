@@ -51,7 +51,7 @@ class Admin::OverlaysController < Admin::BaseController
   # POST /admin/overlays
   # POST /admin/overlays.json
   def create
-    @overlay = Overlay.new(:name => params[:name], :short_desc => params[:short_desc], :coordinates => params[:coordinates])
+    @overlay = Overlay.new(:name => params[:name], :short_desc => params[:short_desc], :coordinates => params[:coordinates], :color => params[:color])
 
     respond_to do |format|
       if @overlay.save
