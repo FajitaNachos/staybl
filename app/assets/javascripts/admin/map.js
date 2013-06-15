@@ -5,7 +5,8 @@ $(document).ready(function(){
 
     // Set up an empty array to hold all of our markers
     var markers = [];
-    var polygons = [];
+    var polygons = {};
+    var currentPolygons = {};
     var infoWindow;
     var saveOverlay;
     var drawingManager;
@@ -378,35 +379,62 @@ $(document).ready(function(){
     function getOverlays(bounds){
 
       $.getJSON("/admin/fetch.json?bounds="+bounds, function(data) {
-              for (var i=0;i<data.length;i++){
-                var coordinates = data[i].coordinates.slice(10, -2).split(',');
-                var polygonPath = new Array();
-                for(var j=0; j<coordinates.length;j++){
-                  var point = coordinates[j].trim().split(' ');
-                  var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
-                  polygonPath.push(gPoint);
+            var currentPolygons={};
+            for (var i=0;i<data.length;i++){
+                currentPolygons[data[i].id] = true;
+                var myPolygon = getPolygon(data[i].id);
+                if(!myPolygon){
+                  setPolygon(data[i]);
+                }   
+              
               }
-
-                polygonId = data[i].id;
-                var polygonData = {};
-                polygonData.id = polygonId;
-                polygonData.path = polygonPath;
-                polygons.push(polygonData);
-
-               
-                var polygon = new google.maps.Polygon({
-                    paths: polygonPath,
-                    strokeColor: "#FF0000",
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: "#FF0000",
-                    fillOpacity: 0.35,
-                    map: map 
-                  }); 
-            }
-             console.log(polygons);
+              cleanPolygons(currentPolygons);
+              console.log(polygons);
+              
           });
     };
+
+    function getPolygon(id){
+      return polygons[id];
+    };
+
+    function setPolygon(data){
+      var coordinates = data.coordinates.slice(10, -2).split(',');
+                  var polygonPath = new Array();
+                  for(var j=0; j<coordinates.length;j++){
+                    var point = coordinates[j].trim().split(' ');
+                    var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
+                    polygonPath.push(gPoint);
+                  } 
+                  var polygonId = data.id;
+                  var polygon = new google.maps.Polygon({
+                      paths: polygonPath,
+                      strokeColor: "#FF0000",
+                      strokeOpacity: 0.5,
+                      strokeWeight: 1,
+                      fillColor: "#FF0000",
+                      fillOpacity: 0.25,
+                      map: map 
+                    }); 
+                  polygons[polygonId] = polygon;
+                  
+
+    };
+
+    function cleanPolygons(currentPolys){
+      for (var i in polygons){
+        var contains = currentPolys[i];
+        console.log(contains);
+        if(!contains){
+          polygons[i].setMap(null);
+          delete polygons[i];
+        }
+      }
+    }
+
+    function getCurrentPolygon(id){
+      return currentPolygons[id];
+    }
 
     function HomeControl(controlDiv, map) {
 
