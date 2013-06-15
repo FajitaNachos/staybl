@@ -70,8 +70,8 @@ class Admin::OverlaysController < Admin::BaseController
     @overlay = Overlay.find(params[:id])
 
     respond_to do |format|
-      if @overlay.update_attributes(params[:overlay])
-        format.html { redirect_to @overlay, notice: 'Overlay was successfully updated.' }
+      if @overlay.update_attributes(:name => params[:name], :short_desc => params[:short_desc], :coordinates => params[:coordinates], :color => params[:color])
+        format.html { redirect_to [:admin, @overlay], notice: 'Overlay was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

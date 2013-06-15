@@ -120,8 +120,54 @@ $(document).ready(function(){
       formContent.appendChild(saveButton);
       formContent.appendChild(deleteButton);
 
-      var infoWindow = new google.maps.InfoWindow({
+      infoWindow = new google.maps.InfoWindow({
           content: formContent
+      });
+
+      google.maps.event.addListener(infoWindow, 'domready', function() {
+      // whatever you want to do once the DOM is ready
+      google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
+                  
+                 var newPath = selectedShape.getPath();
+                  var xy;
+                  var coordinates = '';
+                        // Iterate over the polygonBounds vertices.
+                        for (var i = 0; i < newPath.length; i++) {
+                            xy = newPath.getAt(i);
+                            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
+                        }
+                var final_xy = newPath.getAt(0);
+                coordinates += final_xy.lat() + ' ' + final_xy.lng();
+             
+                var polyCoordinates = 'POLYGON((' + coordinates + '))';
+                var overlayName = $("#overlay-name").val();
+                var overlayShortDesc = $("#overlay-desc").val();
+                var overlayColor = selectedShape.fillColor;
+                console.log(overlayColor);
+                var overlayId = selectedShape.id;
+
+                if(overlayId){
+                  var saveType = 'PUT';
+                  var savePath = '/admin/overlays/'+overlayId+'.json';
+                }
+                else{
+                  var saveType = 'POST';
+                  var savePath = '/admin/overlays'
+                }
+                $.ajax({
+                      type: saveType,
+                      url: savePath,
+                      data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
+                    }).done(function() {
+                      infoWindow.close();
+                      alert('Saved!');
+                  });
+                });
+
+            google.maps.event.addDomListenerOnce(document.getElementById('delete-button'), 'click', function(){
+              infoWindow.close();
+              deleteSelectedShape();
+            });
       });
 
       // Fills the search box with the current address the user searched for
@@ -170,40 +216,7 @@ $(document).ready(function(){
             infoWindow.setPosition(e.latLng);
             infoWindow.open(map);
 
-            google.maps.event.addDomListener(document.getElementById('save-button'), 'click', function() {
-                  
-                 var newPath = selectedShape.getPath();
-                  var xy;
-                  var coordinates = '';
-                        // Iterate over the polygonBounds vertices.
-                        for (var i = 0; i < newPath.length; i++) {
-                            xy = newPath.getAt(i);
-                            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
-                        }
-                var final_xy = newPath.getAt(0);
-                coordinates += final_xy.lat() + ' ' + final_xy.lng();
-             
-                var polyCoordinates = 'POLYGON((' + coordinates + '))';
-                var overlayName = $("#overlay-name").val();
-                var overlayShortDesc = $("#overlay-desc").val();
-                var overlayColor = selectedShape.fillColor;
-
-                
-
-                $.ajax({
-                      type: 'POST',
-                      url: '/admin/overlays',
-                      data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
-                    }).done(function() {
-                      infoWindow.close();
-                      alert('Saved!');
-                  });
-                });
-
-            google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
-              infoWindow.close();
-              deleteSelectedShape();
-            });
+            
 
           });
           setSelection(newShape);
@@ -257,6 +270,7 @@ $(document).ready(function(){
       selectedShape = shape;
       shape.setEditable(true);
       selectColor(shape.get('fillColor') || shape.get('strokeColor'));
+
     }
 
     function deleteSelectedShape() {
@@ -289,15 +303,18 @@ $(document).ready(function(){
 
       var polygonOptions = drawingManager.get('polygonOptions');
       polygonOptions.fillColor = color;
+      
       drawingManager.set('polygonOptions', polygonOptions);
     }
 
     function setSelectedShapeColor(color) {
+      console.log(color);
       if (selectedShape) {
         if (selectedShape.type == google.maps.drawing.OverlayType.POLYLINE) {
           selectedShape.set('strokeColor', color);
         } else {
           selectedShape.set('fillColor', color);
+          selectedShape.set('strokeColor', color);
         }
       }
     }
@@ -413,15 +430,19 @@ $(document).ready(function(){
                       paths: polygonPath,
                       strokeColor: data.color,
                       strokeOpacity: 0.5,
-                      strokeWeight: 1,
+                      strokeWeight: 0,
                       fillColor: data.color,
-                      fillOpacity: 0.25,
+                      fillOpacity: 0.5,
+                      id:polygonId,
                       map: map 
                     }); 
-                  
+
                   polygons[polygonId] = polygon;
-                  google.maps.event.addListener(polygon, 'click', function(){
-                    alert('I got clicked!');
+                  google.maps.event.addListener(polygon, 'click', function(e){
+                    setSelection(polygon);
+                    alert(e.latLng)
+                    infoWindow.setPosition(e.latLng);
+                    infoWindow.open(map);
                   })
 
     };
@@ -461,7 +482,7 @@ $(document).ready(function(){
       controlUI.appendChild(controlText);
 
       // Setup the click event listeners: simply set the map to Chicago.
-      google.maps.event.addDomListener(controlUI, 'click', function() {
+      google.maps.event.addDomListenerOnce(controlUI, 'click', function() {
        
       });
     }
