@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
   //Only load this javascript if user is on the map page
   if(document.getElementById('map-canvas')){
 
@@ -8,7 +7,6 @@ $(document).ready(function(){
     var polygons = {};
     var currentPolygons = {};
     var infoWindow;
-    var saveOverlay;
     var drawingManager;
     var selectedShape;
     var colors = ['#FF3333', '#32CD32'];
@@ -125,56 +123,57 @@ $(document).ready(function(){
       });
 
       google.maps.event.addListener(infoWindow, 'domready', function() {
+      document.getElementById('overlay-name').value = '';
+      document.getElementById('overlay-desc').value = '';
       if(selectedShape.id){
-        $("#overlay-name").val(selectedShape.name); 
-        $("#overlay-desc").val(selectedShape.shortDesc); 
+        document.getElementById('overlay-name').value = selectedShape.name; 
+        document.getElementById('overlay-desc').value = selectedShape.shortDesc; 
       }
       
-
-      google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
+      var saveOverlay = google.maps.event.addDomListener(document.getElementById('save-button'), 'click', function() {
                   
-                 var newPath = selectedShape.getPath();
-                  var xy;
-                  var coordinates = '';
-                        // Iterate over the polygonBounds vertices.
-                        for (var i = 0; i < newPath.length; i++) {
-                            xy = newPath.getAt(i);
-                            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
-                        }
-                var final_xy = newPath.getAt(0);
-                coordinates += final_xy.lat() + ' ' + final_xy.lng();
-             
-                var polyCoordinates = 'POLYGON((' + coordinates + '))';
-                var overlayName = $("#overlay-name").val();
-                var overlayShortDesc = $("#overlay-desc").val();
-                var overlayColor = selectedShape.fillColor;
-                console.log(overlayColor);
-                var overlayId = selectedShape.id;
+        var newPath = selectedShape.getPath();
+        var xy;
+        var coordinates = '';
+          // Iterate over the polygonBounds vertices.
+        for (var i = 0; i < newPath.length; i++) {
+            xy = newPath.getAt(i);
+            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
+        }
 
-                if(overlayId){
-                  var saveType = 'PUT';
-                  var savePath = '/admin/overlays/'+overlayId+'.json';
-                }
-                else{
-                  var saveType = 'POST';
-                  var savePath = '/admin/overlays.json'
-                }
-                $.ajax({
-                      type: saveType,
-                      url: savePath,
-                      data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
-                    }).done(function(data) {
-                      if(!selectedShape.id){
-                        console.log(data);
-                        
-                      }
-                      selectedShape.name = data.name;
-                      selectedShape.shortDesc = data.short_desc;
-                      infoWindow.close();
-                  });
-                });
+        var final_xy = newPath.getAt(0);
+        coordinates += final_xy.lat() + ' ' + final_xy.lng();
+     
+        var polyCoordinates = 'POLYGON((' + coordinates + '))';
+        var overlayName = document.getElementById('overlay-name').value;
+        var overlayShortDesc = document.getElementById('overlay-desc').value;
+        var overlayColor = selectedShape.fillColor;
+        var overlayId = selectedShape.id;
 
-            google.maps.event.addDomListenerOnce(document.getElementById('delete-button'), 'click', function(){
+        if(overlayId){
+          var saveType = 'PUT';
+          var savePath = '/admin/overlays/'+overlayId+'.json';
+        }
+        else{
+          var saveType = 'POST';
+          var savePath = '/admin/overlays.json'
+        }
+        $.ajax({
+              type: saveType,
+              url: savePath,
+              data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
+            }).done(function(data) {
+              if(!selectedShape.id){
+                selectedShape.id = data.id;
+              }
+              selectedShape.name = data.name;
+              selectedShape.shortDesc = data.short_desc;
+              infoWindow.close();
+              clearSelection();
+          });
+        });
+
+            google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
               if(selectedShape.id){
                    $.ajax({
                       type: 'DELETE',
@@ -189,11 +188,14 @@ $(document).ready(function(){
               if(!selectedShape.id){
                   deleteSelectedShape();
               }
+               //remove the event save overlay event listener so I don't end up saving
+                  //16 of the same overlays
+                  saveOverlay.remove();
             });
       });
 
       // Fills the search box with the current address the user searched for
-      $('#map-search-box').val(address);
+      document.getElementById('map-search-box').value = address;
       
       // Set options for the places autocomplete. 
       var autoOptions = {
@@ -330,7 +332,6 @@ $(document).ready(function(){
     }
 
     function setSelectedShapeColor(color) {
-      console.log(color);
       if (selectedShape) {
         if (selectedShape.type == google.maps.drawing.OverlayType.POLYLINE) {
           selectedShape.set('strokeColor', color);
@@ -430,7 +431,7 @@ $(document).ready(function(){
               
               }
               cleanPolygons(currentPolygons);
-              console.log(polygons);
+              
               
           });
     };
@@ -464,7 +465,6 @@ $(document).ready(function(){
                   polygons[polygonId] = polygon;
                   google.maps.event.addListener(polygon, 'click', function(e){
                     setSelection(polygon);
-                    alert(e.latLng)
                     infoWindow.setPosition(e.latLng);
                     infoWindow.open(map);
                   })
@@ -474,7 +474,7 @@ $(document).ready(function(){
     function cleanPolygons(currentPolys){
       for (var i in polygons){
         var contains = currentPolys[i];
-        console.log(contains);
+        
         if(!contains){
           polygons[i].setMap(null);
           delete polygons[i];

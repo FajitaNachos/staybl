@@ -21,7 +21,16 @@ $(document).ready(function(){
 
       var mapOptions = {
         zoom: 13,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        panControl: false,
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+          style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
+        },
+        zoomControl: true,
+        zoomControlOptions: {
+          style: google.maps.ZoomControlStyle.SMALL
+        }
       };
 
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
@@ -64,7 +73,7 @@ $(document).ready(function(){
       var homeControl = new HomeControl(homeControlDiv, map);
 
       homeControlDiv.index = 1;
-      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(homeControlDiv);
+      map.controls[google.maps.ControlPosition.TOP_RIGHT].push(homeControlDiv);
   }
 
     // Used to detect initial (useless) popstate.
@@ -121,7 +130,7 @@ $(document).ready(function(){
         // Set CSS styles for the DIV containing the control
         // Setting padding to 5 px will offset the control
         // from the edge of the map.
-        controlDiv.style.padding = '15px';
+        controlDiv.style.padding = '5px';
 
         // Set CSS for the control border.
         var controlUI = document.createElement('div');
