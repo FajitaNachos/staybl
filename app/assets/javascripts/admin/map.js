@@ -38,7 +38,6 @@ $(document).ready(function(){
       // turns on the new google maps
       google.maps.visualRefresh = true;
 
-      
       // Geocode the address tha the user
       // searched for from the home page
       var geocoder = new google.maps.Geocoder();
@@ -130,7 +129,7 @@ $(document).ready(function(){
         document.getElementById('overlay-desc').value = selectedShape.shortDesc; 
       }
       
-      var saveOverlay = google.maps.event.addDomListener(document.getElementById('save-button'), 'click', function() {
+      var saveOverlay = google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
                   
         var newPath = selectedShape.getPath();
         var xy;
@@ -204,7 +203,6 @@ $(document).ready(function(){
 
        google.maps.event.addListener(map, 'bounds_changed', function() {
           var bounds = map.getBounds();
-          var bounds = map.getBounds();
           var ne = bounds.getNorthEast();
           var sw = bounds.getSouthWest();
           var yMaxLat = ne.lat();
@@ -217,8 +215,6 @@ $(document).ready(function(){
           getOverlays(bounds);
 
       });
-
-      
 
       var mapSearch = new google.maps.places.Autocomplete(input, autoOptions);
       
@@ -239,8 +235,6 @@ $(document).ready(function(){
             setSelection(newShape);
             infoWindow.setPosition(e.latLng);
             infoWindow.open(map);
-
-            
 
           });
           setSelection(newShape);
@@ -265,16 +259,7 @@ $(document).ready(function(){
       google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
       google.maps.event.addListener(map, 'click', clearSelection);
       
-      // Create the DIV to hold the control and call the HomeControl() constructor
-      // passing in this DIV.
-      var homeControlDiv = document.createElement('div');
-
-       
-
-      var homeControl = new HomeControl(homeControlDiv, map);
-
-      homeControlDiv.index = 1;
-      map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(homeControlDiv);
+    
       
       
       buildColorPalette();
@@ -420,7 +405,7 @@ $(document).ready(function(){
 
     function getOverlays(bounds){
 
-      $.getJSON("/admin/fetch.json?bounds="+bounds, function(data) {
+      $.getJSON("/overlays/fetch?bounds="+bounds+".json", function(data) {
             var currentPolygons={};
             for (var i=0;i<data.length;i++){
                 currentPolygons[data[i].id] = true;
@@ -484,31 +469,6 @@ $(document).ready(function(){
 
     function getCurrentPolygon(id){
       return currentPolygons[id];
-    }
-
-    function HomeControl(controlDiv, map) {
-
-      // Set CSS styles for the DIV containing the control
-      // Setting padding to 5 px will offset the control
-      // from the edge of the map.
-      controlDiv.style.padding = '15px';
-
-      // Set CSS for the control border.
-      var controlUI = document.createElement('div');
-      controlUI.className = 'control-ui';
-      controlUI.title = 'Click to show recommended hotels';
-      controlDiv.appendChild(controlUI);
-
-      // Set CSS for the control interior.
-      var controlText = document.createElement('div');
-      controlText.className = 'control-text';
-      controlText.innerHTML = '<strong>Show Hotels</strong>';
-      controlUI.appendChild(controlText);
-
-      // Setup the click event listeners: simply set the map to Chicago.
-      google.maps.event.addDomListenerOnce(controlUI, 'click', function() {
-       
-      });
     }
 
     //initialize the map

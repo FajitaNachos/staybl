@@ -6,13 +6,13 @@ Staybl::Application.routes.draw do
     root to: "dashboard#index"
     resources :overlays
     match '/map', to: 'map#index'
-    match '/fetch', to: 'overlays#fetch'
+    match '/overlays/fetch', to: 'overlays#fetch'
 
   end
 
   root to: 'home#index'
   match '/map', to: 'map#index' 
-
+  match '/overlays/fetch', to: 'overlays#fetch'
   
   
 
