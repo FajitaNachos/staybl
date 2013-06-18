@@ -11,9 +11,9 @@ class Admin::OverlaysController < Admin::BaseController
   end
 
   def fetch
-    bounds = params[:bounds]
+    @bounds = params[:bounds]
     @fetch_overlays = Overlay.find_by_sql("select * from overlays
-      where ST_INTERSECTS(coordinates,ST_GEOMFROMTEXT('#{bounds}',4326));")
+      where ST_INTERSECTS(coordinates,ST_GEOMFROMTEXT('@{bounds}',4326));")
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @fetch_overlays }

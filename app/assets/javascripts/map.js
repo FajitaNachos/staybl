@@ -42,7 +42,7 @@ $(document).ready(function(){
       var address = getURLParam("place");
 
       var mapOptions = {
-        zoom: 13,
+        zoom: 9,
         panControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControl: true,
@@ -84,8 +84,7 @@ $(document).ready(function(){
       });
 
       google.maps.event.addListener(infoWindow, 'domready', function() {
-        document.getElementById('overlay-name').innerHTML = ' '; 
-        document.getElementById('overlay-desc').innerHTML = ' ';
+      
       });
 
       var input = document.getElementById('map-search-box');
@@ -100,6 +99,7 @@ $(document).ready(function(){
 
        google.maps.event.addListener(map, 'bounds_changed', function() {
           var bounds = map.getBounds();
+          console.log(bounds);
           var ne = bounds.getNorthEast();
           var sw = bounds.getSouthWest();
           var yMaxLat = ne.lat();
@@ -107,9 +107,9 @@ $(document).ready(function(){
           var yMinLat = sw.lat();
           var xMinLng = sw.lng();
 
-          var bounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMinLng+'))';
-          
-          getOverlays(bounds);
+          var mapBounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMaxLng+','+yMinLat+' '+xMinLng+'))';
+          console.log(mapBounds);
+          getOverlays(mapBounds);
 
       });
 
@@ -151,7 +151,8 @@ $(document).ready(function(){
 
           var marker = new google.maps.Marker({
             position: location,
-            map: map
+            map: map,
+            visible: false
           });
 
           markers.push(marker);
@@ -226,13 +227,29 @@ $(document).ready(function(){
                     }); 
 
                   polygons[polygonId] = polygon;
-                  google.maps.event.addListener(polygon, 'mouseover', function(e){
-                    infoWindow.setPosition(e.latLng);
+                  google.maps.event.addListener(polygon, 'click', function(e){
+                    if(infoWindow){
+                      infoWindow.close();
+                    }
+                    
                     infoWindow.open(map);
+                    document.getElementById('overlay-name').innerHTML = polygon.name;; 
+                    document.getElementById('overlay-desc').innerHTML = polygon.shortDesc;
+                    infoWindow.setPosition(e.latLng);
                   });
-                  google.maps.event.addListener(polygon, 'mouseout', function(e){
-                   
+
+
+                  google.maps.event.addListener(polygon, 'mouseover', function(){
+                    polygon.setOptions({strokeWeight: 2.0});
                   });
+
+                  google.maps.event.addListener(map, 'mousemove', function(){
+                    infoWindow.close();
+                    polygon.setOptions({strokeWeight: .5});
+                  });
+
+
+                  
 
     };
 
