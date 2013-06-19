@@ -47,6 +47,7 @@ $(document).ready(function(){
 
       var mapOptions = {
         zoom: 13,
+        panControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
@@ -61,15 +62,14 @@ $(document).ready(function(){
       // Creates a drawing manager attached to the map that allows the user to draw
       // markers, lines, and shapes.
       drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: google.maps.drawing.OverlayType.POLYGON,
-        markerOptions: {
-          draggable: true
-        },
-        polylineOptions: {
-          editable: true
-        },
-        rectangleOptions: polyOptions,
-        circleOptions: polyOptions,
+       drawingControlOptions: {
+        position: google.maps.ControlPosition.BOTTOM_CENTER,
+        drawingModes: [
+          
+          google.maps.drawing.OverlayType.POLYGON
+         
+        ]
+      },
         polygonOptions: polyOptions,
         map: map
       });
@@ -184,9 +184,7 @@ $(document).ready(function(){
             });
 
             google.maps.event.addListener(infoWindow,'closeclick',function(){
-              if(!selectedShape.id){
-                  deleteSelectedShape();
-              }
+              
                //remove the event save overlay event listener so I don't end up saving
                   //16 of the same overlays
                   saveOverlay.remove();
@@ -298,17 +296,6 @@ $(document).ready(function(){
 
       // Retrieves the current options from the drawing manager and replaces the
       // stroke or fill color as appropriate.
-      var polylineOptions = drawingManager.get('polylineOptions');
-      polylineOptions.strokeColor = color;
-      drawingManager.set('polylineOptions', polylineOptions);
-
-      var rectangleOptions = drawingManager.get('rectangleOptions');
-      rectangleOptions.fillColor = color;
-      drawingManager.set('rectangleOptions', rectangleOptions);
-
-      var circleOptions = drawingManager.get('circleOptions');
-      circleOptions.fillColor = color;
-      drawingManager.set('circleOptions', circleOptions);
 
       var polygonOptions = drawingManager.get('polygonOptions');
       polygonOptions.fillColor = color;
@@ -352,7 +339,7 @@ $(document).ready(function(){
          colorPalette.appendChild(colorButton);
          colorButtons[currColor] = colorButton;
        }
-       map.controls[google.maps.ControlPosition.TOP_LEFT].push(colorPalette);
+       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(colorPalette);
        selectColor(colors[0]);
      }
 

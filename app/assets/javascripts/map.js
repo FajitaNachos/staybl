@@ -7,6 +7,8 @@ $(document).ready(function(){
     var polygons = {};
     var currentPolygons = {};
     var infoWindow;
+    var searched = true;
+    var address;
 
 
     // Used to detect initial (useless) popstate.
@@ -39,19 +41,15 @@ $(document).ready(function(){
       var geocoder = new google.maps.Geocoder();
 
       // retrieve and parse the name of the place from the URL
-      var address = getURLParam("place");
+      address = getURLParam("place");
 
       var mapOptions = {
-        zoom: 9,
+        zoom: 13,
         panControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         mapTypeControl: true,
         mapTypeControlOptions: {
           style: google.maps.MapTypeControlStyle.DROPDOWN_MENU
-        },
-        zoomControl: true,
-        zoomControlOptions: {
-          style: google.maps.ZoomControlStyle.SMALL
         }
       };
 
@@ -99,7 +97,6 @@ $(document).ready(function(){
 
        google.maps.event.addListener(map, 'bounds_changed', function() {
           var bounds = map.getBounds();
-          console.log(bounds);
           var ne = bounds.getNorthEast();
           var sw = bounds.getSouthWest();
           var yMaxLat = ne.lat();
@@ -108,7 +105,6 @@ $(document).ready(function(){
           var xMinLng = sw.lng();
 
           var mapBounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMaxLng+','+yMinLat+' '+xMinLng+'))';
-          console.log(mapBounds);
           getOverlays(mapBounds);
 
       });
@@ -122,13 +118,14 @@ $(document).ready(function(){
       google.maps.event.addListener(mapSearch, 'place_changed', function() {
         removeMarkers();
 
-        var searchParam = document.getElementById('map-search-box').value;
+        searched = true;
+        address = document.getElementById('map-search-box').value;
 
         // use push state to chane the URL so it can be book marked/shared
-        window.history.pushState("http://www.staybl.com/", "Staybl | "+searchParam, "map?place="+searchParam);
+        window.history.pushState("http://www.staybl.com/", "Staybl | "+address, "map?place="+address);
        
         // Add a new marker and center the map on it
-        addMarker(searchParam);
+        addMarker(address);
       });
 
      
@@ -144,6 +141,7 @@ $(document).ready(function(){
 
     // function to geocode an address and add a market to the map
     function addMarker(address){
+
       geocoder = new google.maps.Geocoder();
       if(address){
         geocoder.geocode({address: address}, function(results, status) {
@@ -151,8 +149,7 @@ $(document).ready(function(){
 
           var marker = new google.maps.Marker({
             position: location,
-            map: map,
-            visible: false
+            map: map
           });
 
           markers.push(marker);
@@ -185,8 +182,20 @@ $(document).ready(function(){
        function getOverlays(bounds){
 
       $.getJSON("overlays/fetch.json?bounds="+bounds, function(data) {
-            var currentPolygons={};
+          
+           if(data.length == 0){
+            if(searched == true){
+              $('#modal-place').html(address);
+              $('#map-modal').modal('show')
+              $('#close-modal').click(function(){
+                  $('#map-modal').modal('hide');
+              });
+              searched = false;
+            }
+           }
+
             for (var i=0;i<data.length;i++){
+                var currentPolygons={};
                 currentPolygons[data[i].id] = true;
                 var myPolygon = getPolygon(data[i].id);
                 if(!myPolygon){
@@ -196,7 +205,7 @@ $(document).ready(function(){
               }
               cleanPolygons(currentPolygons);
               
-              
+            
           });
     };
 
@@ -240,6 +249,7 @@ $(document).ready(function(){
 
 
                   google.maps.event.addListener(polygon, 'mouseover', function(){
+
                     polygon.setOptions({strokeWeight: 2.0});
                   });
 
