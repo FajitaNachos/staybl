@@ -5,7 +5,6 @@ $(document).ready(function(){
     // Set up an empty array to hold all of our markers
     var markers = [];
     var polygons = {};
-    var currentPolygons = {};
     var infoWindow;
     var searched = true;
     var address;
@@ -96,15 +95,8 @@ $(document).ready(function(){
       };
 
        google.maps.event.addListener(map, 'bounds_changed', function() {
-          var bounds = map.getBounds();
-          var ne = bounds.getNorthEast();
-          var sw = bounds.getSouthWest();
-          var yMaxLat = ne.lat();
-          var xMaxLng = ne.lng();
-          var yMinLat = sw.lat();
-          var xMinLng = sw.lng();
-
-          var mapBounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMaxLng+','+yMinLat+' '+xMinLng+'))';
+          
+          var mapBounds = getBounds();
           getOverlays(mapBounds);
 
       });
@@ -195,57 +187,45 @@ $(document).ready(function(){
            }
 
             for (var i=0;i<data.length;i++){
-                var currentPolygons={};
-                currentPolygons[data[i].id] = true;
-                var myPolygon = getPolygon(data[i].id);
-                if(!myPolygon){
-                  setPolygon(data[i]);
-                }   
-              
+              if(!polygons[data[i].id]){
+                setPolygon(data[i]);
               }
-              cleanPolygons(currentPolygons);
-              
-            
-          });
-    };
-
-    function getPolygon(id){
-      return polygons[id];
+          }
+      });
     };
 
     function setPolygon(data){
-      var coordinates = data.coordinates.slice(10, -2).split(',');
-                  var polygonPath = new Array();
-                  for(var j=0; j<coordinates.length;j++){
-                    var point = coordinates[j].trim().split(' ');
-                    var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
-                    polygonPath.push(gPoint);
-                  } 
-                  var polygonId = data.id;
-                  var polygon = new google.maps.Polygon({
-                      paths: polygonPath,
-                      strokeColor: data.color,
-                      strokeOpacity: 0.5,
-                      strokeWeight: 0,
-                      fillColor: data.color,
-                      fillOpacity: 0.5,
-                      id:polygonId,
-                      name: data.name,
-                      shortDesc: data.short_desc,
-                      map: map 
-                    }); 
+var coordinates = data.coordinates.slice(10, -2).split(',');
+          var polygonPath = new Array();
+          for(var j=0; j<coordinates.length;j++){
+            var point = coordinates[j].trim().split(' ');
+            var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
+            polygonPath.push(gPoint);
+          } 
+          var polygonId = data.id;
+          var polygon = new google.maps.Polygon({
+              paths: polygonPath,
+              strokeColor: data.color,
+              strokeOpacity: 0.5,
+              strokeWeight: 0,
+              fillColor: data.color,
+              fillOpacity: 0.5,
+              id:polygonId,
+              name: data.name,
+              shortDesc: data.short_desc,
+              map: map 
+            }); 
 
-                  polygons[polygonId] = polygon;
-                  google.maps.event.addListener(polygon, 'click', function(e){
-                    if(infoWindow){
-                      infoWindow.close();
-                    }
-                    
-                    infoWindow.open(map);
-                    document.getElementById('overlay-name').innerHTML = polygon.name;; 
-                    document.getElementById('overlay-desc').innerHTML = polygon.shortDesc;
-                    infoWindow.setPosition(e.latLng);
-                  });
+          polygons[polygonId] = polygon;
+          google.maps.event.addListener(polygon, 'click', function(e){
+            if(infoWindow){
+              infoWindow.close();
+            }
+            infoWindow.open(map);
+            document.getElementById('overlay-name').innerHTML = polygon.name;; 
+            document.getElementById('overlay-desc').innerHTML = polygon.shortDesc;
+            infoWindow.setPosition(e.latLng);
+          });
 
 
                   google.maps.event.addListener(polygon, 'mouseover', function(){
@@ -263,19 +243,17 @@ $(document).ready(function(){
 
     };
 
-    function cleanPolygons(currentPolys){
-      for (var i in polygons){
-        var contains = currentPolys[i];
-        
-        if(!contains){
-          polygons[i].setMap(null);
-          delete polygons[i];
-        }
-      }
-    }
+    function getBounds(){
+          var b = map.getBounds();
+          var ne = b.getNorthEast();
+          var sw = b.getSouthWest();
+          var yMaxLat = ne.lat();
+          var xMaxLng = ne.lng();
+          var yMinLat = sw.lat();
+          var xMinLng = sw.lng();
 
-    function getCurrentPolygon(id){
-      return currentPolygons[id];
+          var bounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMaxLng+','+yMinLat+' '+xMinLng+'))';
+          return bounds;
     }
 
     //initialize the map
