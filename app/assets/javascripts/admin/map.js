@@ -128,7 +128,12 @@ $(document).ready(function(){
         document.getElementById('overlay-name').value = selectedShape.name; 
         document.getElementById('overlay-desc').value = selectedShape.shortDesc; 
       }
-      
+       google.maps.event.addListener(selectedShape, 'rightclick', function(e){
+                if (e.vertex != null) {
+                selectedShape.getPath().removeAt(e.vertex);
+              }
+       });
+
       var saveOverlay = google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
                   
         var newPath = selectedShape.getPath();
@@ -162,7 +167,7 @@ $(document).ready(function(){
               url: savePath,
               data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
             }).done(function() {
-              console.log(polygons);
+             
               delete polygons[overlayId];
               infoWindow.close();
               selectedShape.setMap(null);
@@ -170,6 +175,7 @@ $(document).ready(function(){
               getOverlays(mapBounds);
           });
         });
+             // this assumes `my_poly` is an normal google.maps.Polygon or Polyline
 
             google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
               if(selectedShape.id){
@@ -178,9 +184,12 @@ $(document).ready(function(){
                       url: '/admin/overlays/'+selectedShape.id+'.json'
                     });   
                 }
+                saveOverlay.remove();
                 infoWindow.close();
                 deleteSelectedShape();
             });
+
+           
 
             google.maps.event.addListener(infoWindow,'closeclick',function(){
               
@@ -421,8 +430,6 @@ $(document).ready(function(){
 
     };
 
-
-
     function getBounds(){
           var b = map.getBounds();
           var ne = b.getNorthEast();
@@ -434,7 +441,7 @@ $(document).ready(function(){
 
           var bounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMaxLng+','+yMinLat+' '+xMinLng+'))';
           return bounds;
-        }
+    }
 
     //initialize the map
     initialize();
