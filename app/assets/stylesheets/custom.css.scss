@@ -70,6 +70,13 @@ p {
   line-height: 1.7em;
 }
 
+.no-padding {
+  padding: 0;
+}
+
+.alert {
+  margin-bottom:0;
+}
 
 /* header */
 
@@ -108,4 +115,5 @@ p {
 
 .alert, .alert-success{
   margin-top:45px;
+  margin-bottom:0;
 }
