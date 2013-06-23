@@ -83,14 +83,13 @@ p {
 #logo {
   float: left;
   font-size: 1.7em;
-  color: white;
+  color: #42AAE8;
   text-transform: uppercase;
   letter-spacing: -1px;
   padding-top: 11px;
   font-weight: bold;
   line-height: 1;
   &:hover {
-    color: white;
     text-decoration: none;
   }
 }
@@ -116,4 +115,12 @@ p {
 .alert, .alert-success{
   margin-top:45px;
   margin-bottom:0;
+}
+
+
+/* Footer */
+
+#footer{
+  height:200px;
+  border-top:1px solid #ccc;
 }

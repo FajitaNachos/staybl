@@ -1,7 +1,7 @@
 <div id = "home-container" class = "container-fluid no-padding">
   <div id = "home-hero" class= "hero-unit">
 
-    <h1 class = "pull-left">Find the best places to stay</h1>
+    <h1 class = "pull-left">Find the best places to <span class ="stay">stay</span></h1>
     <div id = "search-bar" class="row-fluid">
         <form action = "<%= map_path %>" method = "get" id= "home-search">
           <div class="span10">
@@ -16,29 +16,36 @@
   </div>
   <div id = "features" class = "row-fluid">
     <div class = "row-fluid">
-      <div class = "span3 offset1 center feature-heading">
-        <h2>How It Works</h2>
-      </div>
-      <div class = "span5 offset2 center feature-tagline">
-        We take the worry out of finding a place to stay, so you can focus on what you're going to do. 
-      </div>
+    <span class = "span5 offset5 center feature-heading">
+        <h2> What We Do</h2>
+    </span>
     </div>
-    <div class = "row-fluid">
-      <div class= "span7 offset4 center feature-box">
+    <div class = "row-fluid feature-box">
+      <div class = "span2 offset1 feature">
+      <%= image_tag("worldmap-icon.png") %>
+      </div>
+      <div class= "span7 offset1 center feature">
         We combine personal recommendations with extensive research to come up with areas that are perfect for first time visitors. We also try to highligh areas that new visitors may want to avoid on their first trip.
       </div>
     </div>
-    <div class="row-fluid">
-      <div class = "span7 offset4 center feature-box">
-      Next, we drill down to find the best places to stay in each of those areas. Everyone's different. We all like to stay in different places. With that mind, we recommend hotels across all price ranges and styles. The only critea is that they are clean and comfortable. 
+    <div class="row-fluid feature-box">
+      <div class = "span2 offset1 feature">
+      
+      </div>
+      <div class = "span7 offset1 center feature">
+      Next, we drill down to find the best hotels in each of those areas. Everyone's different. We all like to stay in different places. With that mind, we recommend hotels across all price ranges and styles. The only critea is that they are clean and comfortable. 
       </div>
     </div>
 
-    <div class="row-fluid">
-      <div class = "span7 offset4 center feature-box">
-       Once you've found the hotel of your choosing, you can book directly on our website. We partner with several of the leading travel companies to bring you the best prices. If you prefer to book elsewhere, that's ok too. We all do things a little differently.  
+    <div class="row-fluid feature-box">
+      <div class = "span2 offset1 feature">
+        <a href="http://www.tripadvisor.com/"><img src="http://www.tripadvisor.com/img/cdsi/partner/ta-large-11418-0.gif"
+          border="0" alt="TripAdvisor"></a>
+      </div>
+      <div class = "span7 offset1 center feature">
+       Once you've found the hotel of your choosing, you can book directly on our website. We partner with several of the leading travel companies to bring you the best prices. 
       </div>
     </div>
   </div>
-
+   <%= render 'layouts/footer' %>
 </div>
