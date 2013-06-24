@@ -120,6 +120,8 @@ $(document).ready(function(){
         addMarker(address);
       });
 
+
+
      
   }
 
@@ -206,10 +208,10 @@ var coordinates = data.coordinates.slice(10, -2).split(',');
           var polygon = new google.maps.Polygon({
               paths: polygonPath,
               strokeColor: data.color,
-              strokeOpacity: 0.5,
-              strokeWeight: 0,
+              strokeOpacity: .75,
+              strokeWeight: 1,
               fillColor: data.color,
-              fillOpacity: 0.5,
+              fillOpacity: 0.15,
               id:polygonId,
               name: data.name,
               shortDesc: data.short_desc,
@@ -230,7 +232,6 @@ var coordinates = data.coordinates.slice(10, -2).split(',');
 
                   google.maps.event.addListener(polygon, 'mouseover', function(){
 
-                    polygon.setOptions({strokeWeight: 2.0});
                   });
 
                   google.maps.event.addListener(map, 'mousemove', function(){
