@@ -344,9 +344,12 @@ $(document).ready(function(){
 
     function setInfoWindow(polygon,e){
       if(editable == true) {
-        
+        showDrawingManager();
+        setSelection(polygon);
+       
         var overlayName = document.createElement('input');
         overlayName.id = 'overlay-name';
+        overlayName.value= polygon.name;
 
 
         var nameLabel = document.createElement('label');
@@ -355,6 +358,7 @@ $(document).ready(function(){
 
         var overlayDesc = document.createElement('textarea');
         overlayDesc.id = 'overlay-desc';
+        overlayDesc.value = polygon.shortDesc;
 
         var descLabel = document.createElement('label');
         descLabel.setAttribute('for','overlay-desc');
@@ -383,22 +387,11 @@ $(document).ready(function(){
         formContent.appendChild(deleteButton);
 
         infoWindow.setContent(formContent);
+        
 
         infoWindow.open(map);
         infoWindow.setPosition(e.latLng);
-        google.maps.event.addListener(infoWindow, 'domready', function() {
-          document.getElementById('overlay-name').value = '';
-          document.getElementById('overlay-desc').value = '';
-          if(selectedShape.id){
-            document.getElementById('overlay-name').value = polygon.name; 
-            document.getElementById('overlay-desc').value = polygon.shortDesc; 
-          }
-          else{
-
-          }
-
-        });
-
+       
         google.maps.event.addListener(selectedShape, 'rightclick', function(e){
                   if (e.vertex != null) {
                   selectedShape.getPath().removeAt(e.vertex);
@@ -481,18 +474,27 @@ $(document).ready(function(){
         overlayDesc.id = 'overlay-desc';
         overlayDesc.innerHTML = polygon.shortDesc;
        
+        var editOverlay = document.createElement('span');
+        var linkText = document.createTextNode("Edit");
+        editOverlay.appendChild(linkText);
+        editOverlay.id = 'edit-overlay';
+
 
         overlayDetails.appendChild(overlayName);
         overlayDetails.appendChild(overlayDesc);
+        overlayDetails.appendChild(editOverlay);
 
         infoWindow.setContent(overlayDetails);
-
-        google.maps.event.addListener(infoWindow, 'domready', function() {
-         
-        });
-     
-       infoWindow.open(map);
+        infoWindow.open(map);
        infoWindow.setPosition(e.latLng);
+        google.maps.event.addDomListener(document.getElementById('edit-overlay'), 'click', function(){
+            editable = true;
+           
+            setInfoWindow(polygon,e);
+        });
+        
+     
+       
       
       }
 
