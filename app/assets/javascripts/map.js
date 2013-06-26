@@ -1,8 +1,8 @@
 $(document).ready(function(){
-  //Only load this javascript if user is on the map page
+  //Only load this javascript if a user is on the map page
   if(document.getElementById('map-canvas')){
 
-    // Set up an empty array to hold all of our markers
+    // Set up a bunch of global variables. Yes. It's bad. I know. 
     var markers = [];
     var polygons = {};
     var infoWindow;
@@ -14,9 +14,12 @@ $(document).ready(function(){
     var mapBounds;
     var searched = true;
     var address;
+    var map;
+    var editable = false;
 
        // Used to detect initial (useless) popstate.
     // If history.state exists, assume browser isn't going to fire initial popstate.
+    //I copy and pasted this from stack overflow. 
     var popped = ('state' in window.history && window.history.state !== null), initialURL = location.href;
 
     $(window).bind('popstate', function (event) {
@@ -45,7 +48,8 @@ $(document).ready(function(){
       var geocoder = new google.maps.Geocoder();
 
       // retrieve and parse the name of the place from the URL
-      var address = getURLParam("place");
+      
+      address = getURLParam("place");
 
       var mapOptions = {
         zoom: 13,
@@ -59,15 +63,17 @@ $(document).ready(function(){
           editable: true
       };
 
+       infoWindow = new google.maps.InfoWindow({});
+
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
       
       // Creates a drawing manager attached to the map that allows the user to draw
       // markers, lines, and shapes.
       drawingManager = new google.maps.drawing.DrawingManager({
+       drawingControl:false,
        drawingControlOptions: {
         position: google.maps.ControlPosition.TOP_LEFT,
         drawingModes: [
-          
           google.maps.drawing.OverlayType.POLYGON
          
         ]
@@ -75,131 +81,10 @@ $(document).ready(function(){
         polygonOptions: polyOptions,
         map: map
       });
-
       
       // Add a marker and center the map on the new marker. 
       addMarker(address);
-      
-      var input = document.getElementById('map-search-box');
-
-      var overlayName = document.createElement('input');
-      overlayName.id = 'overlay-name';
-
-
-      var nameLabel = document.createElement('label');
-      nameLabel.setAttribute('for','overlay-name');
-      nameLabel.innerHTML = "Neighborhood";
-
-      var overlayDesc = document.createElement('textarea');
-      overlayDesc.id = 'overlay-desc';
-
-      var descLabel = document.createElement('label');
-      descLabel.setAttribute('for','overlay-desc');
-      descLabel.innerHTML = "Neighborhood Description";
-
-      var saveButton = document.createElement('button');
-      saveButton.id = "save-button";
-      saveButton.type = "button";
-      saveButton.className = "btn btn-small";
-      saveButton.innerHTML = "Save Overlay";
-
-      var deleteButton = document.createElement('button');
-      deleteButton.id = "delete-button";
-      deleteButton.type = "button";
-      deleteButton.className = "btn btn-small";
-      deleteButton.innerHTML = "Remove Overlay";
-
-      var formContent = document.createElement('form');
-      formContent.id = 'edit-overlay';
-
-      formContent.appendChild(nameLabel);
-      formContent.appendChild(overlayName);
-      formContent.appendChild(descLabel);
-      formContent.appendChild(overlayDesc);
-      formContent.appendChild(saveButton);
-      formContent.appendChild(deleteButton);
-
-      infoWindow = new google.maps.InfoWindow({
-          content: formContent
-      });
-
-      google.maps.event.addListener(infoWindow, 'domready', function() {
-      document.getElementById('overlay-name').value = '';
-      document.getElementById('overlay-desc').value = '';
-      if(selectedShape.id){
-        document.getElementById('overlay-name').value = selectedShape.name; 
-        document.getElementById('overlay-desc').value = selectedShape.shortDesc; 
-      }
-       google.maps.event.addListener(selectedShape, 'rightclick', function(e){
-                if (e.vertex != null) {
-                selectedShape.getPath().removeAt(e.vertex);
-              }
-       });
-
-      var saveOverlay = google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
-                  
-        var newPath = selectedShape.getPath();
-        var xy;
-        var coordinates = '';
-          // Iterate over the polygonBounds vertices.
-        for (var i = 0; i < newPath.length; i++) {
-            xy = newPath.getAt(i);
-            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
-        }
-
-        var final_xy = newPath.getAt(0);
-        coordinates += final_xy.lat() + ' ' + final_xy.lng();
      
-        var polyCoordinates = 'POLYGON((' + coordinates + '))';
-        var overlayName = document.getElementById('overlay-name').value;
-        var overlayShortDesc = document.getElementById('overlay-desc').value;
-        var overlayColor = selectedShape.fillColor;
-        var overlayId = selectedShape.id;
-
-        if(overlayId){
-          var saveType = 'PUT';
-          var savePath = 'overlays/'+overlayId+'.json';
-        }
-        else{
-          var saveType = 'POST';
-          var savePath = 'overlays.json'
-        }
-        $.ajax({
-              type: saveType,
-              url: savePath,
-              data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
-            }).done(function() {
-             
-              delete polygons[overlayId];
-              infoWindow.close();
-              selectedShape.setMap(null);
-              var mapBounds = getBounds();
-              getOverlays(mapBounds);
-          });
-        });
-             // this assumes `my_poly` is an normal google.maps.Polygon or Polyline
-
-            google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
-              if(selectedShape.id){
-                   $.ajax({
-                      type: 'DELETE',
-                      url: '/overlays/'+selectedShape.id+'.json'
-                    });   
-                }
-                saveOverlay.remove();
-                infoWindow.close();
-                deleteSelectedShape();
-            });
-
-           
-
-            google.maps.event.addListener(infoWindow,'closeclick',function(){
-              
-               //remove the event save overlay event listener so I don't end up saving
-                  //16 of the same overlays
-                  saveOverlay.remove();
-            });
-      });
 
       // Fills the search box with the current address the user searched for
       document.getElementById('map-search-box').value = address;
@@ -215,7 +100,7 @@ $(document).ready(function(){
           getOverlays(mapBounds);
 
       });
-
+        var input = document.getElementById('map-search-box');
       var mapSearch = new google.maps.places.Autocomplete(input, autoOptions);
       
       // Bias the autocomplete results to the map window
@@ -263,7 +148,7 @@ $(document).ready(function(){
       google.maps.event.addListener(map, 'click', clearSelection);
       
   
-      buildColorPalette();
+      
 
     }
 
@@ -336,6 +221,7 @@ $(document).ready(function(){
          var currColor = colors[i];
          var colorButton = makeColorButton(currColor);
          colorPalette.appendChild(colorButton);
+         colorPalette.index = 7;
          colorButtons[currColor] = colorButton;
        }
        map.controls[google.maps.ControlPosition.TOP_LEFT].push(colorPalette);
@@ -436,10 +322,9 @@ $(document).ready(function(){
             }); 
 
           polygons[polygonId] = polygon;
-          google.maps.event.addListener(polygon, 'click', function(e){
-            setSelection(polygon);
-            infoWindow.setPosition(e.latLng);
-            infoWindow.open(map);
+          google.maps.event.addListener(polygon, 'click', function(e){  
+            setInfoWindow(polygon, e);
+            
           })
 
     };
@@ -457,7 +342,175 @@ $(document).ready(function(){
           return bounds;
     }
 
+    function setInfoWindow(polygon,e){
+      if(editable == true) {
+        
+        var overlayName = document.createElement('input');
+        overlayName.id = 'overlay-name';
 
+
+        var nameLabel = document.createElement('label');
+        nameLabel.setAttribute('for','overlay-name');
+        nameLabel.innerHTML = "Neighborhood";
+
+        var overlayDesc = document.createElement('textarea');
+        overlayDesc.id = 'overlay-desc';
+
+        var descLabel = document.createElement('label');
+        descLabel.setAttribute('for','overlay-desc');
+        descLabel.innerHTML = "Neighborhood Description";
+
+        var saveButton = document.createElement('button');
+        saveButton.id = "save-button";
+        saveButton.type = "button";
+        saveButton.className = "btn btn-small";
+        saveButton.innerHTML = "Save Overlay";
+
+        var deleteButton = document.createElement('button');
+        deleteButton.id = "delete-button";
+        deleteButton.type = "button";
+        deleteButton.className = "btn btn-small";
+        deleteButton.innerHTML = "Remove Overlay";
+
+        var formContent = document.createElement('form');
+        formContent.id = 'edit-overlay';
+
+        formContent.appendChild(nameLabel);
+        formContent.appendChild(overlayName);
+        formContent.appendChild(descLabel);
+        formContent.appendChild(overlayDesc);
+        formContent.appendChild(saveButton);
+        formContent.appendChild(deleteButton);
+
+        infoWindow.setContent(formContent);
+
+        infoWindow.open(map);
+        infoWindow.setPosition(e.latLng);
+        google.maps.event.addListener(infoWindow, 'domready', function() {
+          document.getElementById('overlay-name').value = '';
+          document.getElementById('overlay-desc').value = '';
+          if(selectedShape.id){
+            document.getElementById('overlay-name').value = polygon.name; 
+            document.getElementById('overlay-desc').value = polygon.shortDesc; 
+          }
+          else{
+
+          }
+
+        });
+
+        google.maps.event.addListener(selectedShape, 'rightclick', function(e){
+                  if (e.vertex != null) {
+                  selectedShape.getPath().removeAt(e.vertex);
+                }
+        });
+
+        var saveOverlay = google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {
+                  
+          var newPath = selectedShape.getPath();
+          var xy;
+          var coordinates = '';
+            // Iterate over the polygonBounds vertices.
+          for (var i = 0; i < newPath.length; i++) {
+              xy = newPath.getAt(i);
+              coordinates += xy.lat() + ' ' + xy.lng() + ', ';
+          }
+
+          var final_xy = newPath.getAt(0);
+          coordinates += final_xy.lat() + ' ' + final_xy.lng();
+       
+          var polyCoordinates = 'POLYGON((' + coordinates + '))';
+          var overlayName = document.getElementById('overlay-name').value;
+          var overlayShortDesc = document.getElementById('overlay-desc').value;
+          var overlayColor = selectedShape.fillColor;
+          var overlayId = selectedShape.id;
+
+          if(overlayId){
+            var saveType = 'PUT';
+            var savePath = 'overlays/'+overlayId+'.json';
+          }
+          else{
+            var saveType = 'POST';
+            var savePath = 'overlays.json'
+          }
+          $.ajax({
+              type: saveType,
+              url: savePath,
+              data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
+            }).done(function() {
+             
+              delete polygons[overlayId];
+              infoWindow.close();
+              selectedShape.setMap(null);
+              var mapBounds = getBounds();
+              getOverlays(mapBounds);
+            });
+        });
+
+        google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
+            if(selectedShape.id){
+                 $.ajax({
+                    type: 'DELETE',
+                    url: '/overlays/'+selectedShape.id+'.json'
+                  });   
+              }
+              saveOverlay.remove();
+              infoWindow.close();
+              deleteSelectedShape();
+        });
+
+          google.maps.event.addListener(infoWindow,'closeclick',function(){
+              
+               //remove the event save overlay event listener so I don't end up saving
+                  //16 of the same overlays
+                  saveOverlay.remove();
+          });
+      
+    }
+
+      else {
+
+        var overlayDetails = document.createElement('div');
+        overlayDetails.id = 'overlay-details';
+
+        var overlayName = document.createElement('div');
+        overlayName.id = 'overlay-name';
+        overlayName.innerHTML = polygon.name;
+
+        var overlayDesc = document.createElement('div');
+        overlayDesc.id = 'overlay-desc';
+        overlayDesc.innerHTML = polygon.shortDesc;
+       
+
+        overlayDetails.appendChild(overlayName);
+        overlayDetails.appendChild(overlayDesc);
+
+        infoWindow.setContent(overlayDetails);
+
+        google.maps.event.addListener(infoWindow, 'domready', function() {
+         
+        });
+     
+       infoWindow.open(map);
+       infoWindow.setPosition(e.latLng);
+      
+      }
+
+    }
+
+
+    function showDrawingManager(){
+       drawingManager.setMap(map);
+       drawingManager.setOptions({
+        drawingControl:true
+      });
+       buildColorPalette();
+    }
+
+    function hideDrawingManager(){
+       drawingManager.setMap(null);
+       map.controls.removeAt(7);
+    }
     //initialize the map
     initialize();
   }
