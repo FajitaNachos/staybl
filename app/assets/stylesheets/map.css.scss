@@ -57,3 +57,24 @@
   padding:1px 4px;
 }
 
+/* Overlay details */
+
+#overlay-details{
+  position:absolute;
+  top:650px;
+}
+
+.overlay-button{
+  display:inline-block;
+  width:15px;
+  height:15px;
+}
+
+#overlay-name, #overlay-desc {
+  display:block;
+
+}
+
+#color-palette{
+  padding:10px 5px;
+}
