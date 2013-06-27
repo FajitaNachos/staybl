@@ -3,7 +3,6 @@ $(document).ready(function(){
   if(document.getElementById('map-canvas')){
     var markers = [];
     var polygons = {};
-    var selectedOverlay;
     var selectedColor;
     var infoWindow;
     var drawingManager;
@@ -97,18 +96,21 @@ $(document).ready(function(){
           newOverlay.editable = true;
           
           google.maps.event.addListener(newOverlay, 'click', function(e) {
-            var content = setInfoWindow(newOverlay);
-            infoWindow.setContent(content);
-            infoWindow.open(map);
-            infoWindow.setPosition(e.latLng);
-
+          setInfoWindow(newOverlay, function(content){
+              infoWindow.setContent(content);
+              infoWindow.open(map);
+              infoWindow.setPosition(e.latLng);
+              addInfoWindowListeners(newOverlay);
+            });
           });
 
           setSelection(newOverlay);
-          var content = setInfoWindow(newOverlay);
-          infoWindow.setContent(content);
-          infoWindow.open(map);
-          infoWindow.setPosition(newOverlay.getPath().getAt(0));
+          setInfoWindow(newOverlay, function(content){
+            infoWindow.setContent(content);
+            infoWindow.open(map);
+            infoWindow.setPosition(newOverlay.getPath().getAt(0));
+            addInfoWindowListeners(newOverlay);
+          });
         }
       });
 
@@ -246,28 +248,26 @@ $(document).ready(function(){
       //add the polygon to the global polygon array
       polygons[data.id] = polygon;
       google.maps.event.addListener(polygon, 'click', function(e){  
-        var content = setInfoWindow(polygon);
-        infoWindow.setContent(content);
-        infoWindow.open(map);
-        infoWindow.setPosition(e.latLng);
-
-        google.maps.event.addDomListener(document.getElementById('edit-overlay'), 'click', function(){
-            polygon.editable = true;
-            setInfoWindow(polygon);
+        setInfoWindow(polygon, function(content){
+          infoWindow.setContent(content);
+          infoWindow.open(map);
+          infoWindow.setPosition(e.latLng);
+          addInfoWindowListeners(polygon);
         });
       });
     }
 
     function clearSelection() {
-      if (selectedOverlay) {
-        selectedOverlay.setEditable(false);
-        selectedOverlay = null;
+      if (currentOverlay) {
+        currentOverlay.setEditable(false);
+        currentOverlay = null;
       }
     }
 
     function setSelection(overlay) {
       clearSelection();
       currentOverlay = overlay;
+      overlay.setEditable(true);
       selectColor(overlay.get('fillColor') || overlay.get('strokeColor'));
     }
 
@@ -322,7 +322,7 @@ $(document).ready(function(){
       selectColor(colors[0]);
     }
 
-    function setInfoWindow(overlay){
+    function setInfoWindow(overlay, callback){
       if(overlay.editable){
         var overlayName = document.createElement('input');
         overlayName.id = 'overlay-name';
@@ -363,7 +363,7 @@ $(document).ready(function(){
         formContent.appendChild(saveButton);
         formContent.appendChild(deleteButton);
 
-        return formContent;
+        callback(formContent);
       }
 
       else{
@@ -381,14 +381,91 @@ $(document).ready(function(){
         var editOverlay = document.createElement('span');
         var linkText = document.createTextNode("Edit");
         editOverlay.appendChild(linkText);
-        editOverlay.id = 'edit-overlay';
+        editOverlay.id = 'edit-button';
 
         overlayDetails.appendChild(overlayName);
         overlayDetails.appendChild(overlayDesc);
         overlayDetails.appendChild(editOverlay);
 
-        return overlayDetails;
+        callback(overlayDetails);
       }
+    }
+
+    function addInfoWindowListeners(polygon){
+      if(document.getElementById('edit-overlay')){
+        google.maps.event.addListener(currentOverlay, 'rightclick', function(e){
+          if (e.vertex != null) {
+            selectedShape.getPath().removeAt(e.vertex);
+          }
+        });
+
+        google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {  
+          var newPath = currentOverlay.getPath();
+          var xy;
+          var coordinates = '';
+            // Iterate over the polygonBounds vertices.
+          for (var i = 0; i < newPath.length; i++) {
+              xy = newPath.getAt(i);
+              coordinates += xy.lat() + ' ' + xy.lng() + ', ';
+          }
+
+          var final_xy = newPath.getAt(0);
+          coordinates += final_xy.lat() + ' ' + final_xy.lng();
+       
+          var polyCoordinates = 'POLYGON((' + coordinates + '))';
+          var overlayName = document.getElementById('overlay-name').value;
+          var overlayShortDesc = document.getElementById('overlay-desc').value;
+          var overlayColor = currentOverlay.fillColor;
+          var overlayId = currentOverlay.id;
+
+          if(overlayId){
+            var saveType = 'PUT';
+            var savePath = 'overlays/'+overlayId+'.json';
+          }
+          else{
+            var saveType = 'POST';
+            var savePath = 'overlays.json'
+          }
+          $.ajax({
+            type: saveType,
+            url: savePath,
+            data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
+          }).done(function() { 
+            delete polygons[overlayId];
+            infoWindow.close();
+            currentOverlay.setMap(null);
+            var mapBounds = getBounds();
+            fetchOverlays(mapBounds);
+          });
+        });
+
+        google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
+          if(currentOverlay.id){
+               $.ajax({
+                  type: 'DELETE',
+                  url: '/overlays/'+currentOverlay.id+'.json'
+                });   
+            }
+            infoWindow.close();
+            deleteCurrentOverlay();
+        });
+
+        google.maps.event.addListener(infoWindow,'closeclick',function(){
+            
+        });
+
+      }
+      else{
+        google.maps.event.addDomListener(document.getElementById('edit-button'), 'click', function(){
+          polygon.editable = true;
+          setSelection(polygon);
+          setInfoWindow(polygon, function(content){
+            infoWindow.setContent(content);
+            addInfoWindowListeners(polygon);
+          });
+        });
+      }
+
     }
 
     initialize();
