@@ -12,6 +12,7 @@ $(document).ready(function(){
     var colorButtons = {};
     var mapBounds;
     var showModal = true;
+
     var map;
     
     // Used to detect initial (useless) popstate.
@@ -139,7 +140,7 @@ $(document).ready(function(){
       geocoder = new google.maps.Geocoder();
       if(address){
         geocoder.geocode({address: address}, function(results, status) {
-          var location = results[0].geometry.location;
+          var location = results[0].geometry.location;  
           var marker = new google.maps.Marker({
             position: location,
             map: map
@@ -207,7 +208,9 @@ $(document).ready(function(){
       $.getJSON("/overlays/fetch.json?bounds="+bounds, function(data) {
         if(data.length == 0){
           if(showModal == true){
-           
+            var address = getURLParam('place');
+
+            $('#modal-place').html(address);
             $('#map-modal').modal('show')
             $('#close-modal').click(function(){
                 $('#map-modal').modal('hide');
@@ -457,12 +460,20 @@ $(document).ready(function(){
       }
       else{
         google.maps.event.addDomListener(document.getElementById('edit-button'), 'click', function(){
-          polygon.editable = true;
-          setSelection(polygon);
-          setInfoWindow(polygon, function(content){
-            infoWindow.setContent(content);
-            addInfoWindowListeners(polygon);
-          });
+            if($('#map').data('signedin') == true){
+              polygon.editable = true;
+              setSelection(polygon);
+              setInfoWindow(polygon, function(content){
+                infoWindow.setContent(content);
+                addInfoWindowListeners(polygon);
+              });
+            }
+            else{
+              $('#signin-modal').modal('show')
+              $('.close-modal').click(function(){
+                $('#signin-modal').modal('hide');
+              });
+            }
         });
       }
 

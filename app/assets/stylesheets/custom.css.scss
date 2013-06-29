@@ -101,12 +101,19 @@ p {
 }
 
 .home-nav li{
+
+}
+
+.home-nav li{
   height:45px;
   line-height:45px;
+  display:inline;
 }
 
 .home-nav li a{
-  padding:0 !important;
+  padding-top:0 !important;
+  pading-bottom:0 !important;
+  display:inline;
 }
 
 
