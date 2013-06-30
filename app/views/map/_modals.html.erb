@@ -18,7 +18,8 @@
         <h3>Please sign in to edit the map.</h3>
       </div>
       <div class="modal-body">
-        <p> Don't have an account? 
+
+        <p> <%= link_to "Sign in", new_user_session_path %> or
           <%= link_to "Sign up", new_user_registration_path %>
         </p>
       </div>

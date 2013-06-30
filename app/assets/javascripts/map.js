@@ -212,7 +212,7 @@ $(document).ready(function(){
 
             $('#modal-place').html(address);
             $('#map-modal').modal('show')
-            $('#close-modal').click(function(){
+            $('.close-modal').click(function(){
                 $('#map-modal').modal('hide');
             });
 
@@ -460,7 +460,8 @@ $(document).ready(function(){
       }
       else{
         google.maps.event.addDomListener(document.getElementById('edit-button'), 'click', function(){
-            if($('#map').data('signedin') == true){
+            var signedIn = $('#map').data('signed-in');
+            if(signedIn){
               polygon.editable = true;
               setSelection(polygon);
               setInfoWindow(polygon, function(content){

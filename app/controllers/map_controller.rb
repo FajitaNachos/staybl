@@ -10,7 +10,6 @@ class MapController < ApplicationController
     else
       @map_search = true;
     end
-
   end
 
   
