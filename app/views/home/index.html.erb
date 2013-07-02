@@ -1,11 +1,11 @@
 <div id = "home-container" class = "container-fluid no-padding">
   <div id = "home-hero" class= "hero-unit">
 
-    <h1 class = "pull-left">Find the best areas to <span class ="stay">stay</span></h1>
+    <h1 class = "pull-left">Find the best areaa to <span class ="stay">stay</span></h1>
     <div id = "search-bar" class="row-fluid">
-        <form action = "<%= map_path %>" method = "get" id= "home-search">
+        <form action = "<%= city_path %>" method = "get" id= "home-search">
           <div class="span10">
-        <%= text_field_tag(:place, nil, :placeholder => 'Enter a city') %>
+        <%= text_field_tag(:name, nil, :placeholder => 'Enter a city') %>
          </div>
          <div class="span2">
         <%= submit_tag("Search" , :name => nil, :class => "search-submit btn", :id=>"Search") %>

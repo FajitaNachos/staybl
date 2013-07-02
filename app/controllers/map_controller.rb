@@ -1,8 +1,8 @@
 class MapController < ApplicationController
 
   def index
-    place = params[:place]
-    if place.nil? || place.empty?
+    @place = params[:place]
+    if @place.nil? || @place.empty?
       flash[:alert] = "Please enter a city"
       redirect_to root_path
     end

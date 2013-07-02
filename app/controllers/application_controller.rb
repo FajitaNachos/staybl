@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_page # at the top and then
 
   def after_sign_in_path_for(resource)
-    session[:return_to]
+    #session[:return_to]
   end
 
   def index
@@ -12,9 +12,9 @@ class ApplicationController < ActionController::Base
 
   protected
   def set_page
-    unless request.referer.include?(user_session_path || destroy_user_session_path)
-      session[:return_to] = request.referrer
-    end
+    #unless request.referer.include?(user_session_path || destroy_user_session_path)
+      #session[:return_to] = request.referrer
+    #end
   end
   
 end

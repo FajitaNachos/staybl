@@ -1,6 +1,6 @@
 $(document).ready(function(){
  //only loads this js if we are on the home page
-  var place = document.getElementById('place');
+  var place = document.getElementById('name');
   if (place) {
 
     // Set options for the autocomplete
