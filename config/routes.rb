@@ -12,7 +12,7 @@ Staybl::Application.routes.draw do
   resources :overlays
   resources :places
   match '/map', to: 'map#index' 
-  match '/city', to: 'cities#index'
+  match '/city', to: 'city#index'
   
   
 

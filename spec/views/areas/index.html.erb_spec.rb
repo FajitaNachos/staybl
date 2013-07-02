@@ -1,11 +1,14 @@
 require 'spec_helper'
 
-describe "places/show" do
+describe "areas/index" do
   before(:each) do
-    @place = assign(:place, stub_model(Place))
+    assign(:areas, [
+      stub_model(Area),
+      stub_model(Area)
+    ])
   end
 
-  it "renders attributes in <p>" do
+  it "renders a list of areas" do
     render
     # Run the generator again with the --webrat flag if you want to use webrat matchers
   end
