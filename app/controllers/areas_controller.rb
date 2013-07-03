@@ -34,6 +34,7 @@ class AreasController < ApplicationController
   # GET /areas/new
   # GET /areas/new.json
   def new
+    @city = params[:city]
     @area = Area.new
 
     respond_to do |format|
@@ -48,29 +49,14 @@ class AreasController < ApplicationController
   end
 
   # POST /areas
-  # POST /areas.json
+  # POST /areas
+
   def create
-    @area = Area.new(params[:area])
+    @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :coordinates => params[:area][:coordinates], :city => params[:area][:city])
 
     respond_to do |format|
       if @area.save
         format.html { redirect_to @area, notice: 'Area was successfully created.' }
-        format.json { render json: @area, status: :created, location: @area }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @area.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
-  # POST overlays
-  # POST overlays.json
-  def create
-    @area = Area.new(:name => params[:name], :description => params[:description], :coordinates => params[:coordinates], :city => params[:city])
-
-    respond_to do |format|
-      if @area.save
-        format.html { redirect_to @area, notice: 'Overlay was successfully created.' }
         format.json { render json: @area, status: :created, location: @area }
       else
         format.html { render action: "new" }
@@ -86,7 +72,7 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
 
     respond_to do |format|
-      if @area.update_attributes(:name => params[:name], :description => params[:description], :coordinates => params[:coordinates], :city => params[:city])
+      if @area.update_attributes(:name => params[:area][:name], :description => params[:area][:description], :coordinates => params[:area][:coordinates], :city => params[:area][:city])
         format.html { redirect_to @area, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else

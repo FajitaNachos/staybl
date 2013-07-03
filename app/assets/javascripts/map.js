@@ -28,7 +28,7 @@ $(document).ready(function(){
       if (initialPop) return;
 
       removeMarkers();
-      var poppedAddress = getURLParam("place");
+      var poppedAddress = getURLParam("city");
       
       addMarker(poppedAddress);
     });
@@ -38,10 +38,11 @@ $(document).ready(function(){
       google.maps.visualRefresh = true;
 
       // retrieve and parse the name of the place from the URL
-      var address = getURLParam("place");
+      var address = getURLParam("city");
 
       var mapOptions = {
         zoom: 13,
+        scrollwheel: false,
         panControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };

@@ -1,3 +1,22 @@
 // Place all the styles related to the overlays controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+
+.form-element{
+  width: 80%;
+  margin:auto;
+  max-width:700px;
+  display:block;
+}
+
+.form-element input, .form-element textarea{
+  width:100%;
+
+}
+
+
+.area-submit{
+  padding-top:1%;
+}

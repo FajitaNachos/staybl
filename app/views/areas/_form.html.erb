@@ -11,7 +11,27 @@
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+<div class = "form-element">
+  <%= f.hidden_field :city, :value => @city %>
+</div>
+
+<div class = "form-element">
+  <%= f.label :area_name %>
+  <%= f.text_field :name, :autofocus => true %>
+</div>
+
+<div class = "form-element">
+  <%= f.label :area_description%>
+  <%= f.text_area :description %>
+</div>
+
+<div id = "map">
+    <h2>Map</h2>
+    <div id="map-canvas">
+    </div>
+</div>
+
+<div class="actions center area-submit">
+    <%= f.submit(:class=>'btn') %>
+</div>
 <% end %>

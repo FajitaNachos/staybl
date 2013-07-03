@@ -9,13 +9,20 @@
       <h2>River North</h2>
     </div>
     <div id = "secondary-areas" class="row-fluid">
-      <span class="span4 offset8">see other areas</span>
+      <span class="span3 offset3"><%= link_to "add new area" ,new_area_path(:city => @city) %></span>
+      <span class="span4 offset2">see more areas</span>
     </div>
   </div>
 
   <div id="area-description" class="span10 center">
     River North is located just north of the Chicago River. Here you will find the magnificent
     mile, great restaurants, and plenty of sights to see.
+  </div>
+
+  <div id="map">
+    <h2>The Map</h2>
+    <div id="map-canvas">
+    </div>
   </div>
   
 </div>
