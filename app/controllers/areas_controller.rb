@@ -10,6 +10,16 @@ class AreasController < ApplicationController
     end
   end
 
+  def fetch
+    @areas = Area.where("city = ?", params[:city])
+    
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: @areas }
+    end
+  end
+
+
   # GET /areas/1
   # GET /areas/1.json
   def show
@@ -53,13 +63,30 @@ class AreasController < ApplicationController
     end
   end
 
+  # POST overlays
+  # POST overlays.json
+  def create
+    @area = Area.new(:name => params[:name], :description => params[:description], :coordinates => params[:coordinates], :city => params[:city])
+
+    respond_to do |format|
+      if @area.save
+        format.html { redirect_to @area, notice: 'Overlay was successfully created.' }
+        format.json { render json: @area, status: :created, location: @area }
+      else
+        format.html { render action: "new" }
+        format.json { render json: @area.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+
   # PUT /areas/1
   # PUT /areas/1.json
   def update
     @area = Area.find(params[:id])
 
     respond_to do |format|
-      if @area.update_attributes(params[:area])
+      if @area.update_attributes(:name => params[:name], :description => params[:description], :coordinates => params[:coordinates], :city => params[:city])
         format.html { redirect_to @area, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else

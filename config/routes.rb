@@ -8,11 +8,10 @@ Staybl::Application.routes.draw do
   end
 
   root to: 'home#index'
-  match '/overlays/fetch', to: 'overlays#fetch'
-  resources :overlays
-  resources :places
+  match '/areas/fetch', to: 'areas#fetch'
+  resources :areas
   match '/map', to: 'map#index' 
-  match '/city', to: 'city#index'
+  match '/search', to: 'search#index'
   
   
 

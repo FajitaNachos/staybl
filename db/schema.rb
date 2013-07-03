@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130627133627) do
+ActiveRecord::Schema.define(:version => 20130703073946) do
 
   create_table "administrators", :force => true do |t|
     t.string   "username",           :default => "", :null => false
@@ -29,14 +29,14 @@ ActiveRecord::Schema.define(:version => 20130627133627) do
   add_index "administrators", ["email"], :name => "index_admins_on_email", :unique => true
   add_index "administrators", ["username"], :name => "index_admins_on_username", :unique => true
 
-  create_table "overlays", :force => true do |t|
+  create_table "areas", :force => true do |t|
     t.string   "name"
-    t.text     "short_desc"
-    t.text     "tags",                                                   :default => ""
-    t.datetime "created_at",                                                             :null => false
-    t.datetime "updated_at",                                                             :null => false
+    t.text     "description"
+    t.string   "city"
+    t.integer  "votes"
+    t.datetime "created_at",                                             :null => false
+    t.datetime "updated_at",                                             :null => false
     t.spatial  "coordinates", :limit => {:srid=>4326, :type=>"polygon"}
-    t.string   "color"
   end
 
   create_table "users", :force => true do |t|

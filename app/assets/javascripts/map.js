@@ -205,7 +205,7 @@ $(document).ready(function(){
 
     function fetchOverlays(bounds){
 
-      $.getJSON("/overlays/fetch.json?bounds="+bounds, function(data) {
+      $.getJSON("/areas/fetch.json?bounds="+bounds, function(data) {
         if(data.length == 0){
           if(showModal == true){
             var address = getURLParam('place');
@@ -245,7 +245,7 @@ $(document).ready(function(){
           id:data.id,
           editable:false,
           name: data.name,
-          shortDesc: data.short_desc,
+          shortDesc: data.description,
           map: map 
       }); 
       //add the polygon to the global polygon array
@@ -423,16 +423,16 @@ $(document).ready(function(){
 
           if(overlayId){
             var saveType = 'PUT';
-            var savePath = 'overlays/'+overlayId+'.json';
+            var savePath = 'areas/'+overlayId+'.json';
           }
           else{
             var saveType = 'POST';
-            var savePath = 'overlays.json'
+            var savePath = 'areas.json'
           }
           $.ajax({
             type: saveType,
             url: savePath,
-            data: 'name='+overlayName+'&short_desc=' + overlayShortDesc +'&coordinates=' + polyCoordinates + '&color='+ overlayColor
+            data: 'name='+overlayName+'&description=' + overlayShortDesc +'&coordinates=' + polyCoordinates
           }).done(function() { 
             delete polygons[overlayId];
             infoWindow.close();
@@ -446,7 +446,7 @@ $(document).ready(function(){
           if(currentOverlay.id){
                $.ajax({
                   type: 'DELETE',
-                  url: '/overlays/'+currentOverlay.id+'.json'
+                  url: '/areas/'+currentOverlay.id+'.json'
                 });   
             }
             infoWindow.close();
