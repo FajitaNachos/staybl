@@ -3,16 +3,15 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
-#map{
+#map, #edit-map{
     width:100%;
-   
 }
 
 //fixes distorted scroll bar on map
-#map img { max-width: none; }
+#map img, #edit-map img { max-width: none; }
 
 #map-canvas{
-  height:400px;
+  height:600px;
 }
 
 #map-search-box{

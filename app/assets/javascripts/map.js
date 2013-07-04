@@ -7,12 +7,10 @@ $(document).ready(function(){
     var infoWindow;
     var drawingManager;
     var currentOverlay;
-    var colors = ['#FF3333', '#32CD32'];
+    var colors = ['#32CD32'];
     var selectedColor;
     var colorButtons = {};
     var mapBounds;
-    var showModal = true;
-
     var map;
     
     // Used to detect initial (useless) popstate.
@@ -38,54 +36,43 @@ $(document).ready(function(){
       google.maps.visualRefresh = true;
 
       // retrieve and parse the name of the place from the URL
-      var address = getURLParam("city");
+      var city = getURLParam("city");
 
       var mapOptions = {
         zoom: 13,
         scrollwheel: false,
-        panControl: false,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
       var polygonOptions = {
           strokeWeight: 0,
           fillOpacity: 0.45,
-          editable: true
+          editable: true,
+          fillColor: '#32CD32',
+          strokeColor: '#32CD32'
       };
+
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-      drawingManager = new google.maps.drawing.DrawingManager({
-        drawingControl:false,
-        drawingControlOptions: {
-          position: google.maps.ControlPosition.TOP_LEFT,
-          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
-        },
-        polygonOptions: polygonOptions,
-        map: map
-      });
 
-      buildColorPalette();
+      if(document.getElementById("edit-map")){
+        drawingManager = new google.maps.drawing.DrawingManager({
+          drawingControl:false,
+          drawingMode: google.maps.drawing.OverlayType.POLYGON,
+          polygonOptions: polygonOptions,
+          map: map
+        });
+      }
 
-      addMarker(address);
-      showDrawingTools();
-
-      // Fills the search box with the current address the user searched for
-      document.getElementById('map-search-box').value = address;
-    
-      // Set options for the places autocomplete. 
-      var autocompleteOptions = {
-        types: ['geocode'],
-      };
-
+      addMarker(city);
+      fetchAreas(city);
       google.maps.event.addListener(map, 'bounds_changed', function() {
-          var mapBounds = getBounds();
-          fetchOverlays(mapBounds);
+         
       });
-      var input = document.getElementById('map-search-box');
-      var mapSearch = new google.maps.places.Autocomplete(input, autocompleteOptions);
+
 
       infoWindow = new google.maps.InfoWindow({});
       // Bias the autocomplete results to the map window
-      mapSearch.bindTo('bounds', map);
+     
       google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
         if (e.type != google.maps.drawing.OverlayType.MARKER) {
           // Switch back to non-drawing mode after drawing a shape.
@@ -98,35 +85,26 @@ $(document).ready(function(){
           newOverlay.editable = true;
           
           google.maps.event.addListener(newOverlay, 'click', function(e) {
-          setInfoWindow(newOverlay, function(content){
-              infoWindow.setContent(content);
-              infoWindow.open(map);
-              infoWindow.setPosition(e.latLng);
-              addInfoWindowListeners(newOverlay);
-            });
+            setInfoWindow(newOverlay, function(content){
+                infoWindow.setContent(content);
+                infoWindow.open(map);
+                infoWindow.setPosition(e.latLng);
+                addInfoWindowListeners(newOverlay);
+              });
           });
 
           setSelection(newOverlay);
-          setInfoWindow(newOverlay, function(content){
-            infoWindow.setContent(content);
-            infoWindow.open(map);
-            infoWindow.setPosition(newOverlay.getPath().getAt(0));
-            addInfoWindowListeners(newOverlay);
-          });
+          setCoordinates(newOverlay);
         }
-      });
 
-      // This is a listener for whenever a user selects an option from the autocomplete
-      google.maps.event.addListener(mapSearch, 'place_changed', function() {
-        removeMarkers();
-        searched = true;
-        var address = document.getElementById('map-search-box').value;
+        google.maps.event.addListener(newOverlay.getPath(), 'set_at', function() {
+          setCoordinates(newOverlay);
+        });
 
-        // use push state to chane the URL so it can be book marked/shared
-        window.history.pushState("http://www.staybl.com/", "Staybl | "+address, "map?place="+address);
-       
-        // Add a new marker and center the map on it
-        addMarker(address);
+        google.maps.event.addListener(newOverlay.getPath(), 'insert_at', function() {
+          setCoordinates(newOverlay);
+        });
+
       });
 
        // Clear the current selection when the drawing mode is changed, or when the
@@ -137,27 +115,15 @@ $(document).ready(function(){
     }
 
     // function to geocode an address and add a market to the map
-    function addMarker(address){
+    function addMarker(city){
       geocoder = new google.maps.Geocoder();
-      if(address){
-        geocoder.geocode({address: address}, function(results, status) {
+      if(city){
+        geocoder.geocode({address: city}, function(results, status) {
           var location = results[0].geometry.location;  
           var marker = new google.maps.Marker({
             position: location,
             map: map
           });
-          markers.push(marker);
-          map.panTo(location);
-        });
-      }
-      else{
-        geocoder.geocode({address: 'San Francisco'}, function(results, status) {
-          var location = results[0].geometry.location;
-          var marker = new google.maps.Marker({
-            position: location,
-            map: map
-          });
-
           markers.push(marker);
           map.panTo(location);
         });
@@ -176,21 +142,6 @@ $(document).ready(function(){
       return decodeURIComponent((new RegExp("[?|&]" + name + "=([^&;]+?)(&|##|;|$)").exec(location.search) || [null, ""])[1].replace(/\+/g, "%20")) || null;
     }
 
-    function showDrawingTools(){
-      drawingManager.setOptions({
-        drawingControl:true
-      });
-      colorPalette.style.display = 'block';
-    }
-
-    function hideDrawingTools(){
-       //map.controls[google.maps.ControlPosition.TOP_LEFT].removeAt(0);
-       drawingManager.setOptions({
-        drawingControl:false
-       });
-       colorPalette.style.display = 'none';
-    }
-
     function getBounds(){
           var b = map.getBounds();
           var ne = b.getNorthEast();
@@ -204,26 +155,18 @@ $(document).ready(function(){
           return bounds;
     }
 
-    function fetchOverlays(bounds){
+    function fetchAreas(city){
 
-      $.getJSON("/areas/fetch.json?bounds="+bounds, function(data) {
-        if(data.length == 0){
-          if(showModal == true){
-            var address = getURLParam('place');
-
-            $('#modal-place').html(address);
-            $('#map-modal').modal('show')
-            $('.close-modal').click(function(){
-                $('#map-modal').modal('hide');
-            });
-
-            showModal = false;
+      $.getJSON("/areas/fetch.json?city="+city, function(data) {
+        if(data.length >= 1){
+          for (var i=0;i<data.length;i++){
+            if(!polygons[data[i].id]){
+              setPolygon(data[i]);
+            }
           }
         }
-        for (var i=0;i<data.length;i++){
-          if(!polygons[data[i].id]){
-            setPolygon(data[i]);
-          }
+        else{
+         
         }
       });
     }
@@ -238,21 +181,39 @@ $(document).ready(function(){
       } 
       var polygon = new google.maps.Polygon({
           paths: polygonPath,
-          strokeColor: data.color,
+          strokeColor: '#32CD32',
           strokeOpacity: 0.5,
           strokeWeight: 0,
-          fillColor: data.color,
+          fillColor: '#32CD32',
           fillOpacity: 0.5,
           id:data.id,
           editable:false,
+          clickable: false,
           name: data.name,
-          shortDesc: data.description,
           map: map 
       }); 
+
+      if(document.getElementById('edit-map')){
+        drawingManager.setDrawingMode(null);
+        polygon.setOptions({
+          editable: true,
+          clickable:true,
+        });
+      }
       //add the polygon to the global polygon array
       polygons[data.id] = polygon;
+
+      google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
+        setCoordinates(polygon);
+      });
+
+      google.maps.event.addListener(polygon.getPath(), 'insert_at', function() {
+        setCoordinates(polygon);
+      });
+
       google.maps.event.addListener(polygon, 'click', function(e){  
-        setInfoWindow(polygon, function(content){
+          setSelection(polygon);
+          setInfoWindow(polygon, function(content){
           infoWindow.setContent(content);
           infoWindow.open(map);
           infoWindow.setPosition(e.latLng);
@@ -272,84 +233,21 @@ $(document).ready(function(){
       clearSelection();
       currentOverlay = overlay;
       overlay.setEditable(true);
-      selectColor(overlay.get('fillColor') || overlay.get('strokeColor'));
+      
     }
 
     function deleteCurrentOverlay() {
       if (currentOverlay) {
         currentOverlay.setMap(null);
+         drawingManager.setOptions({
+            drawingMode: google.maps.drawing.OverlayType.POLYGON
+          });
+        document.getElementById('area_coordinates').value = '';
       }
-    }
-
-    function selectColor(color) {
-      selectedColor = color;
-      for (var i = 0; i < colors.length; ++i) {
-        var currentColor = colors[i];
-        colorButtons[currentColor].style.border = currentColor == color ? '1px solid #777' : '1px solid #ddd';
-      }
-      var polygonOptions = drawingManager.get('polygonOptions');
-      polygonOptions.fillColor = color;
-      
-      drawingManager.set('polygonOptions', polygonOptions);
-    }
-
-    function setColor(color) {
-      if (currentOverlay) {
-        currentOverlay.set('fillColor', color);
-        currentOverlay.set('strokeColor', color);
-      }
-    }
-
-    function makeColorButton(color) {
-      var button = document.createElement('span');
-      button.className = 'overlay-button';
-      button.style.backgroundColor = color;
-      google.maps.event.addDomListener(button, 'click', function() {
-        selectColor(color);
-        setColor(color);
-      });
-
-      return button;
-    }
-
-    function buildColorPalette() {
-      colorPalette = document.createElement('div');
-      colorPalette.id = 'color-palette';
-      colorPalette.style.display = 'none';
-      for (var i = 0; i < colors.length; ++i) {
-        var currentColor = colors[i];
-        var colorButton = makeColorButton(currentColor);
-        colorPalette.appendChild(colorButton);
-        colorButtons[currentColor] = colorButton;
-      }
-      map.controls[google.maps.ControlPosition.TOP_LEFT].push(colorPalette);
-      selectColor(colors[0]);
     }
 
     function setInfoWindow(overlay, callback){
       if(overlay.editable){
-        var overlayName = document.createElement('input');
-        overlayName.id = 'overlay-name';
-        overlayName.value= overlay.name;
-
-
-        var nameLabel = document.createElement('label');
-        nameLabel.setAttribute('for','overlay-name');
-        nameLabel.innerHTML = "Neighborhood";
-
-        var overlayDesc = document.createElement('textarea');
-        overlayDesc.id = 'overlay-desc';
-        overlayDesc.value = overlay.shortDesc;
-
-        var descLabel = document.createElement('label');
-        descLabel.setAttribute('for','overlay-desc');
-        descLabel.innerHTML = "Neighborhood Description";
-
-        var saveButton = document.createElement('button');
-        saveButton.id = "save-button";
-        saveButton.type = "button";
-        saveButton.className = "btn btn-small";
-        saveButton.innerHTML = "Save Overlay";
 
         var deleteButton = document.createElement('button');
         deleteButton.id = "delete-button";
@@ -357,42 +255,40 @@ $(document).ready(function(){
         deleteButton.className = "btn btn-small";
         deleteButton.innerHTML = "Remove Overlay";
 
-        var formContent = document.createElement('form');
-        formContent.id = 'edit-overlay';
+        var windowContent = document.createElement('div');
+        windowContent.id = 'edit-overlay';
 
-        formContent.appendChild(nameLabel);
-        formContent.appendChild(overlayName);
-        formContent.appendChild(descLabel);
-        formContent.appendChild(overlayDesc);
-        formContent.appendChild(saveButton);
-        formContent.appendChild(deleteButton);
+        
+        windowContent.appendChild(deleteButton);
 
-        callback(formContent);
+        callback(windowContent);
       }
 
       else{
-        var overlayDetails = document.createElement('div');
-        overlayDetails.id = 'overlay-details';
-
-        var overlayName = document.createElement('div');
-        overlayName.id = 'overlay-name';
-        overlayName.innerHTML = overlay.name;
-
-        var overlayDesc = document.createElement('div');
-        overlayDesc.id = 'overlay-desc';
-        overlayDesc.innerHTML = overlay.shortDesc;
-       
-        var editOverlay = document.createElement('span');
-        var linkText = document.createTextNode("Edit");
-        editOverlay.appendChild(linkText);
-        editOverlay.id = 'edit-button';
-
-        overlayDetails.appendChild(overlayName);
-        overlayDetails.appendChild(overlayDesc);
-        overlayDetails.appendChild(editOverlay);
-
-        callback(overlayDetails);
+        if(document.getElementById('edit-map')){
+          setSelection(overlay);
+        }
       }
+    }
+
+    function setCoordinates(newOverlay){
+      // complete functions
+        
+          var path = newOverlay.getPath();
+          var xy;
+          var coordinates = '';
+            // Iterate over the polygonBounds vertices.
+          for (var i = 0; i < path.length; i++) {
+            xy = path.getAt(i);
+            coordinates += xy.lat() + ' ' + xy.lng() + ', ';
+          }
+
+          var final_xy = path.getAt(0);
+          coordinates += final_xy.lat() + ' ' + final_xy.lng();
+      
+          var polyCoordinates = 'POLYGON((' + coordinates + '))';
+
+          document.getElementById('area_coordinates').value = polyCoordinates;
     }
 
     function addInfoWindowListeners(polygon){
@@ -401,46 +297,6 @@ $(document).ready(function(){
           if (e.vertex != null) {
             selectedShape.getPath().removeAt(e.vertex);
           }
-        });
-
-        google.maps.event.addDomListenerOnce(document.getElementById('save-button'), 'click', function() {  
-          var newPath = currentOverlay.getPath();
-          var xy;
-          var coordinates = '';
-            // Iterate over the polygonBounds vertices.
-          for (var i = 0; i < newPath.length; i++) {
-              xy = newPath.getAt(i);
-              coordinates += xy.lat() + ' ' + xy.lng() + ', ';
-          }
-
-          var final_xy = newPath.getAt(0);
-          coordinates += final_xy.lat() + ' ' + final_xy.lng();
-       
-          var polyCoordinates = 'POLYGON((' + coordinates + '))';
-          var overlayName = document.getElementById('overlay-name').value;
-          var overlayShortDesc = document.getElementById('overlay-desc').value;
-          var overlayColor = currentOverlay.fillColor;
-          var overlayId = currentOverlay.id;
-
-          if(overlayId){
-            var saveType = 'PUT';
-            var savePath = 'areas/'+overlayId+'.json';
-          }
-          else{
-            var saveType = 'POST';
-            var savePath = 'areas.json'
-          }
-          $.ajax({
-            type: saveType,
-            url: savePath,
-            data: 'name='+overlayName+'&description=' + overlayShortDesc +'&coordinates=' + polyCoordinates
-          }).done(function() { 
-            delete polygons[overlayId];
-            infoWindow.close();
-            currentOverlay.setMap(null);
-            var mapBounds = getBounds();
-            fetchOverlays(mapBounds);
-          });
         });
 
         google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
@@ -457,28 +313,11 @@ $(document).ready(function(){
         google.maps.event.addListener(infoWindow,'closeclick',function(){
             
         });
-
-      }
-      else{
-        google.maps.event.addDomListener(document.getElementById('edit-button'), 'click', function(){
-            var signedIn = $('#map').data('signed-in');
-            if(signedIn){
-              polygon.editable = true;
-              setSelection(polygon);
-              setInfoWindow(polygon, function(content){
-                infoWindow.setContent(content);
-                addInfoWindowListeners(polygon);
-              });
-            }
-            else{
-              $('#signin-modal').modal('show')
-              $('.close-modal').click(function(){
-                $('#signin-modal').modal('hide');
-              });
-            }
-        });
       }
 
+      else {
+
+      }
     }
 
     initialize();
