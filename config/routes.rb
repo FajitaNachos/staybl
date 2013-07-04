@@ -11,7 +11,7 @@ Staybl::Application.routes.draw do
   match '/areas/fetch', to: 'areas#fetch'
   resources :areas
   match '/map', to: 'map#index' 
-  match '/search', to: 'search#index'
+  match '/search', to: 'areas#fetch'
   
   
 
