@@ -1,0 +1,7 @@
+<div class="row-fluid">
+      <li class = 'primary'><h2><%= @first.name %></h2></li>
+      <% @rest.each do |area| %>
+      <li class = 'secondary'><h2> <%= area.name %></h2></li>
+       <span class="span3 offset3"><%= link_to "add new area" ,new_area_path(:city => @city) %></span>
+      <% end %>
+</div>

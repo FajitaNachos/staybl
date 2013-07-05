@@ -3,6 +3,34 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
+#areas h1{
+  padding-top:1%;
+}
+
+.primary, .secondary {
+  text-decoration:none;
+  list-style-type:none;
+}
+
+.primary {
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  padding:1%;
+}
+
+.primary h2{
+  color:#333;
+  font-size: 6em;
+}
+
+.secondary{
+  display:none;
+}
+
+#area-description{
+  float:none;
+  margin:auto;
+}
 
 .form-element{
   margin:auto;
@@ -15,7 +43,6 @@
   width:100%;
 
 }
-
 
 .area-submit{
   padding-top:1%;
