@@ -17,61 +17,6 @@
   height:600px;
 }
 
-#map-search-box{
-  width:50%;
-  height:15px;
-  margin-top:10px;
-}
-
-#map-search{
-  text-align:center;
-  width:100%;
-  vertical-align:center;
-}
-
-//add shadow to map autocomplete
-.pac-container{
-  box-shadow:0px 5px 15px #777;
-  -moz-box-shadow: 0px 5px 15px #777;
-  -webkit-box-shadow: 0px 5px 15px #777;
-}
-
-.control-ui{
-  background-color:#fff;
-  border:1px solid #ccc;
-  cursor:pointer;
-  text-align:center;
-  border:1px solid #ccc;
-}
-
-.control-text{
-  font-family:"Arial", sans-serif;
-  font-size:12px;
-  font-weight:bold;
-  padding:1px 4px;
-}
-
-/* Overlay details */
-
-#overlay-details{
-  display:block;
-}
-
-.overlay-button{
-  display:inline-block;
-  width:15px;
-  height:15px;
-}
-
-#overlay-name, #overlay-desc {
-  display:block;
-
-}
-
-#color-palette{
-  padding:10px 5px;
-}
-
 
 #areas h1{
   padding-top:1em;
@@ -79,21 +24,36 @@
 }
 
 
-
 .primary, .secondary {
   text-decoration:none;
+}
+
+.primary{
+  cursor:default;
+  border-top:1px solid #ccc;
+  border-bottom:1px solid #ccc;
+  padding:6em;
+}
+
+.secondary{
+  cursor:pointer;
+}
+
+.first-area{
+  padding-top:2em;
+}
+
+#show-more{
+  cursor:pointer;
 }
 
 .primary h2{
   color:#333;
   font-size: 6em;
-  border-top:1px solid #ccc;
-  border-bottom:1px solid #ccc;
-  padding:1em;
+  margin:0;
 }
 
 .add-area {
-  font-size:2em;
   display:none;
 }
 
@@ -109,6 +69,11 @@
 #area-description{
   float:none;
   margin:auto;
+}
+
+#area-list{
+  margin:0;
+  padding:0;
 }
 
 .form-element{

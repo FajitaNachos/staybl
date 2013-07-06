@@ -183,8 +183,8 @@ $(document).ready(function(){
           fillColor: '#32CD32',
           fillOpacity: 0.5,
           id:data.id,
+          clickable:false,  
           editable:false,
-          clickable: false,
           name: data.name,
           map: map 
       }); 
@@ -320,16 +320,27 @@ $(document).ready(function(){
     }
     $('#show-more').on('click', function(){
         $('.secondary').fadeIn('slow');
+        $('.add-area').fadeIn('slow');
       });
     $('#areas').on('click', '.secondary', function(){
         $('.primary').addClass('secondary');
         $('.primary').removeClass('primary');
         $(this).removeClass('secondary');
         $(this).addClass('primary');
+        
+        var ul = $('#area-list');
+        var li = ul.children('.secondary');
+            li.detach().sort(function(a,b) {
+                return $(a).data('position') - $(b).data('position');  
+            });
+            
+        ul.append(li);
+
         var id = $(this).data('id');
         removeOverlays();
         getArea(id);
         $('.secondary').hide();
+        $('.add-area').hide();
       });
 
       $('#areas').on('click', '.primary', function(){
