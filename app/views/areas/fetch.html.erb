@@ -4,16 +4,15 @@
     <span id = "city-name"><%= @city %></span> 
     is 
   </h1>
-  <div id="search-results">
+ 
     <%= render 'list' %>
-    <div class="row-fluid">
-      <span id = "more-areas" class="span3 offset9">see more areas</span>
-    </div>
-  </div>
 
-  <div id="area-description" class="span10 center">
-    <%= @first.description %>
-  </div>
+    <div id = "area-info" class = "row-fluid">
+      <h2>About The Area</h2>
+      <div id="area-description" class="span10 center">
+      </div>
+    </div>
+
 
   <div id="map">
     <h2>The Map</h2>

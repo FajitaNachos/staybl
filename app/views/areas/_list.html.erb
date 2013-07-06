@@ -1,7 +1,25 @@
-<div class="row-fluid">
-      <li class = 'primary'><h2><%= @first.name %></h2></li>
-      <% @rest.each do |area| %>
-      <li class = 'secondary'><h2> <%= area.name %></h2></li>
-       <span class="span3 offset3"><%= link_to "add new area" ,new_area_path(:city => @city) %></span>
+  <div id = "areas">
+    <%if @areas.any? %>
+      <%= content_tag :li, :id => @primary_area.name, :class=> 'primary', :data => {:id=>@primary_area.id} do %>
+          <h2><%= @primary_area.name %></h2>
       <% end %>
-</div>
+        <%if @secondary_areas.any? %>
+          <% @secondary_areas.each do |area| %>
+            <%= content_tag :li, :id => area.name, :class=> 'secondary', :data => {:id=>area.id} do %>
+              <h2><%= area.name %></h2>
+            <% end %>
+          <%end%>
+          <li class='center add-area'><%= link_to "Suggest an area" ,new_area_path(:city => @city) %></li>
+          <div class="row-fluid">
+            <span id = "show-more" class="span3 offset9">see more areas</span>
+          </div>
+        <%else%>
+          <li class='center add-area'><%= link_to "Suggest an area" ,new_area_path(:city => @city) %></li>
+        <%end%>
+    <%else%>
+      <li class='primary'><h2>still undecided.</h2></li>
+      <li class='center add-area'><%= link_to "Suggest an area" ,new_area_path(:city => @city) %></li>
+    <%end%>
+
+    </div>
+  

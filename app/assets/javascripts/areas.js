@@ -38,6 +38,8 @@ $(document).ready(function(){
 
       // retrieve and parse the name of the place from the URL
       var city = getURLParam("city");
+      var id = $('.primary').data('id');
+     
 
       var mapOptions = {
         zoom: 13,
@@ -65,7 +67,7 @@ $(document).ready(function(){
       }
 
       addMarker(city);
-      fetchAreas(city);
+      getArea(id);
       google.maps.event.addListener(map, 'bounds_changed', function() {
          
       });
@@ -156,21 +158,17 @@ $(document).ready(function(){
           return bounds;
     }
 
-    function fetchAreas(city){
+    function getArea(id){
 
-      $.getJSON("/areas/fetch.json?city="+city, function(data) {
-        if(data.length >= 1){
-          for (var i=0;i<data.length;i++){
-            if(!polygons[data[i].id]){
-              setPolygon(data[i]);
-            }
-          }
-        }
-      });
+      $.getJSON("/areas/"+id, function(data) {
+              $('#area-description').html(data.description);
+              setPolygon(data);
+        });
     }
 
     function setPolygon(data){
       var coordinates = data.coordinates.slice(10, -2).split(',');
+  
       var polygonPath = new Array();
       for(var j=0; j<coordinates.length;j++){
         var point = coordinates[j].trim().split(' ');
@@ -243,6 +241,16 @@ $(document).ready(function(){
       }
     }
 
+    function removeOverlays(){
+      
+      for (var id in polygons) {
+        if (polygons.hasOwnProperty(id)) { 
+          polygons[id].setMap(null);
+        }
+      }
+    }
+      
+
     function setInfoWindow(overlay, callback){
       if(overlay.editable){
 
@@ -294,7 +302,6 @@ $(document).ready(function(){
             selectedShape.getPath().removeAt(e.vertex);
           }
         });
-
         google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
           if(currentOverlay.id){
                $.ajax({
@@ -311,9 +318,23 @@ $(document).ready(function(){
         });
       }
     }
+    $('#show-more').on('click', function(){
+        $('.secondary').fadeIn('slow');
+      });
+    $('#areas').on('click', '.secondary', function(){
+        $('.primary').addClass('secondary');
+        $('.primary').removeClass('primary');
+        $(this).removeClass('secondary');
+        $(this).addClass('primary');
+        var id = $(this).data('id');
+        removeOverlays();
+        getArea(id);
+        $('.secondary').hide();
+      });
 
+      $('#areas').on('click', '.primary', function(){
+        $('.secondary').hide();
+      });
     initialize();
-    $('#more-areas').on('click', function(){
-    $('.secondary').toggle('fast');
   }
 });

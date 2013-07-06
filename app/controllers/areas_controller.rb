@@ -13,8 +13,8 @@ class AreasController < ApplicationController
   def fetch
     @city = params[:city]
     @areas = Area.where("city = ?", params[:city])
-    @first = @areas.first
-    @rest = @areas.drop(1)
+    @primary_area = @areas.first
+    @secondary_areas = @areas.drop(1)
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @areas }
