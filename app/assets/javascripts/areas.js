@@ -13,6 +13,8 @@ $(document).ready(function(){
     var colorButtons = {};
     var mapBounds;
     var map;
+    var primaryId;
+    var city = getURLParam("city");
     
     // Used to detect initial (useless) popstate.
     // If history.state exists, assume browser isn't going to fire initial popstate.
@@ -26,10 +28,19 @@ $(document).ready(function(){
 
       if (initialPop) return;
 
-      removeMarkers();
-      var poppedAddress = getURLParam("city");
-      
-      addMarker(poppedAddress);
+    
+      removeOverlays();
+      $('.secondary').show();
+      var id = getURLParam("id");
+      if(id){
+        var area = $('[data-id="'+id+'"]');
+        updateAreaList(area);
+      }
+      else{
+        var area = $('[data-id="'+primaryId+'"]');
+        updateAreaList(area);
+        
+      }
     });
 
     function initialize() {
@@ -38,8 +49,8 @@ $(document).ready(function(){
 
       // retrieve and parse the name of the place from the URL
       var city = getURLParam("city");
-      var id = $('.primary').data('id');
-     
+      primaryId = $('.primary').data('id');
+      
 
       var mapOptions = {
         zoom: 13,
@@ -57,6 +68,9 @@ $(document).ready(function(){
 
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
 
+      if(!map){
+        $('map-canvas').html("It looks like we are having a problem loading your map. Stand by.")
+      }
       if(document.getElementById("edit-map")){
         drawingManager = new google.maps.drawing.DrawingManager({
           drawingControl:false,
@@ -66,12 +80,13 @@ $(document).ready(function(){
         });
       }
 
-      addMarker(city);
-      getArea(id);
-      google.maps.event.addListener(map, 'bounds_changed', function() {
-         
-      });
-
+      if(document.getElementById('edit-map')){
+        addMarker(city);
+      }
+      else{
+        getArea(primaryId);
+      }
+     
 
       infoWindow = new google.maps.InfoWindow({});
       // Bias the autocomplete results to the map window
@@ -145,17 +160,19 @@ $(document).ready(function(){
       return decodeURIComponent((new RegExp("[?|&]" + name + "=([^&;]+?)(&|##|;|$)").exec(location.search) || [null, ""])[1].replace(/\+/g, "%20")) || null;
     }
 
-    function getBounds(){
-          var b = map.getBounds();
-          var ne = b.getNorthEast();
-          var sw = b.getSouthWest();
-          var yMaxLat = ne.lat();
-          var xMaxLng = ne.lng();
-          var yMinLat = sw.lat();
-          var xMinLng = sw.lng();
+   
 
-          var bounds = 'POLYGON(('+yMinLat+' '+xMinLng+', '+yMaxLat+ ' '+xMinLng+', '+yMaxLat+' '+xMaxLng+', '+yMinLat + ' '+xMaxLng+','+yMinLat+' '+xMinLng+'))';
-          return bounds;
+    google.maps.Polygon.prototype.getBounds = function() {
+        var bounds = new google.maps.LatLngBounds();
+        var paths = this.getPaths();
+        var path;        
+        for (var i = 0; i < paths.getLength(); i++) {
+            path = paths.getAt(i);
+            for (var ii = 0; ii < path.getLength(); ii++) {
+                bounds.extend(path.getAt(ii));
+            }
+        }
+        return bounds;
     }
 
     function getArea(id){
@@ -198,6 +215,14 @@ $(document).ready(function(){
       }
       //add the polygon to the global polygon array
       polygons[data.id] = polygon;
+
+      map.fitBounds(polygon.getBounds());
+      google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
+        if(map.getZoom() >= 15){
+          map.setZoom(15);
+        } 
+      });
+        
 
       google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
         setCoordinates(polygon);
@@ -318,33 +343,47 @@ $(document).ready(function(){
         });
       }
     }
-    $('#show-more').on('click', function(){
-        $('.secondary').fadeIn('slow');
-        $('.add-area').fadeIn('slow');
-      });
-    $('#areas').on('click', '.secondary', function(){
-        $('.primary').addClass('secondary');
-        $('.primary').removeClass('primary');
-        $(this).removeClass('secondary');
-        $(this).addClass('primary');
+
+    function updateAreaList(area){
+       
+        $('.primary').removeClass('primary').addClass('secondary');
+        area.addClass('primary').removeClass('secondary');
         
+        var areaId = area.data('id');
         var ul = $('#area-list');
         var li = ul.children('.secondary');
             li.detach().sort(function(a,b) {
                 return $(a).data('position') - $(b).data('position');  
             });
-            
+         
         ul.append(li);
-
-        var id = $(this).data('id');
-        removeOverlays();
-        getArea(id);
         $('.secondary').hide();
         $('.add-area').hide();
+
+        getArea(areaId);
+
+    }
+
+    $('#show-more').on('click', function(){
+        $('.secondary').fadeIn('slow');
+        $('.add-area').fadeIn('slow');
+      });
+    
+    $('#areas').on('click', '.secondary', function(){
+        
+        updateAreaList($(this));
+        removeOverlays();
+        var id = $(this).data('id'); 
+        history.pushState(
+                  null, 
+                  'Staybl',
+                  window.location.pathname+'?city='+city+'&id='+id);
+        
       });
 
       $('#areas').on('click', '.primary', function(){
         $('.secondary').hide();
+        $('.add-area').hide();
       });
     initialize();
   }

@@ -7,14 +7,6 @@ $(document).ready(function(){
     var options = {
       types: ["(cities)"]
     };
-
-    var autocomplete = new google.maps.places.Autocomplete(place, options);
-
-    //Submit the form when a user selects an option from the autocomplete list
-    google.maps.event.addListener(autocomplete, "place_changed", function() {
-      $('#home-search').submit();
-    });
-    
     var pac_input = document.getElementById('city');
 
     (function pacSelectFirst(input) {
@@ -49,6 +41,13 @@ $(document).ready(function(){
         var autocomplete = new google.maps.places.Autocomplete(input);
 
     })(pac_input);
+    var autocomplete = new google.maps.places.Autocomplete(place, options);
+
+    //Submit the form when a user selects an option from the autocomplete list
+    google.maps.event.addListener(autocomplete, "place_changed", function() {
+      $('#home-search').submit();
+    });
+    
 
   }
 });

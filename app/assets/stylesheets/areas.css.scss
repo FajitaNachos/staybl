@@ -17,12 +17,21 @@
   height:600px;
 }
 
+#area-list{
+  margin:0;
+  padding:0;
+}
+
 
 #areas h1{
   padding-top:1em;
   padding-bottom:.5em;
+  font-weight:normal; 
 }
 
+.first-area{
+  padding-top:2.5em;
+}
 
 .primary, .secondary {
   text-decoration:none;
@@ -35,32 +44,25 @@
   padding:6em;
 }
 
-.secondary{
-  cursor:pointer;
-}
-
-.first-area{
-  padding-top:2em;
-}
-
-#show-more{
-  cursor:pointer;
-}
-
 .primary h2{
   color:#333;
   font-size: 6em;
   margin:0;
 }
 
+.secondary{
+  cursor:pointer;
+  display:none;
+}
+
+#show-more{
+  cursor:pointer;
+}
+
 .add-area {
   display:none;
 }
 
-
-.secondary{
-  display:none;
-}
 
 #area-info {
   margin-top:3%;
@@ -71,11 +73,9 @@
   margin:auto;
 }
 
-#area-list{
-  margin:0;
-  padding:0;
-}
 
+
+/* for the new area form */
 .form-element{
   margin:auto;
   max-width:700px;
