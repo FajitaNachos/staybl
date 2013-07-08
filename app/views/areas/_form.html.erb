@@ -29,14 +29,23 @@
   </div>
 
   <div class="row-fluid">
-    <div id = "edit-map" >
-        <h2>The Map</h2>
-        <p>Help us out by drawing an outline of this area. Click on the map to set the points. You can remove a point by right clicking. When you're done the area should fill in green. 
-        </p>
+    <% if @area.id %>
+     <%= content_tag :div, :id => 'edit-map', :data => {:id=>@area.id} do %>
+        <h2>Edit The Map</h2>
         <div id="map-canvas">
         </div>
-    </div>
-  </div>
+     <% end %>
+    <% else %>
+     <div id = "new-map" >
+      <p>Help us out by drawing an outline of this area. Click on the map to set the points. You can remove a point by right clicking. When you're done the area should fill in green. 
+        </p>
+        <div id = "new-map">
+        </div>
+      </div>
+    <% end %>
+     
+
+ 
 
   <div class="row-fluid">
     <div class="actions center area-submit">

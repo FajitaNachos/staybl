@@ -79,8 +79,12 @@ $(document).ready(function(){
         });
       }
 
-      if(document.getElementById('edit-map')){
+      if(document.getElementById('new-map')){
         addMarker(city);
+      }
+      else if(document.getElementById('edit-map')){
+        var id = $('#edit-map').data('id');
+        getArea(id);
       }
       else{
         var id = getURLParam('id');
