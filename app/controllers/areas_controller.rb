@@ -28,7 +28,7 @@ class AreasController < ApplicationController
           current_user.unvote_for(@area)
       elsif current_user.voted_against?(@area)
           current_user.unvote_for(@area)
-          current_user.vote_against(@area)
+          current_user.vote_for(@area)
       else
       current_user.vote_for(@area)
       end
