@@ -11,6 +11,7 @@ gem 'jquery-rails', '~> 2.2.1'
 gem 'devise', '~> 2.2.4'
 gem "activerecord-postgis-adapter", "~> 0.6.4"
 gem "rgeo", "~> 0.3.20"
+gem "thumbs_up", "~> 0.6.5"
 
 
 

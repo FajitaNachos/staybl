@@ -39,7 +39,6 @@ $(document).ready(function(){
       else{
         var area = $('[data-id="'+primaryId+'"]');
         updateAreaList(area);
-        
       }
     });
 
@@ -84,7 +83,15 @@ $(document).ready(function(){
         addMarker(city);
       }
       else{
+        var id = getURLParam('id');
+        if (id){
+          $('.secondary').show();
+          var area = $('[data-id="'+id+'"]');
+          updateAreaList(area);
+        }
+        else{
         getArea(primaryId);
+        }
       }
      
 
@@ -381,10 +388,66 @@ $(document).ready(function(){
         
       });
 
-      $('#areas').on('click', '.primary', function(){
-        $('.secondary').hide();
-        $('.add-area').hide();
-      });
+    $(document).on('ajax:complete', '.up-vote', function(event, data, status, xhr) {
+           console.log(data);
+        console.log(status);
+          if(status == 'success'){
+          alert('upvoted!');
+         }
+         if(status == 'error'){
+          alert('up vote failed');
+         }
+         
+         $(this).closest('#votes').html(data.responseText);     
+    });
+
+    $(document).on('ajax:complete', '.down-vote', function(event, data, status, xhr) {
+           console.log(data);
+        console.log(status);
+          if(status == 'success'){
+          alert('down voted!');
+         }
+         if(status == 'error'){
+          alert('down vote failed');
+         }
+         $(this).closest('#votes').html(data.responseText);    
+    });
+
+
+    $(document).on('ajax:complete','.remove-down-vote', function(event, data, status, xhr) {
+        console.log(data);
+        console.log(status);
+         if(status == 'success'){
+          alert('down vote removed!');
+         }
+         if(status == 'error'){
+          alert('down vote removal failed');
+         }
+         console.log(data);
+         $(this).closest('#votes').html(data.responseText);   
+    });
+
+      $(document).on('ajax:complete','.remove-up-vote', function(event, data, status, xhr) {
+        console.log(data);
+        console.log(status);
+        if(status == 'success'){
+          alert('up vote removed!');
+         }
+         if(status == 'error'){
+          alert('up vote removal failed');
+         }
+         console.log(data);
+         $(this).closest('#votes').html(data.responseText);  
+         
+    });
+
+ 
+
+
+    $('#areas').on('click', '.primary', function(){
+      $('.secondary').hide();
+      $('.add-area').hide();
+    });
     initialize();
   }
 });

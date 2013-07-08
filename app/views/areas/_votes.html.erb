@@ -1,0 +1,10 @@
+<div class="row-fluid">
+  <div class = "row-fluid">
+  <%= area.plusminus %>
+  <div class = "row-fluid">
+  
+    <%= link_to "up vote", vote_up_area_path(area), :method => :post, :remote=>true, :class=>'up-vote' %>
+    <%= link_to "down vote", vote_down_area_path(area), :method => :post, :remote=>true, :class=>'down-vote' %>
+
+</div>
+</div>

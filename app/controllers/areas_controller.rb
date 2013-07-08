@@ -21,6 +21,52 @@ class AreasController < ApplicationController
     end
   end
 
+  def vote_up
+    @area = Area.find(params[:id])
+    begin
+      if current_user.voted_for?(@area)
+          current_user.unvote_for(@area)
+      elsif current_user.voted_against?(@area)
+          current_user.unvote_for(@area)
+          current_user.vote_against(@area)
+      else
+      current_user.vote_for(@area)
+      end
+      render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
+    rescue ActiveRecord::RecordInvalid
+      render :partial => 'areas/votes', :layout => false, :locals => { :area => @area }, :status => 404
+    end
+  end
+
+  def vote_down
+     @area = Area.find(params[:id])
+    begin
+      if current_user.voted_against?(@area)
+        current_user.unvote_for(@area)
+      elsif current_user.voted_for?(@area)
+        current_user.unvote_for(@area)
+        current_user.vote_against(@area)
+      else
+        current_user.vote_against(@area)
+      end
+      render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
+    rescue ActiveRecord::RecordInvalid
+      render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 404
+    end
+  end
+
+  def unvote
+     @area = Area.find(params[:id])
+    begin
+      current_user.unvote_for(@area)
+      render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
+    rescue ActiveRecord::RecordInvalid
+      render :partial => 'areas/votes',:layout => false,:locals => { :area => @area } , :status => 404
+    end
+  end
+
+
+
 
   # GET /areas/1
   # GET /areas/1.json
