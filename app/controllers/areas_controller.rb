@@ -12,7 +12,10 @@ class AreasController < ApplicationController
 
   def fetch
     @city = params[:city]
-    @areas = Area.where("city = ?", params[:city])
+    @areas = Area.where("city = ?", params[:city]).plusminus_tally
+
+   
+
     @primary_area = @areas.first
     @secondary_areas = @areas.drop(1)
     respond_to do |format|
@@ -25,12 +28,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
       if current_user.voted_for?(@area)
-          current_user.unvote_for(@area)
-      elsif current_user.voted_against?(@area)
-          current_user.unvote_for(@area)
-          current_user.vote_for(@area)
+        current_user.unvote_for(@area)
       else
-      current_user.vote_for(@area)
+        current_user.vote_exclusively_for(@area)
       end
       render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
     rescue ActiveRecord::RecordInvalid
@@ -43,25 +43,12 @@ class AreasController < ApplicationController
     begin
       if current_user.voted_against?(@area)
         current_user.unvote_for(@area)
-      elsif current_user.voted_for?(@area)
-        current_user.unvote_for(@area)
-        current_user.vote_against(@area)
-      else
-        current_user.vote_against(@area)
+      else 
+        current_user.vote_exclusively_against(@area)
       end
       render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
     rescue ActiveRecord::RecordInvalid
       render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 404
-    end
-  end
-
-  def unvote
-     @area = Area.find(params[:id])
-    begin
-      current_user.unvote_for(@area)
-      render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
-    rescue ActiveRecord::RecordInvalid
-      render :partial => 'areas/votes',:layout => false,:locals => { :area => @area } , :status => 404
     end
   end
 

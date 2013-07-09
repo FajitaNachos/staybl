@@ -1,4 +1,5 @@
   <div id = "areas">
+   
     <%if @areas.any? %>
       <ul id="area-list">
       <%= content_tag :li, :id => @primary_area.name, :class=> 'primary', :data => {:id=>@primary_area.id, :position=>0} do %>

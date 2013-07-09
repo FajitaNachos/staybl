@@ -11,7 +11,12 @@
     </div>
   <% end %>
 
+  <% if @area.city %>
+  <%= f.hidden_field :city, :value => @area.city %>
+  <% else %>
   <%= f.hidden_field :city, :value => @city %>
+  <% end %>
+
   <%= f.hidden_field :coordinates %>
 
   <div class="row-fluid">
