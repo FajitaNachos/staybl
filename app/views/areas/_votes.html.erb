@@ -4,8 +4,8 @@
 </div>
   <div class = "row-fluid">
   
-    <%= link_to "up vote", vote_up_area_path(area), :method => :post, :remote=>true, :class=> current_or_guest_user.voted_for?(area) ? 'up-vote upvoted ' : 'up-vote' %>
-    <%= link_to "down vote", vote_down_area_path(area), :method => :post, :remote=>true, :class=>current_or_guest_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
+    <%= link_to "up vote", vote_up_area_path(area), :method => :post, :remote=>true, :class=> current_user.voted_for?(area) ? 'up-vote upvoted ' : 'up-vote' %>
+    <%= link_to "down vote", vote_down_area_path(area), :method => :post, :remote=>true, :class=>current_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
 
 </div>
 </div>
