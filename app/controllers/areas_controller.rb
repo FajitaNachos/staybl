@@ -27,10 +27,10 @@ class AreasController < ApplicationController
   def vote_up
     @area = Area.find(params[:id])
     begin
-      if current_user.voted_for?(@area)
-        current_user.unvote_for(@area)
+      if current_or_guest_user.voted_for?(@area)
+        current_or_guest_user.unvote_for(@area)
       else
-        current_user.vote_exclusively_for(@area)
+        current_or_guest_user.vote_exclusively_for(@area)
       end
       render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
     rescue ActiveRecord::RecordInvalid
@@ -41,10 +41,10 @@ class AreasController < ApplicationController
   def vote_down
      @area = Area.find(params[:id])
     begin
-      if current_user.voted_against?(@area)
-        current_user.unvote_for(@area)
+      if current_or_guest_user.voted_against?(@area)
+        current_or_guest_user.unvote_for(@area)
       else 
-        current_user.vote_exclusively_against(@area)
+        current_or_guest_user.vote_exclusively_against(@area)
       end
       render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
     rescue ActiveRecord::RecordInvalid
