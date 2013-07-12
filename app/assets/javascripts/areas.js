@@ -393,26 +393,36 @@ $(document).ready(function(){
       });
 
     $(document).on('ajax:complete', '.up-vote', function(event, data, status, xhr) {
+          switch(data.status){
+            case 200:
+              alert('upvoted!');
+              $(this).closest('#votes').html(data.responseText);    
+              break
+            case 404 :
+              alert('up vote failed');
+              $(this).closest('#votes').html(data.responseText);    
+              break
+            case 401 : 
+              alert('You must be signed in to vote.');
+            }
           
-          if(status == 'success'){
-          alert('upvoted!');
-         }
-         if(status == 'error'){
-          alert('up vote failed');
-         }
-         
-         $(this).closest('#votes').html(data.responseText);     
     });
 
     $(document).on('ajax:complete', '.down-vote', function(event, data, status, xhr) {
-         
-          if(status == 'success'){
-          alert('down voted!');
-         }
-         if(status == 'error'){
-          alert('down vote failed');
-         }
-         $(this).closest('#votes').html(data.responseText);    
+         switch(data.status){
+            case 200:
+              alert('down voted!');
+              $(this).closest('#votes').html(data.responseText);    
+              break
+            case 404:
+              alert('down vote failed');
+              $(this).closest('#votes').html(data.responseText); 
+              break
+            case 401: 
+              alert('You must be signed in to vote');
+              break
+          }
+            
     });
 
 
