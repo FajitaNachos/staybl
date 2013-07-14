@@ -5,8 +5,9 @@
       <%= content_tag :li, :id => @primary_area.name, :class=> 'primary', :data => {:id=>@primary_area.id, :position=>0} do %>
           <h2><%= @primary_area.name %></h2>
           
+          <% if administrator_signed_in? %>
             <%= link_to "edit", edit_area_path(@primary_area) %>
-         
+         <% end %>
           <div id = "votes" class="votes">
           <%= render :partial =>'areas/votes', :locals => { :area => @primary_area }%>
           </div>
@@ -15,7 +16,9 @@
           <% @secondary_areas.each.with_index(1) do |area, index| %>
             <%= content_tag :li, :id => area.name, :class=> 'secondary', :data => {:id=>area.id, :position=> index} do %>
               <h2><%= area.name %></h2>
+              <% if administrator_signed_in? %>
               <%= link_to "edit", edit_area_path(area) %>
+              <% end %>
               <div id ="votes" class="votes">
                <%= render :partial => 'areas/votes', :locals => { :area => area } %>
              </div>

@@ -70,7 +70,7 @@ $(document).ready(function(){
       if(!map){
         $('map-canvas').html("It looks like we are having a problem loading your map. Stand by.")
       }
-      if(document.getElementById("edit-map")){
+      if(document.getElementById("edit-map") || document.getElementById("new-map")){
         drawingManager = new google.maps.drawing.DrawingManager({
           drawingControl:false,
           drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -195,12 +195,18 @@ $(document).ready(function(){
     }
 
     function setPolygon(data){
-      var coordinates = data.coordinates.slice(10, -2).split(',');
-  
+      console.log(data);
+        var polygon = data.the_geom.replace("MULTIPOLYGON (((", "");
+          polygon = polygon.replace(")))","");
+          polygon = polygon.split(',');
+
+      
       var polygonPath = new Array();
-      for(var j=0; j<coordinates.length;j++){
-        var point = coordinates[j].trim().split(' ');
-        var gPoint = new google.maps.LatLng(parseFloat(point[0]), parseFloat(point[1]));
+      for(var j=0; j<polygon.length;j++){
+        var point = polygon[j].trim().split(' ');
+    
+        var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
+
         polygonPath.push(gPoint);
       } 
       var polygon = new google.maps.Polygon({
@@ -216,6 +222,8 @@ $(document).ready(function(){
           name: data.name,
           map: map 
       }); 
+
+
 
       if(document.getElementById('edit-map')){
         drawingManager.setDrawingMode(null);
@@ -273,7 +281,7 @@ $(document).ready(function(){
          drawingManager.setOptions({
             drawingMode: google.maps.drawing.OverlayType.POLYGON
           });
-        document.getElementById('area_coordinates').value = '';
+        document.getElementById('area_polygon').value = '';
       }
     }
 
@@ -316,19 +324,19 @@ $(document).ready(function(){
       // complete functions
       var path = newOverlay.getPath();
       var xy;
-      var coordinates = '';
+      var polygon = '';
         // Iterate over the polygonBounds vertices.
       for (var i = 0; i < path.length; i++) {
         xy = path.getAt(i);
-        coordinates += xy.lat() + ' ' + xy.lng() + ', ';
+        polygon += xy.lat() + ' ' + xy.lng() + ', ';
       }
 
       var final_xy = path.getAt(0);
-      coordinates += final_xy.lat() + ' ' + final_xy.lng();
+      polygon += final_xy.lat() + ' ' + final_xy.lng();
   
-      var polyCoordinates = 'POLYGON((' + coordinates + '))';
+      var polyCoordinates = 'POLYGON((' + polygon + '))';
 
-      document.getElementById('area_coordinates').value = polyCoordinates;
+      document.getElementById('area_the_geom').value = polyCoordinates;
     }
 
     function addInfoWindowListeners(polygon){
@@ -403,7 +411,9 @@ $(document).ready(function(){
               $(this).closest('#votes').html(data.responseText);    
               break
             case 401 : 
-              alert('You must be signed in to vote.');
+              console.log(event.target.pathname);
+              $('#modal-login').modal('show');
+              break
             }
           
     });
@@ -419,15 +429,11 @@ $(document).ready(function(){
               $(this).closest('#votes').html(data.responseText); 
               break
             case 401: 
-              alert('You must be signed in to vote');
+              $('#modal-login').modal('show');
               break
           }
             
     });
-
-
- 
-
 
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();

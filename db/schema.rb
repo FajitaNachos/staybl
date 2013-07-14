@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130710104342) do
+ActiveRecord::Schema.define(:version => 20130707080404) do
 
   create_table "administrators", :force => true do |t|
     t.string   "username",           :default => "", :null => false
@@ -26,22 +26,26 @@ ActiveRecord::Schema.define(:version => 20130710104342) do
     t.datetime "updated_at",                         :null => false
   end
 
-  add_index "administrators", ["email"], :name => "index_admins_on_email", :unique => true
-  add_index "administrators", ["username"], :name => "index_admins_on_username", :unique => true
+  add_index "administrators", ["email"], :name => "index_administrators_on_email", :unique => true
+  add_index "administrators", ["username"], :name => "index_administrators_on_username", :unique => true
 
   create_table "areas", :force => true do |t|
-    t.string   "name"
-    t.text     "description"
     t.string   "city"
-    t.integer  "votes"
-    t.datetime "created_at",                                             :null => false
-    t.datetime "updated_at",                                             :null => false
-    t.spatial  "coordinates", :limit => {:srid=>4326, :type=>"polygon"}
+    t.string   "name"
+    t.string   "state"
+    t.string   "county"
+    t.integer  "regionid"
+    t.text     "description"
+    t.text     "tags",                                                    :default => ""
+    t.datetime "created_at",                                                              :null => false
+    t.datetime "updated_at",                                                              :null => false
+    t.spatial  "the_geom",    :limit => {:srid=>4326, :type=>"geometry"}
   end
 
   create_table "users", :force => true do |t|
     t.string   "email",                  :default => "", :null => false
     t.string   "encrypted_password",     :default => "", :null => false
+    t.string   "username"
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -52,7 +56,6 @@ ActiveRecord::Schema.define(:version => 20130710104342) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
-    t.string   "username"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

@@ -14,10 +14,20 @@
       </div>
     </div>
 
-
     <div id="map">
       <div id="map-canvas">
       </div>
     </div>
   <%end%>
+
+    <div class="modal hide" id="modal-login">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Please Sign in to vote.</h3>
+      </div>
+      <div class="modal-body">
+        <%= render 'users/sessions/modal_login' %>
+      </div>
+    </div>
+
  </div>

@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_filter :authenticate_user!, :except => [:fetch]
+  before_filter :authenticate_user!, :except => [:fetch, :show]
 
 
   # GET /areas
@@ -42,7 +42,7 @@ class AreasController < ApplicationController
         current_user.voted_against?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_against(@area)
         render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
     rescue ActiveRecord::RecordInvalid
-      render :partial => 'areas/votes', :layout => false, :locals => { :area => @area }, :status => 404
+        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area }, :status => 404
     end
   end
 
@@ -81,7 +81,7 @@ class AreasController < ApplicationController
   # POST /areas
 
   def create
-    @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :coordinates => params[:area][:coordinates], :city => params[:area][:city])
+    @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
 
     respond_to do |format|
       if @area.save
@@ -101,7 +101,7 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
 
     respond_to do |format|
-      if @area.update_attributes(:name => params[:area][:name], :description => params[:area][:description], :coordinates => params[:area][:coordinates], :city => params[:area][:city])
+      if @area.update_attributes(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
         format.html { redirect_to @area, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else

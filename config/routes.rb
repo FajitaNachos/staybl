@@ -1,6 +1,7 @@
 Staybl::Application.routes.draw do
 
   devise_for :users
+  
   devise_for :administrators, :path => '', :path_names => { :sign_in => "login", :sign_out => "logout"}, :controllers => { :sessions => "admin/sessions" }
 
   namespace :admin do
