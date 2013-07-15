@@ -15,7 +15,7 @@ class AreasController < ApplicationController
 
   def fetch
     @city = params[:city]
-    @areas = Area.where("city = ?", params[:city]).plusminus_tally
+    @areas = Area.tally.where("city = ?", params[:city]).having('COUNT(votes.id) > 0')
 
     @primary_area = @areas.first
     @secondary_areas = @areas.drop(1)
@@ -65,6 +65,12 @@ class AreasController < ApplicationController
   def new
     @city = params[:city]
     @area = Area.new
+    list = Area.tally.where("city = ?", @city).order("name ASC").having('COUNT(votes.id) = 0')
+    @select_list =[]
+    list.each do |area|
+      @select_list.push([area.name, area.id])
+    end
+    @select_list.push(['- Other -', 0])
 
     respond_to do |format|
       format.html # new.html.erb

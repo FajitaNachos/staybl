@@ -4,6 +4,8 @@
     <span class = "span2 center area-up-vote">
       <%= link_to "up vote", vote_up_area_path(area), :method => :post, :remote=>true, :class=> current_user &&current_user.voted_for?(area) ? 'up-vote upvoted ' : 'up-vote' %>
     </span>
+
+    
         <span class = "span8 area-name">
         <h2><%= area.name %></h2>
          <% if administrator_signed_in? %>
@@ -15,7 +17,7 @@
       <%= link_to "down vote", vote_down_area_path(area), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
     </span>
     <span class = "row-fluid block area-tally">
-          <h3><%= area.plusminus + ' vote'.pluralize %> </h3>
+          <h3><%= area.plusminus%> <%= 'vote'.pluralize %> </h3>
     </span>
 
   </div>
@@ -36,9 +38,9 @@
           <%= link_to "down vote", vote_down_area_path(area), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
       </span>
 
-      <span class="span1 area-tally">
-          <h3><%= area.plusminus + ' vote'.pluralize%></h3>
-      </span>
+        <span class="span1 area-tally">
+          <h3><%= area.plusminus%> <%= 'vote'.pluralize %> </h3>
+        </span>
      
   </div>
 

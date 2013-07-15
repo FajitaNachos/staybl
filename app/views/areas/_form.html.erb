@@ -12,9 +12,9 @@
   <% end %>
 
   <% if @area.city %>
-  <%= f.hidden_field :city, :value => @area.city %>
+    <%= f.hidden_field :city, :value => @area.city %>
   <% else %>
-  <%= f.hidden_field :city, :value => @city %>
+    <%= f.hidden_field :city, :value => @city %>
   <% end %>
 
   <%= f.hidden_field :the_geom %>
@@ -22,7 +22,8 @@
   <div class="row-fluid">
     <div class = "form-element">
       <%= f.label :area_name %>
-      <%= f.text_field :name, :autofocus => true %>
+      <%= f.select :name, options_for_select(@select_list) %>
+
     </div>
   </div>
 
