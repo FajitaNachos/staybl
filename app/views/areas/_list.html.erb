@@ -1,29 +1,19 @@
   <div id = "areas">
-   
     <%if @areas.any? %>
       <ul id="area-list">
       <%= content_tag :li, :id => @primary_area.name, :class=> 'primary', :data => {:id=>@primary_area.id, :position=>0} do %>
-          <h2><%= @primary_area.name %></h2>
-          
-          <% if administrator_signed_in? %>
-            <%= link_to "edit", edit_area_path(@primary_area) %>
-         <% end %>
-          <div id = "votes" class="votes">
-          <%= render :partial =>'areas/votes', :locals => { :area => @primary_area }%>
-          </div>
+      
+            <%= render :partial =>'areas/area', :locals => { :area => @primary_area, :primary => true }%>
+        
       <% end %>
         <%if @secondary_areas.any? %>
           <% @secondary_areas.each.with_index(1) do |area, index| %>
             <%= content_tag :li, :id => area.name, :class=> 'secondary', :data => {:id=>area.id, :position=> index} do %>
-              <h2><%= area.name %></h2>
-              <% if administrator_signed_in? %>
-              <%= link_to "edit", edit_area_path(area) %>
-              <% end %>
-              <div id ="votes" class="votes">
-               <%= render :partial => 'areas/votes', :locals => { :area => area } %>
-             </div>
-            <% end %>
-          <%end%>
+             
+               <%= render :partial => 'areas/area', :locals => { :area => area, :primary => false } %>
+           
+          <% end %>
+        <% end %>
       </ul>
       <li class='center add-area'><%= link_to "new area" ,new_area_path(:city => @city) %></li>
           
@@ -33,11 +23,11 @@
         <%else%>
           <li class='center add-area'><%= link_to "Suggest an area" ,new_area_path(:city => @city) %></li>
         <%end%>
-    <%else%>
+  <%else%>
     <div class='primary'>
       <li><h2>still up for grabs</h2></li>
       <li class='center first-area'><%= link_to "Be the first to suggest an area" ,new_area_path(:city => @city) %></li>
-    <%end%>
-
     </div>
+  <%end%>
+</div>
   

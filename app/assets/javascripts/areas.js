@@ -134,6 +134,19 @@ $(document).ready(function(){
           setCoordinates(newOverlay);
         });
 
+        google.maps.Polygon.prototype.getBounds = function() {
+        var bounds = new google.maps.LatLngBounds();
+        var paths = this.getPaths();
+        var path;        
+        for (var i = 0; i < paths.getLength(); i++) {
+            path = paths.getAt(i);
+            for (var ii = 0; ii < path.getLength(); ii++) {
+                bounds.extend(path.getAt(ii));
+            }
+        }
+        return bounds;
+    }
+
       });
 
        // Clear the current selection when the drawing mode is changed, or when the
@@ -171,20 +184,6 @@ $(document).ready(function(){
       return decodeURIComponent((new RegExp("[?|&]" + name + "=([^&;]+?)(&|##|;|$)").exec(location.search) || [null, ""])[1].replace(/\+/g, "%20")) || null;
     }
 
-   
-
-    google.maps.Polygon.prototype.getBounds = function() {
-        var bounds = new google.maps.LatLngBounds();
-        var paths = this.getPaths();
-        var path;        
-        for (var i = 0; i < paths.getLength(); i++) {
-            path = paths.getAt(i);
-            for (var ii = 0; ii < path.getLength(); ii++) {
-                bounds.extend(path.getAt(ii));
-            }
-        }
-        return bounds;
-    }
 
     function getArea(id){
 
@@ -365,9 +364,34 @@ $(document).ready(function(){
 
     function updateAreaList(area){
        
+        var upVote = area.find('.area-up-vote');
+        var downVote = area.find('.area-down-vote');
+        var selectedArea = area.find('.area');
+        var selectedName = area.find('.area-name');
+        var selectedTally = area.find('.area-tally');
+
+        upVote.show();
+        downVote.show();
+
+       
+        selectedName.removeClass('span3 offset4').addClass('span8');
+        selectedTally.removeClass('span1').addClass('row-fluid block');
+
+        var primaryArea = $('.primary').find('.area');
+        var primaryTally = $('.primary').find('.area-tally');
+        var primaryName = $('.primary').find('.area-name');
+
+        primaryTally.removeClass('row-fluid block').addClass('span1');
+        primaryName.addClass('span3 offset4');
+
+
+        $('.primary').find('.area-name').addClass('span3 offset4');
+        $('.primary').find('.area-up-vote').hide();
+        $('.primary').find('.area-down-vote').hide();
+
         $('.primary').removeClass('primary').addClass('secondary');
         area.addClass('primary').removeClass('secondary');
-        
+
         var areaId = area.data('id');
         var ul = $('#area-list');
         var li = ul.children('.secondary');
@@ -375,6 +399,8 @@ $(document).ready(function(){
                 return $(a).data('position') - $(b).data('position');  
             });
          
+        
+
         ul.append(li);
         $('.secondary').hide();
         $('.add-area').hide();
@@ -390,6 +416,7 @@ $(document).ready(function(){
     
     $('#areas').on('click', '.secondary', function(){
         
+       
         updateAreaList($(this));
         removeOverlays();
         var id = $(this).data('id'); 
