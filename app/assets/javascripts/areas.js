@@ -191,6 +191,7 @@ $(document).ready(function(){
 
       $.getJSON("/areas/"+id, function(data) {
               $('#area-description').html(data.description);
+              console.log(data);
               setPolygon(data);
         });
     }
@@ -227,18 +228,14 @@ $(document).ready(function(){
         drawingManager.setDrawingMode(null);
         polygon.setOptions({
           editable: true,
-          clickable:true,
+          clickable:true
         });
       }
       //add the polygon to the global polygon array
       polygons[data.id] = polygon;
 
-      map.fitBounds(polygon.getBounds());
-      google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
-        if(map.getZoom() >= 15){
-          map.setZoom(15);
-        } 
-      });
+      //map.fitBounds(polygon.getBounds());
+    
         
 
       google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
