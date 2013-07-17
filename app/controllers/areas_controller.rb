@@ -15,7 +15,7 @@ class AreasController < ApplicationController
 
   def fetch
     @city = params[:city]
-    @areas = Area.tally.where("city = ?", params[:city]).having('COUNT(votes.id) > 0')
+    @areas = Area.plusminus_tally.where("city = ?", params[:city]).having("COUNT(votes.id) > 0")
 
     @primary_area = @areas.first
     @secondary_areas = @areas.drop(1)
@@ -29,9 +29,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_for?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_for(@area)
-        render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
+        render :partial => 'areas/area',:layout => false, :locals => { :area => @area, :primary => true } , :status => 200
     rescue ActiveRecord::RecordInvalid
-      render :partial => 'areas/votes', :layout => false, :locals => { :area => @area }, :status => 404
+      render :partial => 'areas/area', :layout => false, :locals => { :area => @area, :primary => true}, :status => 404
     end
   end
 
@@ -40,9 +40,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_against?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_against(@area)
-        render :partial => 'areas/votes',:layout => false, :locals => { :area => @area } , :status => 200
+        render :partial => 'areas/area',:layout => false, :locals => { :area => @area, :primary => true } , :status => 200
     rescue ActiveRecord::RecordInvalid
-        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area }, :status => 404
+        render :partial => 'areas/areas', :layout => false, :locals => { :area => @area, :primary => true }, :status => 404
     end
   end
 
@@ -67,6 +67,7 @@ class AreasController < ApplicationController
     @area = Area.new
     list = Area.tally.where("city = ?", @city).order("name ASC").having('COUNT(votes.id) = 0')
     @select_list =[]
+    @select_list.push([' ', 'null'])
     list.each do |area|
       @select_list.push([area.name, area.id])
     end
@@ -87,8 +88,13 @@ class AreasController < ApplicationController
   # POST /areas
 
   def create
-    @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
-
+    check_area = Area.find(params[:area][:id])
+    if check_area
+      current_user.vote_for(check_area)
+      redirect_to :action => 'update'
+    else
+      @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
+    end
     respond_to do |format|
       if @area.save
         format.html { redirect_to @area, notice: 'Area was successfully created.' }
@@ -107,7 +113,7 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
 
     respond_to do |format|
-      if @area.update_attributes(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
+      if @area.update_attributes(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
         format.html { redirect_to @area, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else

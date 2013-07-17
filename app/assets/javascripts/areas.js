@@ -2,6 +2,19 @@ $(document).ready(function(){
   
   //Only load this javascript if a user is on the map page
   if(document.getElementById('map-canvas')){
+    google.maps.Polygon.prototype.getBounds = function() {
+        var bounds = new google.maps.LatLngBounds();
+        var paths = this.getPaths();
+        var path;        
+        for (var i = 0; i < paths.getLength(); i++) {
+            path = paths.getAt(i);
+            for (var ii = 0; ii < path.getLength(); ii++) {
+                bounds.extend(path.getAt(ii));
+            }
+        }
+        return bounds;
+    }
+
     var markers = [];
     var polygons = {};
     var selectedColor;
@@ -134,25 +147,14 @@ $(document).ready(function(){
           setCoordinates(newOverlay);
         });
 
-        google.maps.Polygon.prototype.getBounds = function() {
-        var bounds = new google.maps.LatLngBounds();
-        var paths = this.getPaths();
-        var path;        
-        for (var i = 0; i < paths.getLength(); i++) {
-            path = paths.getAt(i);
-            for (var ii = 0; ii < path.getLength(); ii++) {
-                bounds.extend(path.getAt(ii));
-            }
-        }
-        return bounds;
-    }
-
       });
 
        // Clear the current selection when the drawing mode is changed, or when the
       // map is clicked.
       google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
       google.maps.event.addListener(map, 'click', clearSelection);
+
+
 
     }
 
@@ -194,7 +196,6 @@ $(document).ready(function(){
     }
 
     function setPolygon(data){
-      console.log(data);
         var polygon = data.the_geom.replace("MULTIPOLYGON (((", "");
           polygon = polygon.replace(")))","");
           polygon = polygon.split(',');
@@ -222,9 +223,7 @@ $(document).ready(function(){
           map: map 
       }); 
 
-
-
-      if(document.getElementById('edit-map')){
+      if(document.getElementById('edit-map') || document.getElementById('new-map')){
         drawingManager.setDrawingMode(null);
         polygon.setOptions({
           editable: true,
@@ -396,7 +395,7 @@ $(document).ready(function(){
         var ul = $('#area-list');
         var li = ul.children('.secondary');
             li.detach().sort(function(a,b) {
-                return $(a).data('position') - $(b).data('position');  
+                return $(b).data('votes') - $(a).data('votes');  
             });
          
         
@@ -462,6 +461,16 @@ $(document).ready(function(){
             
     });
 
+    $('#area_name').on('change', function(){
+      var id = $(this).val();
+      alert(id);
+      if(id == 0){
+        $('#new_area_name').css('display','inline-block');
+      }
+      else{
+        getArea(id);
+      }
+    })
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();
       $('.add-area').hide();

@@ -1,17 +1,18 @@
+
   <div id = "areas">
     <%if @areas.any? %>
       <ul id="area-list">
-      <%= content_tag :li, :id => @primary_area.name, :class=> 'primary', :data => {:id=>@primary_area.id, :position=>0} do %>
-      
+      <%= content_tag :li, :id => @primary_area.name, :class=> 'primary', :data => {:id=>@primary_area.id, :position=>0, :votes => @primary_area.plusminus} do %>
+          <div id = "votes" class="votes">
             <%= render :partial =>'areas/area', :locals => { :area => @primary_area, :primary => true }%>
-        
+          </div>
       <% end %>
         <%if @secondary_areas.any? %>
           <% @secondary_areas.each.with_index(1) do |area, index| %>
-            <%= content_tag :li, :id => area.name, :class=> 'secondary', :data => {:id=>area.id, :position=> index} do %>
-             
+            <%= content_tag :li, :id => area.name, :class=> 'secondary', :data => {:id=>area.id, :position=> index, :votes => area.plusminus} do %>
+              <div id ="votes" class="votes">
                <%= render :partial => 'areas/area', :locals => { :area => area, :primary => false } %>
-           
+             </div>
           <% end %>
         <% end %>
       </ul>

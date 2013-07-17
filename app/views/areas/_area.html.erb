@@ -17,7 +17,7 @@
       <%= link_to "down vote", vote_down_area_path(area), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
     </span>
     <span class = "row-fluid block area-tally">
-          <h3><%= area.plusminus%> <%= 'vote'.pluralize %> </h3>
+          <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
     </span>
 
   </div>
@@ -39,7 +39,7 @@
       </span>
 
         <span class="span1 area-tally">
-          <h3><%= area.plusminus%> <%= 'vote'.pluralize %> </h3>
+          <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
         </span>
      
   </div>
