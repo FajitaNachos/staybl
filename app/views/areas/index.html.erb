@@ -1,21 +1,33 @@
-<h1>Listing areas</h1>
+<div id = "areas" class = "container-fluid no-padding">
+    <h1>
+      The best area to stay in 
+      <span id = "city-name"><%= @city %></span> 
+      is 
+    </h1>
+ 
+    <%= render 'list' %>
 
-<table>
-  <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
+    <% if @areas.any? %>
+    <div id = "area-info" class = "row-fluid">
+      <div id="area-description" class="span10 center">
+      </div>
+    </div>
 
-<% @areas.each do |area| %>
-  <tr>
-    <td><%= link_to 'Show', area %></td>
-    <td><%= link_to 'Edit', edit_area_path(area) %></td>
-    <td><%= link_to 'Destroy', area, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-  </tr>
-<% end %>
-</table>
+    <%= content_tag :div, :id => 'map', :data => {:id => @area.id, :state => @area.state, :city => @area.city} do %>
+        <h2>The Map</h2>
+        <div id = "map-canvas">
+        </div>
+      <%end%>
+  <%end%>
 
-<br />
+    <div class="modal hide" id="modal-login">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Please Sign in to vote.</h3>
+      </div>
+      <div class="modal-body">
+        <%= render 'users/sessions/modal_login' %>
+      </div>
+    </div>
+ </div>
 
-<%= link_to 'New Area', new_area_path %>

@@ -1,13 +1,14 @@
 $(document).ready(function(){
  //only loads this js if we are on the home page
-  var place = document.getElementById('city');
+  var params = false;
+  var place = document.getElementById('place');
   if (place) {
 
     // Set options for the autocomplete
     var options = {
-      types: ["(cities)"]
+      types: ["(cities)"],
     };
-    var pac_input = document.getElementById('city');
+    var pac_input = document.getElementById('place');
 
     (function pacSelectFirst(input) {
         // store the original event binding function
@@ -38,17 +39,38 @@ $(document).ready(function(){
         input.addEventListener = addEventListenerWrapper;
         input.attachEvent = addEventListenerWrapper;
 
-        var autocomplete = new google.maps.places.Autocomplete(input);
-
     })(pac_input);
+    
     var autocomplete = new google.maps.places.Autocomplete(place, options);
 
     //Submit the form when a user selects an option from the autocomplete list
     google.maps.event.addListener(autocomplete, "place_changed", function() {
-      $('#home-search').submit();
-    });
-    
+          var place = autocomplete.getPlace();
+      var components = place.address_components;
 
+      for (var i =0; i<components.length;i++){
+        for(var j=0;j<components[i].types.length;j++){
+            console.log(components[i].types[j]);
+            if (components[i].types[j] == "administrative_area_level_1"){
+                var state = components[i].short_name;
+            }
+            else if(components[i].types[j]== "locality" || components[i].types[j] == "administrative_area_level_3"){
+                var city = components[i].long_name;
+               
+            }
+        }
+      }
+      params = true;
+      $("#home-search").attr("action", "/areas/" + state + "/"+ city);
+      $("#home-search").submit();
+    });
+
+    $('#home-search').on("submit", function(event){
+     if(params == false){
+        event.preventDefault();
+        google.maps.event.trigger(autocomplete, 'place_changed');
+     }
+    });
   }
 });
 

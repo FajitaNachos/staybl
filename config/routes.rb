@@ -10,16 +10,17 @@ Staybl::Application.routes.draw do
 
   root to: 'home#index'
 
-  resources :areas do
+  match '/search', to: 'areas#search' 
+
+  resources :areas , :path => '/areas/:state/:city' do
     member do
       post :vote_up
       post :vote_down
-      post :unvote
     end
   end
 
-  match '/map', to: 'map#index' 
-  match '/search', to: 'areas#fetch'
+  
+ 
   
   
 

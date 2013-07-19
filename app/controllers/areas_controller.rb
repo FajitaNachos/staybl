@@ -1,37 +1,33 @@
 class AreasController < ApplicationController
-  before_filter :authenticate_user!, :except => [:fetch, :show]
-
+  before_filter :authenticate_user!, :except => [:index, :show]
 
   # GET /areas
   # GET /areas.json
   def index
-    @areas = Area.all
+    @city = params[:city]
+    state = params[:state]
+    areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, state).having("COUNT(votes.id) > 0")
+
+    @area= areas.first
+    @areas = areas.drop(1)
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @areas }
+      format.json { render json: areas }
     end
   end
 
-  def fetch
-    @city = params[:city]
-    @areas = Area.plusminus_tally.where("city = ?", params[:city]).having("COUNT(votes.id) > 0")
-
-    @primary_area = @areas.first
-    @secondary_areas = @areas.drop(1)
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @areas }
-    end
+  def search
+    #Need to handle what happens when people have js disabled here
   end
 
   def vote_up
     @area = Area.find(params[:id])
     begin
         current_user.voted_for?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_for(@area)
-        render :partial => 'areas/area',:layout => false, :locals => { :area => @area, :primary => true } , :status => 200
+        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true }, :status => 200
     rescue ActiveRecord::RecordInvalid
-      render :partial => 'areas/area', :layout => false, :locals => { :area => @area, :primary => true}, :status => 404
+        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true }, :status => 404
     end
   end
 
@@ -40,9 +36,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_against?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_against(@area)
-        render :partial => 'areas/area',:layout => false, :locals => { :area => @area, :primary => true } , :status => 200
+        render :partial => 'areas/votes',:layout => false, :locals => { :area => @area, :primary => true } , :status => 200
     rescue ActiveRecord::RecordInvalid
-        render :partial => 'areas/areas', :layout => false, :locals => { :area => @area, :primary => true }, :status => 404
+        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true }, :status => 404
     end
   end
 
@@ -52,8 +48,8 @@ class AreasController < ApplicationController
   # GET /areas/1
   # GET /areas/1.json
   def show
-    @area = Area.find(params[:id])
 
+    @area = Area.find(params[:id])
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @area }
@@ -88,20 +84,20 @@ class AreasController < ApplicationController
   # POST /areas
 
   def create
-    check_area = Area.find(params[:area][:id])
-    if check_area
-      current_user.vote_for(check_area)
-      redirect_to :action => 'update'
+    area_id = Area.find(params[:area][:id])
+    if area_id
+      current_user.vote_for(area_id)
+      redirect_to :action => "update", :id => area_id, :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city]
     else
       @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
-    end
-    respond_to do |format|
-      if @area.save
-        format.html { redirect_to @area, notice: 'Area was successfully created.' }
-        format.json { render json: @area, status: :created, location: @area }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @area.errors, status: :unprocessable_entity }
+      respond_to do |format|
+        if @area.save
+          format.html { redirect_to @primary_area, notice: 'Area was successfully added.' }
+          format.json { render json: @area, status: :created, location: @area }
+        else
+          format.html { render action: "new" }
+          format.json { render json: @area.errors, status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -114,7 +110,7 @@ class AreasController < ApplicationController
 
     respond_to do |format|
       if @area.update_attributes(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
-        format.html { redirect_to @area, notice: 'Area was successfully updated.' }
+        format.html { redirect_to @are, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

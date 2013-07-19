@@ -27,8 +27,10 @@ $(document).ready(function(){
     var colorButtons = {};
     var mapBounds;
     var map;
-    var primaryId;
-    var city = getURLParam("city");
+    var id = $('#map').data('id');
+    var city = $('#map').data('city');
+    var state = $('#map').data('state');
+    var areaId = getURLParam('id');
     
     // Used to detect initial (useless) popstate.
     // If history.state exists, assume browser isn't going to fire initial popstate.
@@ -41,41 +43,22 @@ $(document).ready(function(){
       popped = true
 
       if (initialPop) return;
-
-      removeOverlays();
-      var id = getURLParam("id");
-
-      if($('#new-map')){
-        if(id){
-          $("#area_name").val(id);
-          getArea(id);
-        }
-      }
-      else{
-        $('.secondary').show();
+        removeOverlays();
         
-        if(id){
-          var area = $('[data-id="'+id+'"]');
+        $('.secondary').show();
+        if(areaId){
+          var area = $('[data-id="'+areaId+'"]');
           updateAreaList(area);
         }
         else{
-          var area = $('[data-id="'+primaryId+'"]');
+          var area = $('[data-id="'+id+'"]');
           updateAreaList(area);
         }
-      }
-      
-     
-
-
     });
 
     function initialize() {
       // turns on the new google maps
       google.maps.visualRefresh = true;
-
-      // retrieve and parse the name of the place from the URL
-      var city = getURLParam("city");
-      primaryId = $('.primary').data('id');
       
 
       var mapOptions = {
@@ -97,7 +80,7 @@ $(document).ready(function(){
       if(!map){
         $('map-canvas').html("It looks like we are having a problem loading your map. Stand by.")
       }
-      if(document.getElementById("edit-map") || document.getElementById("new-map")){
+      if($('.editable-map')){
         drawingManager = new google.maps.drawing.DrawingManager({
           drawingControl:false,
           drawingMode: google.maps.drawing.OverlayType.POLYGON,
@@ -106,23 +89,16 @@ $(document).ready(function(){
         });
       }
 
-      if(document.getElementById('new-map')){
-        addMarker(city);
-      }
-      else if(document.getElementById('edit-map')){
-        var id = $('#edit-map').data('id');
-        getArea(id);
-      }
-      else{
-        var id = getURLParam('id');
+      if($('.editable-map')){
         if (id){
-          $('.secondary').show();
-          var area = $('[data-id="'+id+'"]');
-          updateAreaList(area);
+          getArea(id);
         }
         else{
-        getArea(primaryId);
+          addMarker(city);
         }
+      }
+      else{
+          getArea(id);
       }
      
 
@@ -204,10 +180,10 @@ $(document).ready(function(){
 
     function getArea(id){
 
-      $.getJSON("/areas/"+id, function(data) {
+      $.getJSON("/areas/"+state+"/"+city+"/"+id+'.json', function(data) {
               $('#area-description').html(data.description);
               setPolygon(data);
-        });
+      });
     }
 
     function setPolygon(data){
@@ -363,7 +339,7 @@ $(document).ready(function(){
           if(currentOverlay.id){
                $.ajax({
                   type: 'DELETE',
-                  url: '/areas/'+currentOverlay.id+'.json'
+                  url: "/areas/"+state+"/"+city+"/"+currentOverlay.id+'.json'
                 });   
             }
             infoWindow.close();
@@ -429,19 +405,18 @@ $(document).ready(function(){
       });
     
     $('#areas').on('click', '.secondary', function(){
-        
-       
+       var areaId = $(this).data('id');
         updateAreaList($(this));
         removeOverlays();
-        var id = $(this).data('id'); 
         history.pushState(
                   null, 
                   'Staybl',
-                  window.location.pathname+'?city='+city+'&id='+id);
-        
+                  window.location.pathname+'?&id='+areaId);
       });
 
     $(document).on('ajax:complete', '.up-vote', function(event, data, status, xhr) {
+          console.log(data.responseText);
+          console.log(data);
           switch(data.status){
             case 200:
               alert('upvoted!');
@@ -472,17 +447,12 @@ $(document).ready(function(){
             case 401: 
               $('#modal-login').modal('show');
               break
-          }
-            
+          }  
     });
 
     $('#area_id').on('change', function(){
         var id = $(this).val();
        removeOverlays();
-        history.pushState(
-                  null, 
-                  'Staybl',
-                  window.location.pathname+'?city='+city+'&id='+id);
   
       if(id == 0){
         $('#new_area_name').css('display','inline-block');
@@ -493,6 +463,7 @@ $(document).ready(function(){
         getArea(id);
       }
     });
+
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();
       $('.add-area').hide();
