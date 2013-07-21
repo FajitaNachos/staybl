@@ -1,0 +1,110 @@
+// Place all the styles related to the overlays controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#map, #edit-map, #new-map{
+    width:100%;
+}
+
+#map{
+  margin-top: 10%;
+}
+
+//fixes distorted scroll bar on map
+#map img, #edit-map img, #new-map img { max-width: none; }
+
+#map-canvas{
+  height:600px;
+}
+
+#area-list{
+  margin:0;
+  padding:0;
+}
+
+#new_area_name{
+  padding-left:20px;
+}
+
+#areas h1{
+  padding-top:1em;
+  padding-bottom:.5em;
+  font-weight:normal; 
+}
+
+.first-area{
+  padding-top:2.5em;
+}
+
+.primary, .secondary {
+  text-decoration:none;
+}
+
+.primary{
+  cursor:default;
+  border-top:1px solid #ccc;
+  border-bottom:1px solid #ccc;
+  padding:6em;
+}
+
+.primary h2{
+  color:#333;
+  font-size: 6em;
+  margin:0;
+}
+
+.area-tally{
+  text-align:center;
+}
+
+.secondary{
+  cursor:pointer;
+  display:none;
+}
+
+.secondary h3{
+  font-weight:normal;
+  font-size:1em;
+}
+#show-more{
+  cursor:pointer;
+}
+
+.add-area {
+  display:none;
+}
+
+.block{
+  display:block;
+  clear:both;
+}
+
+#area-info {
+  margin-top:3%;
+}
+
+#area-description{
+  float:none;
+  margin:auto;
+}
+
+.upvoted, .downvoted {
+  color: #ED5417;
+}
+
+/* for the new area form */
+.form-element{
+  margin:auto;
+  max-width:700px;
+  display:block;
+  padding:0 20px;
+}
+
+.form-element textarea{
+  width:100%;
+
+}
+
+.area-submit{
+  padding-top:1%;
+}

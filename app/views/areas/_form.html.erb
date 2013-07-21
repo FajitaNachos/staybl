@@ -41,7 +41,7 @@
 
   <div class="row-fluid">
     
-     <%= content_tag :div, :id => 'map', :class=>'editable-map' :data => {:id=>@area.id, :state => @area.state, :city => @area.city} do %>
+     <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@area.id, :state =>@state, :city => @city} do %>
         <h2>The Map</h2>
         <div id = "map-canvas">
         </div>

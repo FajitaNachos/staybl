@@ -1,0 +1,23 @@
+<p id="notice"><%= notice %></p>
+
+<div id = "areas" class = "container-fluid no-padding">
+    <h1>
+     <%= @admin_area.name %>
+    </h1>
+
+    <% if @admin_area %>
+    <div id = "area-info" class = "row-fluid">
+      <div id="area-description" class="span10 center">
+      </div>
+    </div>
+
+    <%= content_tag :div, :id => 'map', :data => {:id => @admin_area.id} do %>
+        <h2>The Map</h2>
+        <div id = "map-canvas">
+        </div>
+      <%end%>
+  <%end%>
+
+ </div>
+
+

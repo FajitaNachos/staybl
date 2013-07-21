@@ -7,7 +7,7 @@
         <span class = "span8 area-name">
         <h2><%= area.name %></h2>
          <% if administrator_signed_in? %>
-            <%= link_to "edit", edit_area_path(area) %>
+            <%= link_to "edit", edit_area_path(area.state, area.city,area) %>
          <% end %>
         </span>
 
@@ -28,7 +28,7 @@
         <span class="span3 offset4 area-name">
           <h2><%= area.name %></h2>
           <% if administrator_signed_in? %>
-              <%= link_to "edit", edit_area_path(area) %>
+              <%= link_to "edit", edit_area_path(area.state, area.city,area) %>
           <% end %>
         </span>
         

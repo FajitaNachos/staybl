@@ -7,13 +7,13 @@
  
     <%= render 'list' %>
 
-    <% if @areas.any? %>
+    <% if @area %>
     <div id = "area-info" class = "row-fluid">
       <div id="area-description" class="span10 center">
       </div>
     </div>
 
-    <%= content_tag :div, :id => 'map', :data => {:id => @area.id, :state => @area.state, :city => @area.city} do %>
+    <%= content_tag :div, :id => 'map', :data => {:id => @area.id, :state => @state, :city => @city} do %>
         <h2>The Map</h2>
         <div id = "map-canvas">
         </div>

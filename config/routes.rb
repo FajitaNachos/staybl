@@ -6,18 +6,20 @@ Staybl::Application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
+    resources :areas
   end
 
-  root to: 'home#index'
 
   match '/search', to: 'areas#search' 
-
+  root to: 'home#index'
   resources :areas , :path => '/areas/:state/:city' do
     member do
       post :vote_up
       post :vote_down
     end
   end
+
+
 
   
  

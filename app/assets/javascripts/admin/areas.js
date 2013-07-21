@@ -170,11 +170,13 @@ $(document).ready(function(){
 
     function getArea(id, callback){
 
-      $.getJSON("/areas/"+state+"/"+city+"/"+id+'.json', function(data) {
+      $.getJSON("/admin/areas/"+id+'.json', function(data) {
               $('#area-description').html(data.description);
-              
+              console.log(data);
               setPolygon(data);
-              callback(data);
+              if(callback){
+                callback(data);
+              }
 
       });
     }
@@ -332,7 +334,7 @@ $(document).ready(function(){
           if(currentOverlay.id){
                $.ajax({
                   type: 'DELETE',
-                  url: "/areas/"+state+"/"+city+"/"+currentOverlay.id+'.json'
+                  url: "/admin/areas/"+currentOverlay.id+'.json'
                 });   
             }
             infoWindow.close();
