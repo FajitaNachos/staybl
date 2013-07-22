@@ -174,16 +174,19 @@ $(document).ready(function(){
               $('#area-description').html(data.description);
               
               setPolygon(data);
-              callback(data);
+              if(callback){
+                callback(data);
+              }
 
       });
     }
 
     function setPolygon(data){
-      var polygon = data.the_geom.replace("MULTIPOLYGON (((", "");
-          polygon = polygon.replace(")))","");
+     
+      var polygon = data.the_geom.replace("POLYGON ((", "");
+          polygon = polygon.replace("))","");
           polygon = polygon.split(',');
-
+          
       var polygonPath = new Array();
       for(var j=0; j<polygon.length;j++){
         var point = polygon[j].trim().split(' ');
@@ -213,16 +216,13 @@ $(document).ready(function(){
           editable: true,
           clickable:true
         });
+
       }
       //add the polygon to the global polygon array
       polygons[data.id] = polygon;
 
       map.fitBounds(polygon.getBounds());
-      google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
-        if(map.getZoom() >= 13){
-          map.setZoom(13);
-        } 
-      });
+     
         
 
       google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
@@ -242,6 +242,15 @@ $(document).ready(function(){
           addInfoWindowListeners(polygon);
         });
       });
+
+        google.maps.event.addListener(polygon, 'rightclick', function(e){
+            if (e.vertex != null) {
+              polygon.getPath().removeAt(e.vertex);
+              setCoordinates(polygon);
+            }
+
+        });
+
     }
 
     function clearSelection() {
@@ -275,7 +284,7 @@ $(document).ready(function(){
         }
       }
     }
-      
+ 
 
     function setInfoWindow(overlay, callback){
       if(overlay.editable){
@@ -322,12 +331,7 @@ $(document).ready(function(){
     }
 
     function addInfoWindowListeners(polygon){
-      if(document.getElementById('edit-overlay')){
-        google.maps.event.addListener(currentOverlay, 'rightclick', function(e){
-          if (e.vertex != null) {
-            selectedShape.getPath().removeAt(e.vertex);
-          }
-        });
+      if($('.editable-map').length){
         google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
           if(currentOverlay.id){
                $.ajax({
@@ -440,27 +444,34 @@ $(document).ready(function(){
               break
           }  
     });
-
-    $('#area_id').on('change', function(){
+    if($('.editable-map').length){
+      $('#area_id').on('change', function(){
         var id = $(this).val();
-       removeOverlays();
+        removeOverlays();
   
-      if(id == 0){
-        $('#new_area_name').css('display','inline-block');
-        $('#area_the_geom').val('');
-        map.panTo(marker.position);
-      }
-      else{
-        $('#new_area_name').css('display','none');
-        
-        getArea(id, function(area){
+        if(id == 0){
+          $('#new_area_name').show();
+          $('#area_the_geom').val('');
+          map.panTo(marker.position);
+        }
+        else{
+          $('#new_area_name').css('display','none');
           
-           $('#area_the_geom').val(area.the_geom);
-        });
-       
+          getArea(id, function(area){
+            
+             $('#area_the_geom').val(area.the_geom);
+          });
+        }
+      });
 
+      if($('#area_id').length < 1){
+        $('#new_area_name').show();
       }
-    });
+
+    }
+
+
+
 
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();

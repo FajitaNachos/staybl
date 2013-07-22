@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130707080404) do
+ActiveRecord::Schema.define(:version => 20130722011457) do
 
   create_table "administrators", :force => true do |t|
     t.string   "username",           :default => "", :null => false
@@ -33,8 +33,6 @@ ActiveRecord::Schema.define(:version => 20130707080404) do
     t.string   "city"
     t.string   "name"
     t.string   "state"
-    t.string   "county"
-    t.integer  "regionid"
     t.text     "description"
     t.text     "tags",                                                    :default => ""
     t.datetime "created_at",                                                              :null => false

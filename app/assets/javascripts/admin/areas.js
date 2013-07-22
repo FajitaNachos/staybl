@@ -182,18 +182,7 @@ $(document).ready(function(){
     }
 
     function setPolygon(data){
-      var polygon = data.the_geom.replace("MULTIPOLYGON (((", "");
-          polygon = polygon.replace(")))","");
-          polygon = polygon.split(',');
-
-      var polygonPath = new Array();
-      for(var j=0; j<polygon.length;j++){
-        var point = polygon[j].trim().split(' ');
-    
-        var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
-
-        polygonPath.push(gPoint);
-      } 
+     
 
       var polygon = new google.maps.Polygon({
           paths: polygonPath,
@@ -217,16 +206,15 @@ $(document).ready(function(){
         });
       }
       //add the polygon to the global polygon array
-      polygons[data.id] = polygon;
+      polygons[i] = polygon;
+     
+        map.fitBounds(polygon.getBounds());
 
-      map.fitBounds(polygon.getBounds());
       google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
         if(map.getZoom() >= 13){
           map.setZoom(13);
         } 
       });
-        
-
       google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
         setCoordinates(polygon);
       });

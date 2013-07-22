@@ -1,9 +1,13 @@
-<h1>Listing admin_areas</h1>
+<h1>Recently Updated Areas</h1>
 
-
+<%= form_tag admin_areas_search_path, method: :get do %>
+  <%= text_field_tag :id %>
+  <%= submit_tag "Search" %>
+<% end %>
+  
 <% @admin_areas.each do |area| %>
   <div class = "row-fluid">
-    <h3><%=area.name %></h3>
+    <h3><%=area.name %></h3>  
     <span><%= link_to 'Show', admin_area_path(area) %></span>
     <span><%= link_to 'Edit', edit_admin_area_path(area) %></span>
     <span><%= link_to 'Destroy', admin_area_path(area), method: :delete, data: { confirm: 'Are you sure?' } %></span>

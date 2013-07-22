@@ -53,7 +53,7 @@ $(document).ready(function(){
             if (components[i].types[j] == "administrative_area_level_1"){
                 var state = components[i].short_name;
             }
-            else if(components[i].types[j]== "locality" || components[i].types[j] == "administrative_area_level_3"){
+            else if(components[i].types[j]== "locality"){
                 var city = components[i].long_name;
                
             }
@@ -72,5 +72,3 @@ $(document).ready(function(){
     });
   }
 });
-
-

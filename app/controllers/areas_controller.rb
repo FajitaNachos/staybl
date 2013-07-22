@@ -8,8 +8,11 @@ class AreasController < ApplicationController
     @state = params[:state]
     @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
 
+  
     @area= @areas.first
     @areas = @areas.drop(1)
+    
+ 
 
     respond_to do |format|
       format.html # index.html.erb
@@ -62,13 +65,15 @@ class AreasController < ApplicationController
     @city = params[:city]
     @state = params[:state]
     @area = Area.new
-    list = Area.tally.where("city = ?", @city).order("name ASC").having('COUNT(votes.id) = 0')
-    @select_list =[]
-    @select_list.push([' ', 'null'])
-    list.each do |area|
-      @select_list.push([area.name, area.id])
+    list = Area.tally.where("city = ?", @city).order("name ASC").having("COUNT(votes.id) = 0")
+    if list.any?
+      @select_list =[]
+      @select_list.push([' ', 'null'])
+      list.each do |area|
+        @select_list.push([area.name, area.id])
+      end
+      @select_list.push(['- Other -', 0])
     end
-    @select_list.push(['- Other -', 0])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -94,12 +99,11 @@ class AreasController < ApplicationController
 
   def create
     @existing_area = Area.find(params[:area][:id])
-    
     if @existing_area
       current_user.vote_for(@existing_area)
       respond_to do |format|
         if @existing_area.update_attributes(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
-          format.html { redirect_to @current_area, notice: 'Area was successfully updated.' }
+          format.html { redirect_to areas_path(@existing_area.state, @existing_area.city), notice: 'Area was successfully added.' }
           format.json { head :no_content }
         else
           format.html { render action: "new" }
@@ -107,6 +111,10 @@ class AreasController < ApplicationController
         end
       end 
     else
+
+    end
+
+    rescue ActiveRecord::RecordNotFound
       @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
       respond_to do |format|
         if @area.save
@@ -117,7 +125,7 @@ class AreasController < ApplicationController
           format.json { render json: @area.errors, status: :unprocessable_entity }
         end
       end
-    end
+
   end
 
 

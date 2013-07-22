@@ -6,10 +6,6 @@
     width:100%;
 }
 
-#map{
-  margin-top: 10%;
-}
-
 //fixes distorted scroll bar on map
 #map img, #edit-map img, #new-map img { max-width: none; }
 
@@ -23,7 +19,7 @@
 }
 
 #new_area_name{
-  padding-left:20px;
+  width:100%;
 }
 
 #areas h1{

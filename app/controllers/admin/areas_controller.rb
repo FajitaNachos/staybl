@@ -10,6 +10,13 @@ class Admin::AreasController < Admin::BaseController
     end
   end
 
+
+  #student_controller.rb
+  def search
+     @admin_area = Area.find(params[:id])
+     redirect_to admin_area_path(@admin_area.id)
+  end
+
   # GET /admin/areas/1
   # GET /admin/areas/1.json
   def show

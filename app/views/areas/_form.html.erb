@@ -23,21 +23,16 @@
     <div class="row-fluid">
       <div class = "form-element">
         <%= f.label :area_name %>
+        <% if @select_list %>
         <%= f.select :id, options_for_select(@select_list) %>
+        <% end%>
          <span id="new_area_name" class="hide">
-          <%= f.text_field :name, :placeholder => "Enter a name for the area" %>
+          <%= f.text_field :name, :placeholder => " " %>
         </span>
       </div>
      
     </div>
   <%end%>
-
-  <div class = "row-fluid">
-    <div class = "form-element">
-      <%= f.label :description%>
-      <%= f.text_area :description %>
-    </div>
-  </div>
 
   <div class="row-fluid">
     
