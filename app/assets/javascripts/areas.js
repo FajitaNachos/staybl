@@ -1,19 +1,6 @@
 $(document).ready(function(){
   //Only load this javascript if a user is on the map page
   if(document.getElementById('map-canvas')){
-   
-    google.maps.Polygon.prototype.getBounds = function() {
-        var bounds = new google.maps.LatLngBounds();
-        var paths = this.getPaths();
-        var path;        
-        for (var i = 0; i < paths.getLength(); i++) {
-            path = paths.getAt(i);
-            for (var ii = 0; ii < path.getLength(); ii++) {
-                bounds.extend(path.getAt(ii));
-            }
-        }
-        return bounds;
-    }
 
     var markers = [];
     var marker;
@@ -53,7 +40,18 @@ $(document).ready(function(){
     function initialize() {
       // turns on the new google maps
       google.maps.visualRefresh = true;
-      
+    google.maps.Polygon.prototype.getBounds = function() {
+        var bounds = new google.maps.LatLngBounds();
+        var paths = this.getPaths();
+        var path;        
+        for (var i = 0; i < paths.getLength(); i++) {
+            path = paths.getAt(i);
+            for (var ii = 0; ii < path.getLength(); ii++) {
+                bounds.extend(path.getAt(ii));
+            }
+        }
+        return bounds;
+    }
       var mapOptions = {
         zoom: 13,
         scrollwheel: false,
@@ -64,7 +62,6 @@ $(document).ready(function(){
           strokeWeight: 0,
           fillOpacity: 0.45,
           editable: true,
-          fillColor: '#32CD32',
           strokeColor: '#32CD32'
       };
 
@@ -199,10 +196,10 @@ $(document).ready(function(){
       var polygon = new google.maps.Polygon({
           paths: polygonPath,
           strokeColor: '#32CD32',
-          strokeOpacity: 0.5,
-          strokeWeight: 0,
+          strokeOpacity: 1,
+          strokeWeight: 1,
           fillColor: '#32CD32',
-          fillOpacity: 0.5,
+          fillOpacity: 0.1,
           id:data.id,
           clickable:false,  
           editable:false,
@@ -272,7 +269,7 @@ $(document).ready(function(){
          drawingManager.setOptions({
             drawingMode: google.maps.drawing.OverlayType.POLYGON
           });
-        document.getElementById('area_polygon').value = '';
+       $('#area_the_geom').value = '';
       }
     }
 
@@ -289,17 +286,14 @@ $(document).ready(function(){
     function setInfoWindow(overlay, callback){
       if(overlay.editable){
 
-        var deleteButton = document.createElement('button');
-        deleteButton.id = "delete-button";
-        deleteButton.type = "button";
-        deleteButton.className = "btn btn-small";
-        deleteButton.innerHTML = "Remove Overlay";
+        var removeOverlay = document.createElement('span');
+        removeOverlay.id = "remove-overlay";
+        removeOverlay.innerHTML = "Remove Overlay";
 
         var windowContent = document.createElement('div');
         windowContent.id = 'edit-overlay';
 
-        
-        windowContent.appendChild(deleteButton);
+        windowContent.appendChild(removeOverlay);
 
         callback(windowContent);
       }
@@ -332,13 +326,8 @@ $(document).ready(function(){
 
     function addInfoWindowListeners(polygon){
       if($('.editable-map').length){
-        google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
-          if(currentOverlay.id){
-               $.ajax({
-                  type: 'DELETE',
-                  url: "/areas/"+state+"/"+city+"/"+currentOverlay.id+'.json'
-                });   
-            }
+        google.maps.event.addDomListener(document.getElementById('remove-overlay'), 'click', function(){
+            
             infoWindow.close();
             deleteCurrentOverlay();
         });
@@ -361,18 +350,16 @@ $(document).ready(function(){
         downVote.show();
 
        
-        selectedName.removeClass('span3 offset4').addClass('span8');
-        selectedTally.removeClass('span1').addClass('row-fluid block');
+        selectedName.removeClass('span2 offset4').addClass('span8');
+        selectedTally.removeClass('span2').addClass('row-fluid block');
 
         var primaryArea = $('.primary').find('.area');
         var primaryTally = $('.primary').find('.area-tally');
         var primaryName = $('.primary').find('.area-name');
 
-        primaryTally.removeClass('row-fluid block').addClass('span1');
-        primaryName.addClass('span3 offset4');
+        primaryTally.removeClass('row-fluid block').addClass('span2');
+        primaryName.removeClass('span8').addClass('span2 offset4');
 
-
-        $('.primary').find('.area-name').addClass('span3 offset4');
         $('.primary').find('.area-up-vote').hide();
         $('.primary').find('.area-down-vote').hide();
 
@@ -395,8 +382,8 @@ $(document).ready(function(){
     }
 
     $('#show-more').on('click', function(){
-        $('.secondary').fadeIn('slow');
-        $('.add-area').fadeIn('slow');
+        $('.secondary').toggle('slow');
+        $('.add-area').toggle('slow');
       });
     
     $('#areas').on('click', '.secondary', function(){
@@ -449,7 +436,7 @@ $(document).ready(function(){
         var id = $(this).val();
         removeOverlays();
   
-        if(id == 0){
+        if(id == -1){
           $('#new_area_name').show();
           $('#area_the_geom').val('');
           map.panTo(marker.position);
@@ -469,9 +456,6 @@ $(document).ready(function(){
       }
 
     }
-
-
-
 
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();

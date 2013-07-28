@@ -12,8 +12,6 @@ class AreasController < ApplicationController
     @area= @areas.first
     @areas = @areas.drop(1)
     
- 
-
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @areas }
@@ -21,7 +19,8 @@ class AreasController < ApplicationController
   end
 
   def search
-    #Need to handle what happens when people have js disabled here
+    @area = Area.where("city ILIKE ?", "%#{params[:place]}%").first
+    redirect_to areas_path(@area.state, @area.city)
   end
 
   def vote_up
@@ -68,11 +67,10 @@ class AreasController < ApplicationController
     list = Area.tally.where("city = ?", @city).order("name ASC").having("COUNT(votes.id) = 0")
     if list.any?
       @select_list =[]
-      @select_list.push([' ', 'null'])
       list.each do |area|
         @select_list.push([area.name, area.id])
       end
-      @select_list.push(['- Other -', 0])
+      @select_list.push(['- Other -', -1])
     end
 
     respond_to do |format|
@@ -100,9 +98,10 @@ class AreasController < ApplicationController
   def create
     @existing_area = Area.find(params[:area][:id])
     if @existing_area
-      current_user.vote_for(@existing_area)
+     
       respond_to do |format|
-        if @existing_area.update_attributes(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
+        if @existing_area.update(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
+          current_user.vote_for(@existing_area)
           format.html { redirect_to areas_path(@existing_area.state, @existing_area.city), notice: 'Area was successfully added.' }
           format.json { head :no_content }
         else
@@ -134,7 +133,7 @@ class AreasController < ApplicationController
   def update
     @area = Area.find(params[:id])
     respond_to do |format|
-      if @area.update_attributes(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
+      if @area.update(:the_geom => params[:area][:the_geom])
         format.html { redirect_to @area, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else

@@ -42,11 +42,19 @@ li {
 }
 
 .no-padding{
-  padding:0;
+  padding:0 !important;
 }
 
+.no-margin{
+  margin:0 !important;
+}
 .navbar-fixed-top {
   z-index:999;
+}
+
+.navbar-inner{
+  background-image:none;
+  background-color: #fff;
 }
 /* typography */
 
@@ -66,7 +74,6 @@ h2 {
   letter-spacing: -1px;
   margin-bottom: 30px;
   text-align: center;
-  font-weight: normal;
   color: $grayLight;
 }
 
@@ -134,5 +141,5 @@ p {
 
 #footer{
   height:200px;
-  border-top:1px solid #ccc;
+
 }

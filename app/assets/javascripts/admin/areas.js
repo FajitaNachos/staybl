@@ -172,7 +172,7 @@ $(document).ready(function(){
 
       $.getJSON("/admin/areas/"+id+'.json', function(data) {
               $('#area-description').html(data.description);
-              console.log(data);
+              
               setPolygon(data);
               if(callback){
                 callback(data);
@@ -183,6 +183,18 @@ $(document).ready(function(){
 
     function setPolygon(data){
      
+      var polygon = data.the_geom.replace("POLYGON ((", "");
+          polygon = polygon.replace("))","");
+          polygon = polygon.split(',');
+          
+      var polygonPath = new Array();
+      for(var j=0; j<polygon.length;j++){
+        var point = polygon[j].trim().split(' ');
+    
+        var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
+
+        polygonPath.push(gPoint);
+      } 
 
       var polygon = new google.maps.Polygon({
           paths: polygonPath,
@@ -204,17 +216,15 @@ $(document).ready(function(){
           editable: true,
           clickable:true
         });
+
       }
       //add the polygon to the global polygon array
-      polygons[i] = polygon;
-     
-        map.fitBounds(polygon.getBounds());
+      polygons[data.id] = polygon;
 
-      google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
-        if(map.getZoom() >= 13){
-          map.setZoom(13);
-        } 
-      });
+      map.fitBounds(polygon.getBounds());
+     
+        
+
       google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
         setCoordinates(polygon);
       });
@@ -232,6 +242,16 @@ $(document).ready(function(){
           addInfoWindowListeners(polygon);
         });
       });
+
+        google.maps.event.addListener(polygon, 'rightclick', function(e){
+            if (e.vertex != null) {
+              polygon.getPath().removeAt(e.vertex);
+              console.log(polygon.getPaths());
+              setCoordinates(polygon);
+            }
+
+        });
+
     }
 
     function clearSelection() {
@@ -253,7 +273,7 @@ $(document).ready(function(){
          drawingManager.setOptions({
             drawingMode: google.maps.drawing.OverlayType.POLYGON
           });
-        document.getElementById('area_polygon').value = '';
+       $('#area_the_geom').value = '';
       }
     }
 
@@ -265,22 +285,19 @@ $(document).ready(function(){
         }
       }
     }
-      
+ 
 
     function setInfoWindow(overlay, callback){
       if(overlay.editable){
 
-        var deleteButton = document.createElement('button');
-        deleteButton.id = "delete-button";
-        deleteButton.type = "button";
-        deleteButton.className = "btn btn-small";
-        deleteButton.innerHTML = "Remove Overlay";
+        var removeOverlay = document.createElement('span');
+        removeOverlay.id = "remove-overlay";
+        removeOverlay.innerHTML = "Remove Overlay";
 
         var windowContent = document.createElement('div');
         windowContent.id = 'edit-overlay';
 
-        
-        windowContent.appendChild(deleteButton);
+        windowContent.appendChild(removeOverlay);
 
         callback(windowContent);
       }
@@ -312,19 +329,9 @@ $(document).ready(function(){
     }
 
     function addInfoWindowListeners(polygon){
-      if(document.getElementById('edit-overlay')){
-        google.maps.event.addListener(currentOverlay, 'rightclick', function(e){
-          if (e.vertex != null) {
-            selectedShape.getPath().removeAt(e.vertex);
-          }
-        });
-        google.maps.event.addDomListener(document.getElementById('delete-button'), 'click', function(){
-          if(currentOverlay.id){
-               $.ajax({
-                  type: 'DELETE',
-                  url: "/admin/areas/"+currentOverlay.id+'.json'
-                });   
-            }
+      if($('.editable-map').length){
+        google.maps.event.addDomListener(document.getElementById('remove-overlay'), 'click', function(){
+            
             infoWindow.close();
             deleteCurrentOverlay();
         });
@@ -430,27 +437,34 @@ $(document).ready(function(){
               break
           }  
     });
-
-    $('#area_id').on('change', function(){
+    if($('.editable-map').length){
+      $('#area_id').on('change', function(){
         var id = $(this).val();
-       removeOverlays();
+        removeOverlays();
   
-      if(id == 0){
-        $('#new_area_name').css('display','inline-block');
-        $('#area_the_geom').val('');
-        map.panTo(marker.position);
-      }
-      else{
-        $('#new_area_name').css('display','none');
-        
-        getArea(id, function(area){
+        if(id == -1){
+          $('#new_area_name').show();
+          $('#area_the_geom').val('');
+          map.panTo(marker.position);
+        }
+        else{
+          $('#new_area_name').css('display','none');
           
-           $('#area_the_geom').val(area.the_geom);
-        });
-       
+          getArea(id, function(area){
+            
+             $('#area_the_geom').val(area.the_geom);
+          });
+        }
+      });
 
+      if($('#area_id').length < 1){
+        $('#new_area_name').show();
       }
-    });
+
+    }
+
+
+
 
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();

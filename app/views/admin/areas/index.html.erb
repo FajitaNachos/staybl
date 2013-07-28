@@ -1,18 +1,42 @@
-<h1>Recently Updated Areas</h1>
+<div class= "container-fluid">
+  <h1>Staybl Areas</h1>
 
-<%= form_tag admin_areas_search_path, method: :get do %>
-  <%= text_field_tag :id %>
-  <%= submit_tag "Search" %>
-<% end %>
-  
-<% @admin_areas.each do |area| %>
-  <div class = "row-fluid">
-    <h3><%=area.name %></h3>  
-    <span><%= link_to 'Show', admin_area_path(area) %></span>
-    <span><%= link_to 'Edit', edit_admin_area_path(area) %></span>
-    <span><%= link_to 'Destroy', admin_area_path(area), method: :delete, data: { confirm: 'Are you sure?' } %></span>
+  <div id = "area-search" class = "row-fluid center">
+     <span class = "span4 offset4"> <%= form_tag admin_areas_search_path, :id => 'admin-area-search', method: :get do %>
+        <%= text_field_tag :id %>
+        <%= submit_tag "Search", :class => "btn"%>
+      <% end %>
+    </span>
+      <span class = "span1"> <%= link_to 'New Area', new_admin_area_path %></span>
   </div>
-<% end %>
 
+  <div class = "row-fluid">
+    <span class = "span4 offset1 center">
+      <h2> Recently Updated </h2>
+    
+      
+    <% @updated_areas.each do |area| %>
+      <div class = "row-fluid">
+        <h3><%=area.name %></h3>  
+        <span><%= link_to 'Show', admin_area_path(area) %></span>
+        <span><%= link_to 'Edit', edit_admin_area_path(area) %></span>
+        <span><%= link_to 'Destroy', admin_area_path(area), method: :delete, data: { confirm: 'Are you sure?' } %></span>
+      </div>
+    <% end %>
+    </span>
+    <span class = "span4 offset1 center">
+      <h2> Recently Added </h2>
+    <% @new_areas.each do |area| %>
+      <div class = "row-fluid">
+        <h3><%=area.name %></h3>  
+        <span><%= link_to 'Show', admin_area_path(area) %></span>
+        <span><%= link_to 'Edit', edit_admin_area_path(area) %></span>
+        <span><%= link_to 'Destroy', admin_area_path(area), method: :delete, data: { confirm: 'Are you sure?' } %></span>
+      </div>
+    <% end %>
+    
+    </span>
 
-<%= link_to 'New Area', new_admin_area_path %>
+  </div>
+</div>
+

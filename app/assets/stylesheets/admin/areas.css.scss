@@ -7,9 +7,20 @@
 }
 
 #map{
-  margin-top: 10%;
+ border-top:1px solid #555;
+ border-bottom:1px solid #555;
 }
 
+#area-search {
+  margin-bottom:20px%;
+}
+
+#area-search input[type='text'] {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  height:30px;
+  margin:0;
+}
 //fixes distorted scroll bar on map
 #map img, #edit-map img, #new-map img { max-width: none; }
 
@@ -78,6 +89,8 @@
   display:block;
   clear:both;
 }
+
+
 
 #area-info {
   margin-top:3%;

@@ -1,7 +1,7 @@
-<%= form_for([:admin,@admin_area]) do |f| %>
+<%= form_for([:admin, @admin_area]) do |f| %>
   <% if @admin_area.errors.any? %>
     <div id="error_explanation">
-      <h2><%= pluralize(@admin_area.errors.count, "error") %> prohibited this admin_area from being saved:</h2>
+      <h2><%= pluralize(@admin_area.errors.count, "error") %> prohibited this area from being saved:</h2>
 
       <ul>
       <% @admin_area.errors.full_messages.each do |msg| %>
@@ -11,7 +11,46 @@
     </div>
   <% end %>
 
-  <div class="actions">
-    <%= f.submit %>
+  <% if @admin_area.city %>
+    <%= f.hidden_field :city, :value => @admin_area.city %>
+  <% else %>
+    <%= f.hidden_field :city, :value => @city %>
+  <% end %>
+
+  <%= f.hidden_field :the_geom %>
+
+  <% if @admin_area.name.nil? %>
+    <div class="row-fluid">
+      <div class = "form-element">
+        <%= f.label :area_name %>
+        <% if @select_list %>
+        <%= f.select :id, options_for_select(@select_list) %>
+        <% end%>
+         <span id="new_area_name" class="hide">
+          <%= f.text_field :name, :placeholder => " " %>
+        </span>
+      </div>
+    </div>
+  <%end%>
+
+  <div class = "row-fluid">
+    <div class = "form-element">
+      <%= f.label :area_description %>
+      <%= f.text_area :description %>
+    </div>
   </div>
+  <div class="row-fluid">
+     <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@admin_area.id, :state =>@state, :city => @city} do %>
+        <div id = "map-canvas">
+        </div>
+      <%end%>
+    </div>
+  
+
+  <div class="row-fluid">
+    <div class="actions center area-submit">
+        <%= f.submit(:value => 'Update Area', :class=>'btn') %>
+    </div>
+  </div>
+
 <% end %>

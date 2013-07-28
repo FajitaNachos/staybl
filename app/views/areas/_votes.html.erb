@@ -2,17 +2,14 @@
 <%if primary %>
   <div class="area row-fluid">
     <span class = "span2 center area-up-vote">
-      <%= link_to "up vote", vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user &&current_user.voted_for?(area) ? 'up-vote upvoted ' : 'up-vote' %>
+      <%= link_to "up vote", vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user &&current_user.voted_for?(area) ? 'upvote upvoted ' : 'upvote' %>
     </span>
         <span class = "span8 area-name">
         <h2><%= area.name %></h2>
-         <% if administrator_signed_in? %>
-            <%= link_to "edit", edit_area_path(area.state, area.city,area) %>
-         <% end %>
         </span>
 
     <span class = "span2 center area-down-vote">
-      <%= link_to "down vote", vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
+      <%= link_to "down vote", vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' downvote downvoted' : 'downvote' %>
     </span>
     <span class = "row-fluid block area-tally">
           <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
@@ -23,20 +20,17 @@
 <% else %>
   <div class = "area row-fluid">
       <span class = "span2 center hide area-up-vote">
-          <%= link_to "up vote", vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_for?(area) ? 'up-vote upvoted ' : 'up-vote' %>
+          <%= link_to "up vote", vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_for?(area) ? 'upvote upvoted ' : 'upvote' %>
       </span>
-        <span class="span3 offset4 area-name">
+        <span class="span2 offset4 area-name">
           <h2><%= area.name %></h2>
-          <% if administrator_signed_in? %>
-              <%= link_to "edit", edit_area_path(area.state, area.city,area) %>
-          <% end %>
         </span>
         
       <span class = "span2 center hide area-down-vote">
-          <%= link_to "down vote", vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' down-vote downvoted' : 'down-vote' %>
+          <%= link_to "down vote", vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' downvote downvoted' : 'downvote' %>
       </span>
 
-        <span class="span1 area-tally">
+        <span class="span2 area-tally">
           <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
         </span>
      

@@ -20,33 +20,39 @@
   <%= f.hidden_field :the_geom %>
 
   <% if @area.name.nil? %>
-    <div class="row-fluid">
+    <div class="row-fluid select-area">
       <div class = "form-element">
-        <%= f.label :area_name %>
         <% if @select_list %>
-        <%= f.select :id, options_for_select(@select_list) %>
+        <%= f.select :id, options_for_select(@select_list), :prompt => "Choose an area" %>
         <% end%>
          <span id="new_area_name" class="hide">
+            <h3> Suggest a new area to stay </h3>
           <%= f.text_field :name, :placeholder => " " %>
         </span>
       </div>
      
     </div>
   <%end%>
-
+  <div id = "instructions" class = "row-fluid">
+    <span class = "span6 offset3">
+        <p>
+        Help us improve our area maps by dragging the points on the map below to the correct positions. You can also remove points by right clicking on them. 
+        </p>
+      </span>
+  </div>
   <div class="row-fluid">
-    
      <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@area.id, :state =>@state, :city => @city} do %>
-        <h2>The Map</h2>
         <div id = "map-canvas">
         </div>
       <%end%>
-    </div>
+ </div>
   
 
   <div class="row-fluid">
     <div class="actions center area-submit">
-        <%= f.submit(:value => 'Add Area', :class=>'btn') %>
+       <%= link_to 'Go Back', areas_path(@state, @city), :id => 'return-area',:method => :get, :class=>'btn btn-large' %>
+        <%= f.submit(:value => 'Recommend This Area', :class=>'btn btn-large') %>
+
     </div>
   </div>
 

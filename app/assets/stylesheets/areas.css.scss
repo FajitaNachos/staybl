@@ -10,7 +10,9 @@
 #map img, #edit-map img, #new-map img { max-width: none; }
 
 #map-canvas{
-  height:600px;
+  height:550px;
+  border-top:1px solid #555;
+  border-bottom: 1px solid #555
 }
 
 #area-list{
@@ -22,52 +24,126 @@
   width:100%;
 }
 
-#areas h1{
+#new-area h1, #edit-area h1 {
+  padding-top: 1em;
+  padding-bottom: .5em;
+  font-weight: normal;
+  color: #707070;
+}
+
+
+#remove-overlay{
+  text-decoration:underline;
+}
+
+#remove-overlay:hover{
+  cursor:pointer;
+}
+
+#new-area select{
+ 
+  font-size:18px;
+ 
+}
+
+#new-area input[type='text']{
+  font-size: 30px;
+   box-sizing:border-box;
+  -moz-box-sizing:border-box; /* Firefox */
+}
+
+.primary{
+  background-color:#42AAE8;
+  cursor:default;
+  border-top:1px solid #555;
+  padding: 60px 20px 30px 20px;
+}
+
+#areas-container h1, #area-info h2{
   padding-top:1em;
   padding-bottom:.5em;
   font-weight:normal; 
+  color:#707070;
 }
 
+#area-info h2{
+  font-size: 2.2em;
+}
+
+.select-area {
+  margin-bottom:6%;
+}
+
+#area_id, #area_name {
+    width:100%;
+    height:50px;
+}
 .first-area{
-  padding-top:2.5em;
+  padding-top:10%;
+  font-size:20px;
+
 }
 
 .primary, .secondary {
   text-decoration:none;
 }
 
-.primary{
-  cursor:default;
-  border-top:1px solid #ccc;
-  border-bottom:1px solid #ccc;
-  padding:6em;
+#show-more{
+  background-color:#42AAE8;
+  padding-bottom:2px;
+  a {
+    color:#fff;
+    padding-left:20px;
+  }
 }
 
+.add-area{
+  display:none;
+  font-size:1.25em;
+  margin: 1em 0;
+}
 .primary h2{
-  color:#333;
+  color:#fff;
   font-size: 6em;
   margin:0;
+  text-shadow: 1px 1px 2px #444;
 }
 
-.area-tally{
+.primary .area-tally{
   text-align:center;
+  padding-top:20px;
+  color:#fff;
+  text-shadow: 1px 1px 2px #444;
+}
+
+.secondary h3{
+  font-size:1.2em;
+  line-height:2.4em;
+  padding-top:.5em;
+  color: #777;
+  font-weight: normal;
+}
+
+.secondary h2 {
+  color: #777;
+  font-size:2.4em;
+  line-height:1em;
+  margin: .6em 0 .6em 0;
+  font-weight:normal;
 }
 
 .secondary{
   cursor:pointer;
+  border-top:1px solid #555;
   display:none;
+  
 }
 
-.secondary h3{
-  font-weight:normal;
-  font-size:1em;
-}
 #show-more{
   cursor:pointer;
-}
-
-.add-area {
-  display:none;
+  padding: 4px 0px 0 20px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #444;
 }
 
 .block{
@@ -103,4 +179,12 @@
 
 .area-submit{
   padding-top:1%;
+}
+
+.upvote, .downvote{
+  color:#fff;
+}
+
+.upvoted, .downvoted {
+  color: #000;
 }
