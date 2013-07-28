@@ -6,29 +6,24 @@
     </h1>
  
     <%= render 'list' %>
+    <% if @area %>
+      <div id = "area-info" class = "row-fluid">
+        <% if @area.description %>
+        <div id="area-description" class="row-fluid">
+          <h2>About The Area</h2>
+          <p>
+            <%= @area.description %>
 
-    <%= content_tag :div, :id => 'map', :data => {:id => @area.id, :state => @state, :city => @city} do %>
-        <div id = "map-canvas">
+          </p>
         </div>
-      <%end%>
-
-    <div id = "area-info" class = "row-fluid">
-      <div id="area-description" class="row-fluid span6 offset3">
-        <h2>About The Area</h2>
-        <p>
-          <%= @area.description %>
-        </p>
+        <% end %>
+         <%= content_tag :div, :id => 'map', :data => {:id => @area.id, :state => @state, :city => @city} do %>
+          <div id = "map-canvas">
+          </div>
+        <%end%>
+        
       </div>
-      <div id = "area-photographs" class = "row-fluid">
-      </div>
-      <div id = "area-accomodations" class = "row-fluid">
-        <h2> Places To Stay </h2>
-      </div>
-      <div id = "area-transportation" class = "row-fluid">
-        <h2> Getting Around </h2>
-      </div>
-      
-    </div>
+    <%end%>
 
     <div class="modal hide" id="modal-login">
       <div class="modal-header">

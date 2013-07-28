@@ -4,16 +4,19 @@
     <span class = "span2 center area-up-vote">
       <%= link_to "up vote", vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user &&current_user.voted_for?(area) ? 'upvote upvoted ' : 'upvote' %>
     </span>
-        <span class = "span8 area-name">
-        <h2><%= area.name %></h2>
+        <span class = "span8">
+          <span class = "area-name">
+            <h2><%= area.name %></h2>
+          </span>
+          <span class = "row-fluid block area-tally">
+            <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
+          </span>
         </span>
 
     <span class = "span2 center area-down-vote">
       <%= link_to "down vote", vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' downvote downvoted' : 'downvote' %>
     </span>
-    <span class = "row-fluid block area-tally">
-          <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
-    </span>
+    
 
   </div>
 
@@ -22,17 +25,18 @@
       <span class = "span2 center hide area-up-vote">
           <%= link_to "up vote", vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_for?(area) ? 'upvote upvoted ' : 'upvote' %>
       </span>
-        <span class="span2 offset4 area-name">
-          <h2><%= area.name %></h2>
+        <span class="span8">
+          <span class="span2 offset4 area-name center">
+            <h2><%= area.name %></h2>
+          </span>
+          <span class="span2 center area-tally">
+            <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
+          </span>
         </span>
         
       <span class = "span2 center hide area-down-vote">
           <%= link_to "down vote", vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_user && current_user.voted_against?(area) ? ' downvote downvoted' : 'downvote' %>
       </span>
-
-        <span class="span2 area-tally">
-          <h3><%= pluralize(area.plusminus, 'vote') %> </h3>
-        </span>
      
   </div>
 

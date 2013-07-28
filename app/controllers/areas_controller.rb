@@ -7,9 +7,7 @@ class AreasController < ApplicationController
     @city = params[:city]
     @state = params[:state]
     @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
-
-  
-    @area= @areas.first
+    @area = @areas.first
     @areas = @areas.drop(1)
     
     respond_to do |format|

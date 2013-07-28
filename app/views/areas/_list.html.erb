@@ -15,16 +15,19 @@
           <% end %>
         <% end %>
     <%end%>
-     <li class='center add-area'><%= link_to "New Area" ,new_area_path(:city => @city) %></li>
+     
   </ul>
-   <div class="row-fluid">
-        <span id = "show-more" class="span12">View More</span>
+   <div id = "additional-areas" class="row-fluid">
+        <span id = "show-more" class = "span2">View More</span>
+        <span id = "add-area" class = "span2 offset8">
+          <li class='center add-area'><%= link_to "New Area" ,new_area_path(:city => @city) %></li>
+        </span>
     </div>
   <%else%>
     <div class='primary'>
       <li><h2>still up for grabs</h2></li>
+      <li class='center first-area'><%= link_to "Tell us where you like to stay." ,new_area_path(:city => @city) %></li>
     </div>
-    <li class='center first-area'><%= link_to "Tell us where you like to stay." ,new_area_path(:city => @city) %></li>
   <%end%>
 </div>
   

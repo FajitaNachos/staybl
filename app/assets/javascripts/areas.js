@@ -168,7 +168,7 @@ $(document).ready(function(){
     function getArea(id, callback){
 
       $.getJSON("/areas/"+state+"/"+city+"/"+id+'.json', function(data) {
-              $('#area-description').html(data.description);
+              
               
               setPolygon(data);
               if(callback){
@@ -350,7 +350,7 @@ $(document).ready(function(){
         downVote.show();
 
        
-        selectedName.removeClass('span2 offset4').addClass('span8');
+        selectedName.removeClass('span2 offset4');
         selectedTally.removeClass('span2').addClass('row-fluid block');
 
         var primaryArea = $('.primary').find('.area');
@@ -358,7 +358,7 @@ $(document).ready(function(){
         var primaryName = $('.primary').find('.area-name');
 
         primaryTally.removeClass('row-fluid block').addClass('span2');
-        primaryName.removeClass('span8').addClass('span2 offset4');
+        primaryName.addClass('span2 offset4');
 
         $('.primary').find('.area-up-vote').hide();
         $('.primary').find('.area-down-vote').hide();
@@ -375,15 +375,15 @@ $(document).ready(function(){
 
         ul.append(li);
         $('.secondary').hide();
-        $('.add-area').hide();
+        $('#add-area').hide();
 
         getArea(currentId);
 
     }
 
     $('#show-more').on('click', function(){
-        $('.secondary').toggle('slow');
-        $('.add-area').toggle('slow');
+        $('.secondary').slideToggle('slow');
+        $('#add-area').toggle();
       });
     
     $('#areas').on('click', '.secondary', function(){
@@ -459,7 +459,7 @@ $(document).ready(function(){
 
     $('#areas').on('click', '.primary', function(){
       $('.secondary').hide();
-      $('.add-area').hide();
+      $('#add-area').hide();
     });
     initialize();
   }
