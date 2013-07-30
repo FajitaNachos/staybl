@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_filter :authenticate_user!, :except => [:index, :show]
+  before_filter :authenticate_user!, :except => [:index, :show,]
 
   # GET /areas
   # GET /areas.json
@@ -25,9 +25,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_for?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_for(@area)
-        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true }, :status => 200
+        render :partial => 'areas/tally', :layout => false, :locals => { :area => @area}, :status => 200
     rescue ActiveRecord::RecordInvalid
-        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true }, :status => 404
+        render :partial => 'areas/tally', :layout => false, :locals => { :area => @area}, :status => 404
     end
   end
 
@@ -36,14 +36,11 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_against?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_against(@area)
-        render :partial => 'areas/votes',:layout => false, :locals => { :area => @area, :primary => true } , :status => 200
+        render :partial => 'areas/tally',:layout => false, :locals => { :area => @area} , :status => 200
     rescue ActiveRecord::RecordInvalid
-        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true }, :status => 404
+        render :partial => 'areas/tally', :layout => false, :locals => {:area => @area}, :status => 404
     end
   end
-
-
-
 
   # GET /areas/1
   # GET /areas/1.json
@@ -62,14 +59,6 @@ class AreasController < ApplicationController
     @city = params[:city]
     @state = params[:state]
     @area = Area.new
-    list = Area.tally.where("city = ?", @city).order("name ASC").having("COUNT(votes.id) = 0")
-    if list.any?
-      @select_list =[]
-      list.each do |area|
-        @select_list.push([area.name, area.id])
-      end
-      @select_list.push(['- Other -', -1])
-    end
 
     respond_to do |format|
       format.html # new.html.erb
@@ -94,35 +83,18 @@ class AreasController < ApplicationController
   # POST /areas
 
   def create
-    @existing_area = Area.find(params[:area][:id])
-    if @existing_area
-     
-      respond_to do |format|
-        if @existing_area.update(:description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
-          current_user.vote_for(@existing_area)
-          format.html { redirect_to areas_path(@existing_area.state, @existing_area.city), notice: 'Area was successfully added.' }
-          format.json { head :no_content }
-        else
-          format.html { render action: "new" }
-          format.json { render json: @area.errors, status: :unprocessable_entity }
-        end
-      end 
-    else
 
-    end
-
-    rescue ActiveRecord::RecordNotFound
-      @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :city => params[:area][:city])
+      @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :state => params[:area][:state], :city => params[:area][:city])
       respond_to do |format|
         if @area.save
-          format.html { redirect_to @area, notice: 'Area was successfully added.' }
+          current_user.vote_for(@area)
+          format.html { redirect_to areas_path, notice: 'Area was successfully added.' }
           format.json { render json: @area, status: :created, location: @area }
         else
           format.html { render action: "new" }
           format.json { render json: @area.errors, status: :unprocessable_entity }
         end
       end
-
   end
 
 

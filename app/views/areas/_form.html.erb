@@ -15,44 +15,56 @@
     <%= f.hidden_field :city, :value => @area.city %>
   <% else %>
     <%= f.hidden_field :city, :value => @city %>
-  <% end %>
 
+  <% end %>
+  <%= f.hidden_field :state, :value => @state %>
   <%= f.hidden_field :the_geom %>
 
   <% if @area.name.nil? %>
-    <div class="row-fluid select-area">
-      <div class = "form-element">
-        <% if @select_list %>
-        <%= f.select :id, options_for_select(@select_list), :prompt => "Choose an area" %>
-        <% end%>
-         <span id="new_area_name" class="hide">
-            <h3> Suggest a new area to stay </h3>
-          <%= f.text_field :name, :placeholder => " " %>
+    <div id = "new_area_name" class="row-fluid">
+         <span class="span8 offset2">
+            <h2> Area Name</h2>
+            <%= f.text_field :name, :placeholder => " " %>
         </span>
-      </div>
-     
     </div>
   <%end%>
-  <div id = "instructions" class = "row-fluid">
-    <span class = "span6 offset3">
-        <p>
-        Help us improve our area maps by dragging the points on the map below to the correct positions. You can also remove points by right clicking on them. 
-        </p>
-      </span>
-  </div>
-  <div class="row-fluid">
+  
+
+      <div id = "edit-instructions" class = "row-fluid">
+      <span class = "span8 offset2">
+          <h2> Area Map </h2>
+          <p>
+          Edit the area below by dragging any of the points to a new location. To remove a point, right-click on it. When you are finished, click on 'Save Area'.  
+          </p>
+        </span>
+    </div>
+     <div id = "new-instructions" class = "row-fluid">
+      <span class = "span8 offset2">
+          <h2> Area Map </h2>
+          <p>
+          Help us put this area on the map. First, find the area on the map that you would like to highlight. Then click on Start Drawing in the top right corner. Now, click on the map to add your first point. You can add as many or as few points as you like, as long as the area is fully outlined when you are done. 
+          </p>
+        </span>
+    </div>
      <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@area.id, :state =>@state, :city => @city} do %>
         <div id = "map-canvas">
         </div>
       <%end%>
- </div>
+
+    <div class= "row-fluid">
+        <span class="span8 offset2">
+            <h2> About the Area (Optional)</h2>
+            <p>
+              Here you can share your knowledge of the area. We depend on both locals and frequent visitors to help us find the best areas to stay. We'll use your input to help build a comprehensive guide of the best areas to stay in <%= @city %>.  
+            </p>
+          <%= f.text_area :description, :placeholder => " " %>
+        </span>
+    </div>
   
 
   <div class="row-fluid">
     <div class="actions center area-submit">
-       <%= link_to 'Go Back', areas_path(@state, @city), :id => 'return-area',:method => :get, :class=>'btn btn-large' %>
-        <%= f.submit(:value => 'Recommend This Area', :class=>'btn btn-large') %>
-
+        <%= f.submit(:value => 'Save This Area', :class=>'btn btn-large') %>
     </div>
   </div>
 

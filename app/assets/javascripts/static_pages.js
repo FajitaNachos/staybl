@@ -47,18 +47,19 @@ $(document).ready(function(){
     google.maps.event.addListener(autocomplete, "place_changed", function() {
         var place = autocomplete.getPlace();
         var components = place.address_components;
-
-      for (var i =0; i<components.length;i++){
-        for(var j=0;j<components[i].types.length;j++){
-            if (components[i].types[j] == "administrative_area_level_1"){
-                var state = components[i].short_name;
+        if(components){
+          for (var i =0; i<components.length;i++){
+            for(var j=0;j<components[i].types.length;j++){
+                if (components[i].types[j] == "administrative_area_level_1"){
+                    var state = components[i].short_name;
+                }
+                else if(components[i].types[j]== "locality"){
+                    var city = components[i].long_name;
+                   
+                }
             }
-            else if(components[i].types[j]== "locality"){
-                var city = components[i].long_name;
-               
-            }
+          }
         }
-      }
       params = true;
       $("#home-search").attr("action", "/areas/" + state + "/"+ city+"/");
       $("#home-search").submit();

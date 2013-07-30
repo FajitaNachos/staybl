@@ -6,6 +6,10 @@
     width:100%;
 }
 
+.editable-map{
+  margin: 1em 0;
+}
+
 //fixes distorted scroll bar on map
 #map img, #edit-map img, #new-map img { max-width: none; }
 
@@ -15,21 +19,6 @@
   border-bottom: 1px solid #555
 }
 
-#area-list{
-  margin:0;
-  padding:0;
-}
-
-#new_area_name{
-  width:100%;
-}
-
-#new-area h1, #edit-area h1 {
-  padding-top: 1em;
-  padding-bottom: .5em;
-  font-weight: normal;
-  color: #707070;
-}
 
 
 #remove-overlay{
@@ -40,11 +29,6 @@
   cursor:pointer;
 }
 
-#new-area select{
- 
-  font-size:18px;
- 
-}
 
 #new-area input[type='text']{
   font-size: 30px;
@@ -74,22 +58,29 @@
   font-size: 2.2em;
 }
 
-.select-area {
-  margin-bottom:6%;
-}
 
 #area_id, #area_name {
     width:100%;
     height:50px;
 }
 .first-area{
-  padding-top:10%;
+  padding-top:7%;
   font-size:20px;
 }
 
 .first-area a{
   color: #fff;
-  text-shadow: 1px 1px 2px #444;
+  text-shadow: 1px 1px 1px #777;
+}
+
+#area-list{
+  margin:0;
+  padding:0;
+}
+
+
+.area-up-vote, .area-down-vote {
+  margin-top:12px;
 }
 
 .first-area a:hover{
@@ -100,17 +91,18 @@
 }
 
 .secondary h2 {
-  margin: 1em 0;
+  margin: 1em 0 0 0;
   font-size: 2.25em;
   color: #444;
   font-weight:normal;
 }
 
 .secondary h3 {
-  font-size: 1.6em;
-  margin: 1.65em 0;
+  font-size: 1.4em;
+  text-align:center;
   color: #444;
   font-weight:normal;
+  margin-bottom: 1em;
 }
 
 #additional-areas{
@@ -128,7 +120,7 @@
   text-shadow: 1px 1px 2px #444;
 }
 
-.primary .area-tally{
+.primary h3{
   text-align:center;
   padding-top:20px;
   color:#fff;
@@ -155,7 +147,7 @@
 }
 
 #add-area{
-  display:none;
+  
 }
 
 .block{
@@ -164,7 +156,11 @@
 }
 
 #area-info {
-  margin-top:10%;
+  margin-top:2%;
+}
+
+#area-info h2{
+  padding-bottom:0;
 }
 
 #area-description{
@@ -201,3 +197,75 @@
 .upvoted, .downvoted {
   color: #000;
 }
+
+
+/* New Areas */
+
+#new-area h2 {
+  font-weight:normal;
+  text-align:left;
+  margin: 2em 0 1em 0;
+  color: #707070;
+}
+
+#edit-instructions, #new-instructions{
+  display:none;
+ 
+
+}
+
+.area-submit{
+  margin: 1em 0;
+}
+
+
+#area_description {
+  width:100%;
+  margin-top: 20px;
+}
+
+#new_area_name{
+  width:100%;
+}
+
+#new-area h1, #edit-area h1 {
+  padding-top: 1em;
+  font-weight: normal;
+  margin-bottom:0;
+  color: #707070;
+}
+
+
+.control-container{
+  margin:5px;
+  cursor:pointer;
+
+}
+
+.map-control{
+  font-family: Roboto,Arial,sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  direction: ltr;
+  text-align: center;
+  color: rgb(0, 0, 0);
+  font-family: Roboto, Arial, sans-serif;
+  -webkit-user-select: none;
+  font-size: 11px;
+  background-color: rgb(255, 255, 255);
+  padding: 1px 6px;
+  border-radius: 2px;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.14902);
+  -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+  width:80px;
+}
+
+.map-control:hover{
+  background-color: rgb(235,235,235);
+}
+
+
+

@@ -9,19 +9,20 @@
     <% if @area %>
       <div id = "area-info" class = "row-fluid">
         <% if @area.description %>
-        <div id="area-description" class="row-fluid">
-          <h2>About The Area</h2>
-          <p>
-            <%= @area.description %>
-
-          </p>
-        </div>
+          <div id="area-description" class="row-fluid">
+            <span class = "span8 offset2">
+              <h2>About The Area</h2>
+              <p>
+                <%= @area.description %>
+              </p>
+            </span>
+          </div>
         <% end %>
          <%= content_tag :div, :id => 'map', :data => {:id => @area.id, :state => @state, :city => @city} do %>
+           <h2>Area Map </h2>
           <div id = "map-canvas">
           </div>
         <%end%>
-        
       </div>
     <%end%>
 
