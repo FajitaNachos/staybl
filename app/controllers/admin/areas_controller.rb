@@ -62,7 +62,7 @@ class Admin::AreasController < Admin::BaseController
   # POST /admin/areas
   # POST /admin/areas.json
   def create
-    @admin_area = Area.new(params[:admin_area])
+    @admin_area = Area.new(area_params)
 
     respond_to do |format|
       if @admin_area.save
@@ -80,7 +80,7 @@ class Admin::AreasController < Admin::BaseController
   def update
     @admin_area = Area.find(params[:id])
     respond_to do |format|
-       if @admin_area.update(:description => params[:area][:description], :the_geom => params[:area][:the_geom])
+       if @admin_area.update(area_params)
         format.html { redirect_to [:admin, @admin_area], notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else
@@ -101,4 +101,9 @@ class Admin::AreasController < Admin::BaseController
       format.json { head :no_content }
     end
   end
+
+  def area_params
+    params.require(:area).permit(:name, :the_geom, :description, :city, :state)
+  end
+
 end

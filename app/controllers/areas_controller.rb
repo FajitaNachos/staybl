@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_filter :authenticate_user!, :except => [:index, :show,]
+  before_action :authenticate_user!, :except => [:index, :show,]
 
   # GET /areas
   # GET /areas.json
@@ -84,7 +84,7 @@ class AreasController < ApplicationController
 
   def create
 
-      @area = Area.new(:name => params[:area][:name], :description => params[:area][:description], :the_geom => params[:area][:the_geom], :state => params[:area][:state], :city => params[:area][:city])
+      @area = Area.new(area_params)
       respond_to do |format|
         if @area.save
           current_user.vote_for(@area)
@@ -103,7 +103,7 @@ class AreasController < ApplicationController
   def update
     @area = Area.find(params[:id])
     respond_to do |format|
-      if @area.update(:the_geom => params[:area][:the_geom])
+      if @area.update(area_params)
         format.html { redirect_to @area, notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else
@@ -116,12 +116,17 @@ class AreasController < ApplicationController
   # DELETE /areas/1
   # DELETE /areas/1.json
   def destroy
-    @area = Area.find(params[:id])
+    @area = Area.find(area_params)
     @area.destroy
 
     respond_to do |format|
       format.html { redirect_to areas_url }
       format.json { head :no_content }
     end
+  end
+
+
+  def area_params
+    params.require(:area).permit(:name, :the_geom, :description, :city, :state)
   end
 end

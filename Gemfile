@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.13'
+gem 'rails', '4.0.0'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -8,12 +8,15 @@ gem 'rails', '3.2.13'
 gem 'pg', '~> 0.15.1'
 gem 'bootstrap-sass', '~>2.3.1'
 gem 'jquery-rails', '~> 2.2.1'
-gem 'devise', '~> 2.2.4'
+gem 'devise', '~> 3.0.0.rc'
 gem "activerecord-postgis-adapter", "~> 0.6.4"
 gem "rgeo", "~> 0.3.20"
 gem "thumbs_up", "~> 0.6.5"
 
-
+# Added when updating to Rails 4
+gem 'rails-observers'
+gem 'actionpack-page_caching'
+gem 'actionpack-action_caching'
 
 
 group :development, :test do
@@ -25,18 +28,13 @@ group :development, :test do
   gem 'spork', '~>0.9.2'
 end
 
-
-# Gems used only for assets and not required
-# in production environments by default.
-group :assets do
-  gem 'sass-rails',   '~> 3.2.6'
-  gem 'coffee-rails', '~> 3.2.2'
+  gem "sass-rails", "~> 4.0.0"
+  gem "coffee-rails", "~> 4.0.0"
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
+  gem "uglifier", "~> 2.1.2"
 
-  gem 'uglifier', '~> 2.1.1'
-end
 
 group :test do
   gem 'capybara', '~>2.1.0'
