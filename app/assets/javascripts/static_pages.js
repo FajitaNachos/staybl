@@ -45,24 +45,28 @@ $(document).ready(function(){
 
     //Submit the form when a user selects an option from the autocomplete list
     google.maps.event.addListener(autocomplete, "place_changed", function() {
-        var place = autocomplete.getPlace();
+      var place = autocomplete.getPlace();
+     
+      if(place){
         var components = place.address_components;
-        if(components){
           for (var i =0; i<components.length;i++){
             for(var j=0;j<components[i].types.length;j++){
-                if (components[i].types[j] == "administrative_area_level_1"){
-                    var state = components[i].short_name;
-                }
-                else if(components[i].types[j]== "locality"){
-                    var city = components[i].long_name;
-                   
-                }
+              if (components[i].types[j] == "administrative_area_level_1"){
+                  var state = components[i].short_name;
+              }
+              else if(components[i].types[j]== "locality"){
+                  var city = components[i].long_name;
+              }
             }
           }
-        }
-      params = true;
-      $("#home-search").attr("action", "/areas/" + state + "/"+ city+"/");
-      $("#home-search").submit();
+        params = true;
+        $("#home-search").attr("action", "/areas/" + state + "/"+ city+"/");
+        $("#home-search").submit();
+      }
+      else{
+        params = true;
+        $("#home-search").submit();
+      }
     });
 
     $('#home-search').on("submit", function(event){

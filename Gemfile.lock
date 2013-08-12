@@ -1,3 +1,11 @@
+GIT
+  remote: git://github.com/sporkrb/spork-rails.git
+  revision: 3224f84d8c31fcb0894e9a43f6c3ac67e3aa0d71
+  specs:
+    spork-rails (3.2.1)
+      rails (>= 3.0.0, < 5)
+      spork (>= 1.0rc0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -165,7 +173,7 @@ GEM
       rubyzip
       websocket (~> 1.0.4)
     slop (3.4.6)
-    spork (0.9.2)
+    spork (1.0.0rc3)
     sprockets (2.10.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -220,6 +228,7 @@ DEPENDENCIES
   rspec-rails (~> 2.13.2)
   sass-rails (~> 4.0.0)
   selenium-webdriver (~> 2.33.0)
-  spork (~> 0.9.2)
+  spork (~> 1.0.0rc3)
+  spork-rails!
   thumbs_up (~> 0.6.5)
   uglifier (~> 2.1.2)

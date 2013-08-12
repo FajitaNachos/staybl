@@ -25,7 +25,8 @@ group :development, :test do
   gem "rb-fsevent", "~> 0.9.3", :require => false
   gem 'guard-spork', '~>1.5.0'
   gem 'childprocess', '~>0.3.9'
-  gem 'spork', '~>0.9.2'
+  gem 'spork', '~>1.0.0rc3'
+  gem 'spork-rails', :github => 'sporkrb/spork-rails'
 end
 
   gem "sass-rails", "~> 4.0.0"

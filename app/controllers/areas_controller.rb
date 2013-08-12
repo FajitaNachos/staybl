@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_action :authenticate_user!, :except => [:index, :show,]
+  before_action :authenticate_user!, :except => [:index, :show, :search]
 
   # GET /areas
   # GET /areas.json
@@ -17,8 +17,12 @@ class AreasController < ApplicationController
   end
 
   def search
+    if params[:place].empty?
+      redirect_to root_path, :alert => "Please enter a city"
+    else
     @area = Area.where("city ILIKE ?", "%#{params[:place]}%").first
     redirect_to areas_path(@area.state, @area.city)
+    end
   end
 
   def vote_up
