@@ -8,8 +8,8 @@ feature 'Visitor searches for a city' do
   end
   scenario 'with valid search form' do 
    
-    fill_in 'place', :with => 'Chicago'
-    click_button "Search"
+    fill_in 'city', :with => 'Chicago'
+    click_button "search"
     expect(page).to have_content('Chicago')
 
   end

@@ -1,14 +1,14 @@
 $(document).ready(function(){
  //only loads this js if we are on the home page
   var params = false;
-  var place = document.getElementById('place');
-  if (place) {
+  var city = document.getElementById('city');
+  if (city) {
 
     // Set options for the autocomplete
     var options = {
-      types: ["(cities)"],
+      types: ["(cities)"]
     };
-    var pac_input = document.getElementById('place');
+    var pac_input = document.getElementById('city');
 
     (function pacSelectFirst(input) {
         // store the original event binding function
@@ -41,32 +41,19 @@ $(document).ready(function(){
 
     })(pac_input);
     
-    var autocomplete = new google.maps.places.Autocomplete(place, options);
+    var autocomplete = new google.maps.places.Autocomplete(city, options);
 
     //Submit the form when a user selects an option from the autocomplete list
     google.maps.event.addListener(autocomplete, "place_changed", function() {
-      var place = autocomplete.getPlace();
+      var city = autocomplete.getPlace();
+      console.log(city);
+      if(city){
+        var data = parseCityData(city);
+        params = true;
+        $("#home-search").attr("action", "/areas/" + data.state + "/"+ data.name+"/");
+        $("#home-search").submit();
+      }
      
-      if(place){
-        var components = place.address_components;
-          for (var i =0; i<components.length;i++){
-            for(var j=0;j<components[i].types.length;j++){
-              if (components[i].types[j] == "administrative_area_level_1"){
-                  var state = components[i].short_name;
-              }
-              else if(components[i].types[j]== "locality"){
-                  var city = components[i].long_name;
-              }
-            }
-          }
-        params = true;
-        $("#home-search").attr("action", "/areas/" + state + "/"+ city+"/");
-        $("#home-search").submit();
-      }
-      else{
-        params = true;
-        $("#home-search").submit();
-      }
     });
 
     $('#home-search').on("submit", function(event){
@@ -75,5 +62,56 @@ $(document).ready(function(){
         google.maps.event.trigger(autocomplete, 'place_changed');
      }
     });
+
+    $('#search').on('click', function(){
+      var city = $('#city').val();
+      var map = $('#map');
+      var autocompleteService = new google.maps.places.AutocompleteService();
+      
+      autocompleteService.getPlacePredictions({
+              input: city,
+              length: city.length,
+              types: ["(cities)"]
+            }, function(data){
+            var firstResult = data[0];
+            var description = firstResult.description;
+            var reference = firstResult.reference;
+            var request = {
+              reference: firstResult.reference
+            };
+            $('#city').val(description);
+            service = new google.maps.places.PlacesService(document.getElementById('city-results'));
+            service.getDetails(request, function(city){
+              
+              var data = parseCityData(city); 
+              params = true;
+              $("#home-search").attr("action", "/areas/" + data.state + "/"+ data.name+"/");
+              $("#home-search").submit();
+            });
+        
+        
+      })
+      return false;
+    });
+
+    function parseCityData(city){
+      console.log(city);
+      var components = city.address_components;
+      var cityData = {};
+       for (var i =0; i<components.length;i++){
+          for(var j=0;j<components[i].types.length;j++){
+            if (components[i].types[j] == "administrative_area_level_1"){
+                cityData.state = components[i].short_name;
+            }
+            else if(components[i].types[j]== "locality"){
+                cityData.name = components[i].long_name;
+            }
+          }
+        }
+       console.log(cityData);
+      return cityData;
+    }
+
+
   }
 });

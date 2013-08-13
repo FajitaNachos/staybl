@@ -17,11 +17,15 @@ class AreasController < ApplicationController
   end
 
   def search
-    if params[:place].empty?
+    if params[:city].empty?
       redirect_to root_path, :alert => "Please enter a city"
     else
-    @area = Area.where("city ILIKE ?", "%#{params[:place]}%").first
-    redirect_to areas_path(@area.state, @area.city)
+      @area = Area.where("city ILIKE ?", "%#{params[:city]}%").first
+      if @area.nil?
+      redirect_to root_path, :alert => "Please make sure you have Javascript enabled and try your search again"
+      else
+      redirect_to areas_path(@area.state, @area.city)
+      end
     end
   end
 
