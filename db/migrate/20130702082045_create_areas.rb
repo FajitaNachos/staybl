@@ -1,13 +1,11 @@
 class CreateAreas < ActiveRecord::Migration
   def self.up
     create_table :areas do |t|
-      
-      t.geometry :the_geom, :spatial => true, :srid => 4326
+
+      t.text :the_geom
       t.string :city
       t.string :name
       t.string :state
-      t.string :county
-      t.integer :regionid 
       t.text :description
       t.text :tags, :default => "", :null => true
 

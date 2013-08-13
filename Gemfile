@@ -9,8 +9,6 @@ gem 'pg', '~> 0.15.1'
 gem 'bootstrap-sass', '~>2.3.1'
 gem 'jquery-rails', '~> 2.2.1'
 gem 'devise', '~> 3.0.0.rc'
-gem "activerecord-postgis-adapter", "~> 0.6.4"
-gem "rgeo", "~> 0.3.20"
 gem "thumbs_up", "~> 0.6.5"
 
 # Added when updating to Rails 4

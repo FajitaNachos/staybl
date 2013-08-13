@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_action :authenticate_user!, :except => [:index, :show, :search]
+  #before_action :authenticate_user!, :except => [:index, :show, :search]
 
   # GET /areas
   # GET /areas.json

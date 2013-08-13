@@ -9,11 +9,10 @@ $(document).ready(function(){
     var currentOverlay;
     var mapBounds;
     var map;
-    var id = $('#map').data('id');
+    var id = $('#map').data('map-id');
     var city = $('#map').data('city');
     var state = $('#map').data('state');
-    var areaId = getURLParam('id');
-    
+
     // Used to detect initial (useless) popstate.
     // If history.state exists, assume browser isn't going to fire initial popstate.
     //I copy and pasted this from stack overflow. 
@@ -26,6 +25,7 @@ $(document).ready(function(){
       if (initialPop) return;
         removeOverlays();
         $('.secondary').show();
+        var areaId = getURLParam('id');
         if(areaId){
           var area = $('[data-id="'+areaId+'"]');
           updateAreaList(area);
@@ -115,7 +115,15 @@ $(document).ready(function(){
 
       }
       else{
+       var idParam = getURLParam('id');
+        if(idParam){
+          var area = $('[data-id="'+idParam+'"]');
+          alert(idParam);
+          updateAreaList(area);
+        }
+        else{
           getArea(id);
+        }
       }
     }
 
@@ -215,15 +223,19 @@ $(document).ready(function(){
 
       $.getJSON("/areas/"+state+"/"+city+"/"+id+'.json', function(data) {
               setPolygon(data);
+              console.log(data);
+              $('#area-description').html(data.description);
       });
     }
 
     function setPolygon(data){
      
-      var polygon = data.the_geom.replace("POLYGON ((", "");
+      var polygon = data.the_geom.replace("POLYGON((", "");
           polygon = polygon.replace("))","");
-          polygon = polygon.split(',');
-          
+          polygon = polygon.split(",");
+      
+          console.log(polygon);
+        
       var polygonPath = new Array();
       for(var j=0; j<polygon.length;j++){
         var point = polygon[j].trim().split(' ');
@@ -343,15 +355,16 @@ $(document).ready(function(){
         upVote.show();
         downVote.show();
 
-
         var primaryArea = $('.primary').find('.area');
 
-        $('.primary').find('.area-up-vote').hide();
-        $('.primary').find('.area-down-vote').hide();
+        if (area.hasClass('secondary')){
+          $('.primary').find('.area-up-vote').hide();
+          $('.primary').find('.area-down-vote').hide();
 
-        $('.primary').removeClass('primary').addClass('secondary');
-        area.addClass('primary').removeClass('secondary');
-
+          $('.primary').removeClass('primary').addClass('secondary');
+          area.addClass('primary').removeClass('secondary');
+        }
+        console.log(area);
         var currentId = area.data('id');
         var ul = $('#area-list');
         var li = ul.children('.secondary');
@@ -363,7 +376,9 @@ $(document).ready(function(){
         $('.secondary').hide();
         $('#add-area').hide();
 
+        removeOverlays();
         getArea(currentId);
+
 
     }
 
@@ -379,7 +394,7 @@ $(document).ready(function(){
         history.pushState(
                   null, 
                   'Staybl',
-                  window.location.pathname+'?&id='+areaId);
+                  window.location.pathname+'?id='+areaId);
       });
 
     $(document).on('ajax:complete', '.upvote', function(event, data, status, xhr) {
