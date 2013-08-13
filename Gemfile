@@ -16,6 +16,7 @@ gem 'rails-observers'
 gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
 
+gem 'unicorn'
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.13.2'
