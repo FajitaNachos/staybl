@@ -116,6 +116,8 @@ class AreasController < ApplicationController
           format.html { redirect_to areas_path(:state => @area.state, :city => @area.city, :id =>@area.id), notice: 'Area was successfully added.' }
           format.json { render json: @area, status: :created, location: @area }
         else
+          @city = @area.city
+          @state = @area.state
           format.html { render action: "new" }
           format.json { render json: @area.errors, status: :unprocessable_entity }
         end
