@@ -20,7 +20,16 @@ class AreasController < ApplicationController
     if params[:place].empty?
       redirect_to root_path, :alert => "Please enter a city"
     else
-      redirect_to areas_path(:state => params[:state], :city => params[:city])
+      @city = params[:city]
+      @state = params[:state]
+      @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
+      @area = @areas.first
+      if (@area.nil?)
+        redirect_to areas_path( :state => @state, :city => @city)
+      else
+         @area = @areas.first
+        redirect_to @area
+      end
     end
   end
 
@@ -50,12 +59,24 @@ class AreasController < ApplicationController
   def show
 
     @area = Area.find(params[:id])
-    @city = params[:city]
-    @state = params[:state]
+    @city = @area.city
+    @state = @area.state
+    @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
+    @areas = @areas.drop(1)
+    
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @area }
     end
+  end
+
+  def fetch
+    @area = Area.find(params[:id])
+    respond_to do |format|
+      format.html # .html.erb
+      format.json { render json: @area }
+    end
+
   end
 
   # GET /areas/new

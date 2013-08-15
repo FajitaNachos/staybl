@@ -222,9 +222,10 @@
 
     function getArea(id){
 
-      $.getJSON("/areas/"+id+'.json', function(data) {
+      $.getJSON("/areas/fetch/"+id+'.json', function(data) {
+          console.log(data);
         setPolygon(data);
-        console.log(data);
+      
         $('#area-description').html(data.description);
       });
     }

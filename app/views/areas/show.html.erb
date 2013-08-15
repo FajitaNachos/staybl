@@ -1,4 +1,42 @@
-<p id="notice"><%= notice %></p>
+<div id = "areas-container" class = "container-fluid no-padding">
+    <h1>
+      The best area to stay in 
+      <span id = "city-name"><%= @city %></span> 
+      is 
+    </h1>
+ 
+    <%= render 'list' %>
+    <% if @area %>
+      <div id = "area-info" class = "row-fluid">
+       <!--  <% if @area.description %>
+          <div class="row-fluid">
+            <span class = "span8 offset2">
+              <h2>About The Area</h2>
+              <span id = "area-description">
+                <%= @area.description %>
+             </span>
+            </span>
+          </div>
+        <% end %> -->
+         <%= content_tag :div, :id => 'map', :data => {:map_id => @area.id, :state => @state, :city => @city} do %>
+          <div id = "map-canvas">
+          </div>
+        <%end%>
+      </div>
+    <%end%>
+
+    <div class="modal hide" id="modal-login">
+      <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Please Sign in to vote.</h3>
+      </div>
+      <div class="modal-body">
+        <%= render 'users/sessions/modal_login' %>
+      </div>
+    </div>
+ </div>
+
+
 
 
 

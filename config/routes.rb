@@ -11,7 +11,8 @@ Staybl::Application.routes.draw do
   end
 
 
-  get '/search', to: 'areas#search' 
+  get '/search', to: 'areas#search'
+  get '/areas/fetch/(:id)', to: 'areas#fetch'  
   root to: 'home#index'
   resources :areas do
     member do

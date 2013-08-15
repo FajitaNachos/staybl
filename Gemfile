@@ -17,7 +17,7 @@ gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
 
 gem 'unicorn'
-gem 'rails_12factor', group: :production
+gem 'rails_12factor'
 
 group :development, :test do
   gem 'rspec-rails', '~> 2.13.2'
