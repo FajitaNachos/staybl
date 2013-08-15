@@ -1,4 +1,4 @@
-$(document).ready(function(){
+  $(document).ready(function(){
   //Only load this javascript if a user is on the map page
   if(document.getElementById('map-canvas')){
 
@@ -23,17 +23,17 @@ $(document).ready(function(){
       var initialPop = !popped && location.href == initialURL
       popped = true
       if (initialPop) return;
-        removeOverlays();
-        $('.secondary').show();
-        var areaId = getURLParam('id');
-        if(areaId){
-          var area = $('[data-id="'+areaId+'"]');
-          updateAreaList(area);
-        }
-        else{
-          var area = $('[data-id="'+id+'"]');
-          updateAreaList(area);
-        }
+      removeOverlays();
+      $('.secondary').show();
+      var areaId = getURLParam('id');
+      if(areaId){
+        var area = $('[data-id="'+areaId+'"]');
+        updateAreaList(area);
+      }
+      else{
+        var area = $('[data-id="'+id+'"]');
+        updateAreaList(area);
+      }
     });
 
     function initialize() {
@@ -41,16 +41,16 @@ $(document).ready(function(){
       google.maps.visualRefresh = true;
 
       google.maps.Polygon.prototype.getBounds = function() {
-          var bounds = new google.maps.LatLngBounds();
-          var paths = this.getPaths();
-          var path;        
-          for (var i = 0; i < paths.getLength(); i++) {
-              path = paths.getAt(i);
-              for (var ii = 0; ii < path.getLength(); ii++) {
-                  bounds.extend(path.getAt(ii));
-              }
+        var bounds = new google.maps.LatLngBounds();
+        var paths = this.getPaths();
+        var path;        
+        for (var i = 0; i < paths.getLength(); i++) {
+          path = paths.getAt(i);
+          for (var ii = 0; ii < path.getLength(); ii++) {
+            bounds.extend(path.getAt(ii));
           }
-          return bounds;
+        }
+        return bounds;
       }
 
       var mapOptions = {
@@ -60,10 +60,10 @@ $(document).ready(function(){
       };
 
       var polygonOptions = {
-          strokeWeight: 0,
-          fillOpacity: 0.45,
-          editable: true,
-          strokeColor: '#32CD32'
+        strokeWeight: 0,
+        fillOpacity: 0.45,
+        editable: true,
+        strokeColor: '#32CD32'
       };
 
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
@@ -111,21 +111,21 @@ $(document).ready(function(){
 
        // Clear the current selection when the drawing mode is changed, or when the
       // map is clicked.
-        google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
+      google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
 
-      }
-      else{
-       var idParam = getURLParam('id');
-        if(idParam){
-          var area = $('[data-id="'+idParam+'"]');
-          alert(idParam);
-          updateAreaList(area);
-        }
-        else{
-          getArea(id);
-        }
-      }
     }
+    else{
+     var idParam = getURLParam('id');
+     if(idParam){
+      var area = $('[data-id="'+idParam+'"]');
+      alert(idParam);
+      updateAreaList(area);
+    }
+    else{
+      getArea(id);
+    }
+  }
+}
 
     // function to geocode an address and add a market to the map
     function addMarker(city){
@@ -146,13 +146,13 @@ $(document).ready(function(){
 
     function addDrawingControl() {
 
-    var controlDiv = document.createElement('div');
-    controlDiv.className = 'control-container';
-        
+      var controlDiv = document.createElement('div');
+      controlDiv.className = 'control-container';
+      
     // Set CSS styles for the DIV containing the control
     // Setting padding to 5 px will offset the control
     // from the edge of the map.
-  
+    
 
     // Set CSS for the control border.
     var controlUI = document.createElement('div');
@@ -175,7 +175,7 @@ $(document).ready(function(){
     });
     controlDiv.index = 1;
     map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
-  
+    
   }
 
   function addClearControl() {
@@ -210,8 +210,8 @@ $(document).ready(function(){
     function removeMarkers(){
       for (var i = 0; i < markers.length; i++) {
        markers[i].setMap(null);
-      }
-    }
+     }
+   }
 
     //function to retrieve the params from the URL.
     function getURLParam(name) {
@@ -222,30 +222,30 @@ $(document).ready(function(){
     function getArea(id){
 
       $.getJSON("/areas/"+state+"/"+city+"/"+id+'.json', function(data) {
-              setPolygon(data);
-              console.log(data);
-              $('#area-description').html(data.description);
+        setPolygon(data);
+        console.log(data);
+        $('#area-description').html(data.description);
       });
     }
 
     function setPolygon(data){
      
       var polygon = data.the_geom.replace("POLYGON((", "");
-          polygon = polygon.replace("))","");
-          polygon = polygon.split(",");
-      
-          console.log(polygon);
+        polygon = polygon.replace("))","");
+        polygon = polygon.split(",");
         
-      var polygonPath = new Array();
-      for(var j=0; j<polygon.length;j++){
-        var point = polygon[j].trim().split(' ');
-    
-        var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
+        console.log(polygon);
+        
+        var polygonPath = new Array();
+        for(var j=0; j<polygon.length;j++){
+          var point = polygon[j].trim().split(' ');
+          
+          var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
 
-        polygonPath.push(gPoint);
-      } 
+          polygonPath.push(gPoint);
+        } 
 
-      var polygon = new google.maps.Polygon({
+        var polygon = new google.maps.Polygon({
           paths: polygonPath,
           strokeColor: '#32CD32',
           strokeOpacity: 1,
@@ -257,23 +257,23 @@ $(document).ready(function(){
           editable:false,
           name: data.name,
           map: map 
-      }); 
+        }); 
 
-      if($('.editable-map').length) {
+        if($('.editable-map').length) {
           drawingManager.setDrawingMode(null);
           polygon.setOptions({
             editable: true,
             clickable:true
           });
-         $('#area_the_geom').val(area.the_geom);
+          $('#area_the_geom').val(area.the_geom);
 
-      }
+        }
       //add the polygon to the global polygon array
       polygons[data.id] = polygon;
 
       map.fitBounds(polygon.getBounds());
-     
-        
+      
+      
 
       google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
         setCoordinates(polygon);
@@ -288,10 +288,10 @@ $(document).ready(function(){
       });
 
       google.maps.event.addListener(polygon, 'rightclick', function(e){
-          if (e.vertex != null) {
-            polygon.getPath().removeAt(e.vertex);
-            setCoordinates(polygon);
-          }
+        if (e.vertex != null) {
+          polygon.getPath().removeAt(e.vertex);
+          setCoordinates(polygon);
+        }
       });
     }
 
@@ -312,10 +312,10 @@ $(document).ready(function(){
     function deleteCurrentOverlay() {
       if (currentOverlay) {
         currentOverlay.setMap(null);
-         drawingManager.setOptions({
-            drawingMode: google.maps.drawing.OverlayType.POLYGON
-          });
-       $('#area_the_geom').value = '';
+        drawingManager.setOptions({
+          drawingMode: google.maps.drawing.OverlayType.POLYGON
+        });
+        $('#area_the_geom').value = '';
       }
     }
     function removeOverlays(){
@@ -333,20 +333,20 @@ $(document).ready(function(){
       var xy;
       var polygon = '';
         // Iterate over the polygonBounds vertices.
-      for (var i = 0; i < path.length; i++) {
-        xy = path.getAt(i);
-        polygon += xy.lng() + ' ' + xy.lat() + ', ';
+        for (var i = 0; i < path.length; i++) {
+          xy = path.getAt(i);
+          polygon += xy.lng() + ' ' + xy.lat() + ', ';
+        }
+
+        var final_xy = path.getAt(0);
+        polygon += final_xy.lng() + ' ' + final_xy.lat();
+        
+        var polyCoordinates = 'POLYGON((' + polygon + '))';
+
+        document.getElementById('area_the_geom').value = polyCoordinates;
       }
 
-      var final_xy = path.getAt(0);
-      polygon += final_xy.lng() + ' ' + final_xy.lat();
-  
-      var polyCoordinates = 'POLYGON((' + polygon + '))';
-
-      document.getElementById('area_the_geom').value = polyCoordinates;
-    }
-
-    function updateAreaList(area){
+      function updateAreaList(area){
        
         var upVote = area.find('.area-up-vote');
         var downVote = area.find('.area-down-vote');
@@ -368,9 +368,9 @@ $(document).ready(function(){
         var currentId = area.data('id');
         var ul = $('#area-list');
         var li = ul.children('.secondary');
-            li.detach().sort(function(a,b) {
-                return $(b).data('votes') - $(a).data('votes');  
-            });
+        li.detach().sort(function(a,b) {
+          return $(b).data('votes') - $(a).data('votes');  
+        });
 
         ul.append(li);
         $('.secondary').hide();
@@ -380,73 +380,76 @@ $(document).ready(function(){
         getArea(currentId);
 
 
-    }
+      }
 
-    $('#show-more').on('click', function(){
+      $('#show-more').on('click', function(){
         $('.secondary').slideToggle('slow');
         $('#add-area').toggle();
       });
-    
-    $('#areas').on('click', '.secondary', function(){
+      
+      $('#areas').on('click', '.secondary', function(){
        var areaId = $(this).data('id');
-        updateAreaList($(this));
-        removeOverlays();
-        history.pushState(
-                  null, 
-                  'Staybl',
-                  window.location.pathname+'?id='+areaId);
+       updateAreaList($(this));
+       removeOverlays();
+       history.pushState(
+        null, 
+        'Staybl',
+        window.location.pathname+'?id='+areaId);
+     });
+
+      $(document).on('ajax:complete', '.vote-for', function(event, data, status, xhr) {
+
+        switch(data.status){
+          case 200:
+     
+          $(this).closest('#votes').html(data.responseText);    
+          break
+          case 404 :
+          
+          $(this).closest('#votes').html(data.responseText);    
+          break
+          case 401 : 
+          console.log(event.target.pathname);
+          $('#modal-login').modal('show');
+          break
+        }
+        
       });
 
-    $(document).on('ajax:complete', '.upvote', function(event, data, status, xhr) {
-          switch(data.status){
-            case 200:
-              $(this).closest('#votes').find('.tally').html(data.responseText);    
-              break
-            case 404 :
-             
-              $(this).closest('#votes').find('.tally').html(data.responseText);    
-              break
-            case 401 : 
-              console.log(event.target.pathname);
-              $('#modal-login').modal('show');
-              break
-            }
+      $(document).on('ajax:complete', '.vote-against', function(event, data, status, xhr) {
+       switch(data.status){
+        case 200:
+  
+        $(this).closest('#votes').html(data.responseText);     
+        break
+        case 404:
+        
+        $(this).closest('#votes').html(data.responseText);  
+        break
+        case 401: 
+        $('#modal-login').modal('show');
+        break
+      }  
+    });
+
+      if($('.editable-map').length){
+        if (id){
+          $('#new_area_name').hide();
+          $('#edit-instructions').show();
+          $('#new-instructions').hide();
+        }
+        else{
+          $('#new_area_name').show();
+          $('#edit-instructions').hide();
+          $('#new-instructions').show();
           
-    });
-
-    $(document).on('ajax:complete', '.downvote', function(event, data, status, xhr) {
-         switch(data.status){
-            case 200:
-              $(this).closest('#votes').find('.tally').html(data.responseText);     
-              break
-            case 404:
-         
-              $(this).closest('#votes').find('.tally').html(data.responseText);  
-              break
-            case 401: 
-              $('#modal-login').modal('show');
-              break
-          }  
-    });
-
-    if($('.editable-map').length){
-          if (id){
-            $('#new_area_name').hide();
-            $('#edit-instructions').show();
-            $('#new-instructions').hide();
-          }
-          else{
-            $('#new_area_name').show();
-            $('#edit-instructions').hide();
-            $('#new-instructions').show();
-            
-          }
+        }
       }
 
-    $('#areas').on('click', '.primary', function(){
-      $('.secondary').hide();
+      $('#areas').on('click', '.primary', function(){
+        $('.secondary').hide();
       //$('#add-area').hide();
     });
-    initialize();
-  }
-});
+      initialize();
+    }
+  });

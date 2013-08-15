@@ -33,9 +33,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_for?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_for(@area)
-        render :partial => 'areas/tally', :layout => false, :locals => { :area => @area}, :status => 200
+        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true}, :status => 200
     rescue ActiveRecord::RecordInvalid
-        render :partial => 'areas/tally', :layout => false, :locals => { :area => @area}, :status => 404
+        render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true}, :status => 404
     end
   end
 
@@ -44,9 +44,9 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     begin
         current_user.voted_against?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_against(@area)
-        render :partial => 'areas/tally',:layout => false, :locals => { :area => @area} , :status => 200
+        render :partial => 'areas/votes',:layout => false, :locals => { :area => @area, :primary => true} , :status => 200
     rescue ActiveRecord::RecordInvalid
-        render :partial => 'areas/tally', :layout => false, :locals => {:area => @area}, :status => 404
+        render :partial => 'areas/votes', :layout => false, :locals => {:area => @area, :primary => true}, :status => 404
     end
   end
 

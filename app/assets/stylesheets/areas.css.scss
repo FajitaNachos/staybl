@@ -169,8 +169,25 @@
  
 }
 
-.upvoted, .downvoted {
-  color: #ED5417;
+.upvote, .downvote, .upvoted, .downvoted {
+  display:block;
+  width: 64px;
+  height: 64px;
+
+}
+.upvote{
+  background: url('arrow_up_white.png') no-repeat center;
+}
+
+.downvote{
+   background: url('arrow_down_white.png') no-repeat center;
+}
+.upvoted{
+  background: url('arrow_up_yellow.png') no-repeat center;
+} 
+
+.downvoted {
+ background: url('arrow_down_yellow.png') no-repeat center;
 }
 
 /* for the new area form */
