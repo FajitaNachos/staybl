@@ -32,7 +32,7 @@ class AreasController < ApplicationController
   def vote_up
     @area = Area.find(params[:id])
     begin
-        current_user.voted_for?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_for(@area)
+        current_or_guest_user.voted_for?(@area) ? current_or_guest_user.unvote_for(@area) : current_or_guest_user.vote_exclusively_for(@area)
         render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true}, :status => 200
     rescue ActiveRecord::RecordInvalid
         render :partial => 'areas/votes', :layout => false, :locals => { :area => @area, :primary => true}, :status => 404
@@ -43,7 +43,7 @@ class AreasController < ApplicationController
    def vote_down
     @area = Area.find(params[:id])
     begin
-        current_user.voted_against?(@area) ? current_user.unvote_for(@area) : current_user.vote_exclusively_against(@area)
+        current_or_guest_user.voted_against?(@area) ? current_or_guest_user.unvote_for(@area) : current_or_guest_user.vote_exclusively_against(@area)
         render :partial => 'areas/votes',:layout => false, :locals => { :area => @area, :primary => true} , :status => 200
     rescue ActiveRecord::RecordInvalid
         render :partial => 'areas/votes', :layout => false, :locals => {:area => @area, :primary => true}, :status => 404
@@ -95,7 +95,7 @@ class AreasController < ApplicationController
       @area = Area.new(area_params)
       respond_to do |format|
         if @area.save
-          current_user.vote_for(@area)
+          current_or_guest_user.vote_for(@area)
           format.html { redirect_to areas_path, notice: 'Area was successfully added.' }
           format.json { render json: @area, status: :created, location: @area }
         else

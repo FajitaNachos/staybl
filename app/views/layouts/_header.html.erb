@@ -5,7 +5,7 @@
       <nav>
           <ul class="nav pull-right home-nav">
             <% if user_signed_in? %>
-              <li><%= current_user.email %></li>
+              <li><%= current_or_guest_user.email %></li>
               <li><%= link_to "Sign out", destroy_user_session_path, :method => :delete %></li>
             <% elsif administrator_signed_in? %>
               <li><%= current_administrator.email %></li>

@@ -1,1 +1,0 @@
-<h3><%= pluralize(area.plusminus, 'vote') %> </h3>
