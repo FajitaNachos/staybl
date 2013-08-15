@@ -12,27 +12,21 @@
   <% end %>
 
 
-  <%= f.hidden_field :city, :value => @city %>
-  <%= f.hidden_field :state, :value => @state %>
-  <%= f.hidden_field :the_geom, :value => ''%>
+  <%= f.hidden_field :city, :value => @area.city %>
+  <%= f.hidden_field :state, :value => @area.state %>
+  <%= f.hidden_field :the_geom, :value => @area.the_geom %>
 
 
-    <div id = "new_area_name" class="row-fluid">
-         <span class="span8 offset2">
-            <h2> Area Name</h2>
-            <%= f.text_field :name, :placeholder => " " %>
-        </span>
-    </div>
-
-     <div id = "new-instructions" class = "row-fluid">
+    <div id = "edit-instructions" class = "row-fluid">
       <span class = "span8 offset2">
-          <h2> Area Map </h2>
+      
           <p>
-          Help us put this area on the map. First, find the area on the map that you would like to highlight. Then click on Start Drawing in the top right corner. Now, click on the map to add your first point. You can add as many or as few points as you like, as long as the area is fully outlined when you are done. 
+          Edit the area below by dragging any of the points to a new location. To remove a point, right-click on it. When you are finished, click on 'Save Area'.  
           </p>
         </span>
     </div>
-     <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@area.id, :state =>@state, :city => @city} do %>
+
+     <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:map_id=>@area.id, :state =>@state, :city => @city} do %>
         <div id = "map-canvas">
         </div>
       <%end%>
@@ -50,7 +44,7 @@
 
   <div class="row-fluid">
     <div class="actions center area-submit">
-        <%= f.submit(:value => 'Save This Area', :class=>'btn btn-large') %>
+        <%= f.submit(:value => 'Update This Area', :class=>'btn btn-large') %>
     </div>
   </div>
 

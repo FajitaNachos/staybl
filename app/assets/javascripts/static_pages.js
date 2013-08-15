@@ -1,14 +1,14 @@
 $(document).ready(function(){
  //only loads this js if we are on the home page
  var params = false;
- var city = document.getElementById('city');
- if (city) {
+ var place = document.getElementById('place');
+ if (place) {
 
     // Set options for the autocomplete
     var options = {
       types: ["(cities)"]
     };
-    var pac_input = document.getElementById('city');
+    var pac_input = document.getElementById('place');
 
     (function pacSelectFirst(input) {
         // store the original event binding function
@@ -41,16 +41,17 @@ $(document).ready(function(){
 
         })(pac_input);
         
-        var autocomplete = new google.maps.places.Autocomplete(city, options);
+        var autocomplete = new google.maps.places.Autocomplete(place, options);
 
     //Submit the form when a user selects an option from the autocomplete list
     google.maps.event.addListener(autocomplete, "place_changed", function() {
-      var city = autocomplete.getPlace();
-      console.log(city);
-      if(city){
-        var data = parseCityData(city);
+      var place = autocomplete.getPlace();
+     
+      if(place){
+        var data = parsePlaceData(place);
         params = true;
-        $("#home-search").attr("action", "/areas/" + data.state + "/"+ data.name+"/");
+        $('#state').val(data.state);
+        $('#city').val(data.city)
         $("#home-search").submit();
       }
       
@@ -64,13 +65,13 @@ $(document).ready(function(){
   });
 
     $('#search').on('click', function(){
-      var city = $('#city').val();
+      var place = $('#place').val();
       var map = $('#map');
       var autocompleteService = new google.maps.places.AutocompleteService();
       
       autocompleteService.getPlacePredictions({
-        input: city,
-        length: city.length,
+        input: place,
+        length: place.length,
         types: ["(cities)"]
       }, function(data){
         var firstResult = data[0];
@@ -79,11 +80,11 @@ $(document).ready(function(){
         var request = {
           reference: firstResult.reference
         };
-        $('#city').val(description);
+        $('#place').val(description);
         service = new google.maps.places.PlacesService(document.getElementById('city-results'));
-        service.getDetails(request, function(city){
+        service.getDetails(request, function(place){
           
-          var data = parseCityData(city); 
+          var data = parsePlaseData(place); 
           params = true;
           $("#home-search").attr("action", "/areas/" + data.state + "/"+ data.name+"/");
           $("#home-search").submit();
@@ -94,22 +95,21 @@ $(document).ready(function(){
       return false;
     });
 
-    function parseCityData(city){
-      console.log(city);
-      var components = city.address_components;
-      var cityData = {};
+    function parsePlaceData(place){
+   
+      var components = place.address_components;
+      var placeData = {};
       for (var i =0; i<components.length;i++){
         for(var j=0;j<components[i].types.length;j++){
           if (components[i].types[j] == "administrative_area_level_1"){
-            cityData.state = components[i].short_name;
+            placeData.state = components[i].short_name;
           }
           else if(components[i].types[j]== "locality"){
-            cityData.name = components[i].long_name;
+            placeData.city = components[i].long_name;
           }
         }
       }
-      console.log(cityData);
-      return cityData;
+      return placeData;
     }
 
 

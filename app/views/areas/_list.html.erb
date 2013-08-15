@@ -20,11 +20,11 @@
         <%if @areas.any? %>
           <span id = "show-more" class = "span2">More Areas</span>
            <span id = "add-area" class = "span2 hide offset8">
-            <li class='center add-area'><%= link_to "New Area" ,new_area_path(:city => @city) %></li>
+            <li class='center add-area'><%= link_to "New Area" ,new_area_path(:state=>@state, :city =>@city) %></li>
           </span>
         <% else %>
           <span id = "add-area" class = "span2">
-            <li class='center add-area'><%= link_to "Add New Area" ,new_area_path(:city => @city) %></li>
+            <li class='center add-area'><%= link_to "Add A New Area" ,new_area_path(:state=>@state, :city =>@city) %></li>
           </span>
         <%end%>
 
@@ -33,7 +33,7 @@
   <%else%>
     <div class='primary'>
       <li><h2>still up for grabs</h2></li>
-      <li class='center first-area'><%= link_to "Tell us where you like to stay." ,new_area_path(:city => @city) %></li>
+      <li class='center first-area'><%= link_to "Tell us where you like to stay." , new_area_path(:state => @state, :city => @city) %></li>
     </div>
   <%end%>
 </div>

@@ -2,7 +2,7 @@
 <%if primary %>
   <div class="area row-fluid">
    <span class = "span1 offset2 center area-down-vote">
-      <%= link_to ' ', vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user && current_or_guest_user.voted_against?(area) ? 'vote-against downvoted' : 'vote-against downvote' %>
+      <%= link_to ' ', vote_down_area_path( :id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user && current_or_guest_user.voted_against?(area) ? 'vote-against downvoted' : 'vote-against downvote' %>
     </span>
         <span class = "span6">
             <h2><%= area.name %></h2>
@@ -10,7 +10,7 @@
         </span>
 
      <span class = "span1 center area-up-vote">
-      <%= link_to ' ', vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user &&current_or_guest_user.voted_for?(area) ? 'vote-for upvoted ' : 'vote-for upvote' %>
+      <%= link_to ' ', vote_up_area_path(:id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user &&current_or_guest_user.voted_for?(area) ? 'vote-for upvoted ' : 'vote-for upvote' %>
     </span>
 
   </div>
@@ -18,7 +18,7 @@
 <% else %>
   <div class = "area row-fluid">
       <span class = "span1 offset2 center hide area-down-vote">
-          <%= link_to '', vote_down_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user && current_or_guest_user.voted_against?(area) ? 'vote-against downvoted' : 'vote-against downvote' %>
+          <%= link_to '', vote_down_area_path(:id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user && current_or_guest_user.voted_against?(area) ? 'vote-against downvoted' : 'vote-against downvote' %>
       </span>
         <span class="span6">
             <h2><%= area.name %></h2>
@@ -26,7 +26,7 @@
         </span>
      
        <span class = "span1 center hide area-up-vote">
-          <%= link_to image_tag("arrow_up_white.png"), vote_up_area_path(:state => area.state, :city => area.city, :id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user && current_or_guest_user.voted_for?(area) ? 'vote-for upvoted ' : 'vote-for upvote' %>
+          <%= link_to ' ', vote_up_area_path( :id => area.id), :method => :post, :remote=>true, :class=> current_or_guest_user && current_or_guest_user.voted_for?(area) ? 'vote-for upvoted ' : 'vote-for upvote' %>
       </span>
      
   </div>

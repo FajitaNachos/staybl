@@ -25,6 +25,7 @@
       if (initialPop) return;
       removeOverlays();
       $('.secondary').show();
+
       var areaId = getURLParam('id');
       if(areaId){
         var area = $('[data-id="'+areaId+'"]');
@@ -69,13 +70,14 @@
       map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
       
       if($('.editable-map').length){
+      
         drawingManager = new google.maps.drawing.DrawingManager({
           drawingControl:false,
           drawingMode: null,
           polygonOptions: polygonOptions,
           map: map
         });
-
+  
         if (id){
           getArea(id);
         }
@@ -118,7 +120,6 @@
      var idParam = getURLParam('id');
      if(idParam){
       var area = $('[data-id="'+idParam+'"]');
-      alert(idParam);
       updateAreaList(area);
     }
     else{
@@ -221,7 +222,7 @@
 
     function getArea(id){
 
-      $.getJSON("/areas/"+state+"/"+city+"/"+id+'.json', function(data) {
+      $.getJSON("/areas/"+id+'.json', function(data) {
         setPolygon(data);
         console.log(data);
         $('#area-description').html(data.description);
@@ -265,7 +266,7 @@
             editable: true,
             clickable:true
           });
-          $('#area_the_geom').val(area.the_geom);
+          $('#area_the_geom').val(data.the_geom);
 
         }
       //add the polygon to the global polygon array
@@ -394,7 +395,7 @@
        history.pushState(
         null, 
         'Staybl',
-        window.location.pathname+'?id='+areaId);
+        window.location.pathname+'?state='+state+'&city='+city+'&id='+areaId);
      });
 
       $(document).on('ajax:complete', '.vote-for', function(event, data, status, xhr) {
@@ -432,19 +433,6 @@
       }  
     });
 
-      if($('.editable-map').length){
-        if (id){
-          $('#new_area_name').hide();
-          $('#edit-instructions').show();
-          $('#new-instructions').hide();
-        }
-        else{
-          $('#new_area_name').show();
-          $('#edit-instructions').hide();
-          $('#new-instructions').show();
-          
-        }
-      }
 
       $('#areas').on('click', '.primary', function(){
         $('.secondary').hide();

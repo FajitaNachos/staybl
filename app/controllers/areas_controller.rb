@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_action :authenticate_user!, :except => [:index, :show, :search]
+  before_action :authenticate_administrator!, :only => [:destroy]
 
   # GET /areas
   # GET /areas.json
@@ -17,15 +17,10 @@ class AreasController < ApplicationController
   end
 
   def search
-    if params[:city].empty?
+    if params[:place].empty?
       redirect_to root_path, :alert => "Please enter a city"
     else
-      @area = Area.where("city ILIKE ?", "%#{params[:city]}%").first
-      if @area.nil?
-      redirect_to root_path, :alert => "Please make sure you have Javascript enabled and try your search again"
-      else
-      redirect_to areas_path(@area.state, @area.city)
-      end
+      redirect_to areas_path(:state => params[:state], :city => params[:city])
     end
   end
 
@@ -55,6 +50,8 @@ class AreasController < ApplicationController
   def show
 
     @area = Area.find(params[:id])
+    @city = params[:city]
+    @state = params[:state]
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @area }
@@ -77,10 +74,9 @@ class AreasController < ApplicationController
   # GET /areas/1/edit
   def edit
     @area = Area.find(params[:id])
-    @city = params[:city]
-    @state = params[:state]
-    @id = params[:id]
-
+    @city = @area.city
+    @state = @area.state
+   
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @area }
@@ -96,7 +92,7 @@ class AreasController < ApplicationController
       respond_to do |format|
         if @area.save
           current_or_guest_user.vote_for(@area)
-          format.html { redirect_to areas_path, notice: 'Area was successfully added.' }
+          format.html { redirect_to areas_path(:state => @area.state, :city => @area.city, :id =>@area.id), notice: 'Area was successfully added.' }
           format.json { render json: @area, status: :created, location: @area }
         else
           format.html { render action: "new" }
@@ -112,7 +108,7 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     respond_to do |format|
       if @area.update(area_params)
-        format.html { redirect_to @area, notice: 'Area was successfully updated.' }
+        format.html { redirect_to areas_path(:state => @area.state, :city=>@area.city, :id =>@area.id), notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

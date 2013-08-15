@@ -1,18 +1,17 @@
 class ApplicationController < ActionController::Base
-  
+
   protect_from_forgery
- 
   helper_method :current_or_guest_user
 
-    # if user is logged in, return current_or_guest_user, else return guest_user
+  # if user is logged in, return current_user, else return guest_user
   def current_or_guest_user
-    if current_or_guest_user
+    if current_user
       if session[:guest_user_id]
         logging_in
         guest_user.destroy
         session[:guest_user_id] = nil
       end
-      current_or_guest_user
+      current_user
     else
       guest_user
     end
@@ -31,26 +30,22 @@ class ApplicationController < ActionController::Base
 
   private
 
-    # called (once) when the user logs in, insert any code your application needs
-    # to hand off from guest_user to current_or_guest_user.
-    def logging_in
-      # For example:
-      # guest_comments = guest_user.comments.all
-      # guest_comments.each do |comment|
-        # comment.user_id = current_or_guest_user.id
-        # comment.save!
-      # end
-    end
-
-    def create_guest_user
-      guest = User.create(:username => "guest", :email => "guest_#{Time.now.to_i}#{rand(99)}@example.com")
-      guest.save!(:validate => false)
-      session[:guest_user_id] = guest.id
-      guest
-    end
+  # called (once) when the user logs in, insert any code your application needs
+  # to hand off from guest_user to current_user.
+  def logging_in
+    # For example:
+    # guest_comments = guest_user.comments.all
+    # guest_comments.each do |comment|
+      # comment.user_id = current_user.id
+      # comment.save!
+    # end
   end
-  def index
-  end 
 
-end 
+  def create_guest_user
+    u = User.create(:username => "guest", :email => "guest_#{Time.now.to_i}#{rand(99)}@example.com")
+    u.save!(:validate => false)
+    session[:guest_user_id] = u.id
+    u
+  end
 
+end

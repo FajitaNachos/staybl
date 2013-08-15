@@ -13,7 +13,7 @@ Staybl::Application.routes.draw do
 
   get '/search', to: 'areas#search' 
   root to: 'home#index'
-  resources :areas , :path => '/areas/:state/:city' do
+  resources :areas do
     member do
       post :vote_up
       post :vote_down

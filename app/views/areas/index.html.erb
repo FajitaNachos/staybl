@@ -8,7 +8,7 @@
     <%= render 'list' %>
     <% if @area %>
       <div id = "area-info" class = "row-fluid">
-        <% if @area.description %>
+       <!--  <% if @area.description %>
           <div class="row-fluid">
             <span class = "span8 offset2">
               <h2>About The Area</h2>
@@ -17,9 +17,8 @@
              </span>
             </span>
           </div>
-        <% end %>
+        <% end %> -->
          <%= content_tag :div, :id => 'map', :data => {:map_id => @area.id, :state => @state, :city => @city} do %>
-           <h2>Area Map </h2>
           <div id = "map-canvas">
           </div>
         <%end%>
