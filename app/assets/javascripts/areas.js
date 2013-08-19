@@ -126,6 +126,8 @@
       getArea(id);
     }
   }
+
+  
 }
 
     // function to geocode an address and add a market to the map
@@ -170,12 +172,12 @@
     // Setup the click event listeners
     google.maps.event.addDomListener(controlUI, 'click', function() {
       drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
-      map.controls[google.maps.ControlPosition.RIGHT_TOP].clear();
+      map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
       addClearControl();
 
     });
     controlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
     
   }
 
@@ -200,11 +202,11 @@
       
       deleteCurrentOverlay();
       drawingManager.setDrawingMode(null);
-      map.controls[google.maps.ControlPosition.RIGHT_TOP].clear();
+      map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
       addDrawingControl();
     });
     controlDiv.index = 1;
-    map.controls[google.maps.ControlPosition.RIGHT_TOP].push(controlDiv);
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
   }
 
     // remove all markers in markers array
