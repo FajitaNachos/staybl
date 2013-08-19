@@ -163,18 +163,18 @@
 
 }
 .upvote{
-  background: url('arrow_up_white.png') no-repeat center;
+  background: url(image_path('arrow_up_white.png')) no-repeat center;
 }
 
 .downvote{
-   background: url('arrow_down_white.png') no-repeat center;
+   background: url(image_path('arrow_down_white.png')) no-repeat center;
 }
 .upvoted{
-  background: url('arrow_up_blue.png') no-repeat center;
+  background: url(image_path('arrow_up_blue.png')) no-repeat center;
 } 
 
 .downvoted {
- background: url('arrow_down_blue.png') no-repeat center;
+ background: url(image_path('arrow_down_blue.png')) no-repeat center;
 }
 
 /* for the new area form */
