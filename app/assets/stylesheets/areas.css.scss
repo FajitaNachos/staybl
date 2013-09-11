@@ -47,7 +47,9 @@
   color:#707070;
 }
 
-
+.area-name {
+  margin-left:0 !important;
+}
 #area-info h2{
   font-size: 2.2em;
 }
@@ -113,7 +115,8 @@
 
 .primary h3{
   text-align:center;
-  padding-top:20px;
+  padding-top:8px;
+  font-size:1em;
   color: #707070;
 }
 
@@ -156,26 +159,44 @@
   margin:auto;
  
 }
-
+.vote-box{
+  text-align:center;
+}
 .upvote, .downvote, .upvoted, .downvoted {
   display:block;
-  width: 64px;
-  height: 64px;
-
+  margin-top:10px;
+  margin:auto;
 }
+
 .upvote{
-  background: url(image_path('arrow_up_white.png')) no-repeat center;
+  width: 0; 
+  height: 0; 
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 18px solid #ccc;
 }
 
 .downvote{
-   background: url(image_path('arrow_down_white.png')) no-repeat center;
+  width: 0; 
+  height: 0; 
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-top: 18px solid #ccc;
 }
 .upvoted{
-  background: url(image_path('arrow_up_blue.png')) no-repeat center;
+  width: 0; 
+  height: 0; 
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 18px solid #000;
 } 
 
 .downvoted {
- background: url(image_path('arrow_down_blue.png')) no-repeat center;
+  width: 0; 
+  height: 0; 
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-top: 18px solid #000;
 }
 
 /* for the new area form */

@@ -355,6 +355,9 @@
         var upVote = area.find('.area-up-vote');
         var downVote = area.find('.area-down-vote');
         var selectedArea = area.find('.area');
+        var tally = area.find('.tally');
+        var voteBox = area.find('.vote-box');
+        voteBox.append(tally);
 
         upVote.show();
         downVote.show();
@@ -364,6 +367,8 @@
         if (area.hasClass('secondary')){
           $('.primary').find('.area-up-vote').hide();
           $('.primary').find('.area-down-vote').hide();
+          var primaryTally = $('.primary').find('.tally');
+          $('.primary').find('.area-name').append(primaryTally);
 
           $('.primary').removeClass('primary').addClass('secondary');
           area.addClass('primary').removeClass('secondary');
