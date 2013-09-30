@@ -84,7 +84,7 @@ $(document).ready(function(){
         service = new google.maps.places.PlacesService(document.getElementById('city-results'));
         service.getDetails(request, function(place){
           
-          var data = parsePlaseData(place); 
+          var data = parsePlaceData(place); 
           params = true;
           $("#home-search").attr("action", "/areas/" + data.state + "/"+ data.name+"/");
           $("#home-search").submit();
