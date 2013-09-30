@@ -86,7 +86,8 @@ $(document).ready(function(){
           
           var data = parsePlaceData(place); 
           params = true;
-          $("#home-search").attr("action", "/areas/" + data.state + "/"+ data.name+"/");
+          $('#state').val(data.state);
+          $('#city').val(data.city)
           $("#home-search").submit();
         });
         
