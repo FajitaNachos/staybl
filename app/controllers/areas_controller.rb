@@ -17,7 +17,7 @@ class AreasController < ApplicationController
   end
 
   def search
-    if params[:place].empty?
+    if params[:pac].empty?
       redirect_to root_path, :alert => "Please enter a city"
     else
       @city = params[:city]

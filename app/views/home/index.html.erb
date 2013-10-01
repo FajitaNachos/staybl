@@ -4,7 +4,7 @@
     <div id = "search-bar" class="row-fluid">
         <%= form_tag(search_path, :method => :get, :id=> "home-search") do %>
         <div class="span10">
-          <%= text_field_tag(:place, nil, :placeholder => 'Enter a city') %>
+          <%= text_field_tag(:pac, nil, :placeholder => 'Enter a city') %>
            <%= hidden_field_tag :state %>
           <%= hidden_field_tag :city %>
          </div>
