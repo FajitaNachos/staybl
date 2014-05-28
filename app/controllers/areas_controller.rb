@@ -8,8 +8,7 @@ class AreasController < ApplicationController
     @state = params[:state]
     @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
     @area = @areas.first
-    @areas = @areas.drop(1)
-    
+
     respond_to do |format|
       format.html # index.html.erb
       format.json { render json: @areas }
@@ -27,7 +26,6 @@ class AreasController < ApplicationController
       if (@area.nil?)
         redirect_to areas_path( :state => @state, :city => @city)
       else
-         @area = @areas.first
         redirect_to @area
       end
     end

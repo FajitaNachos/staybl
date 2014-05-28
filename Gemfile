@@ -1,61 +1,69 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.0'
+# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
+gem 'rails', '4.0.2'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+# Use postgresql as the database for Active Record
+gem 'pg'
 
-gem 'pg', '~> 0.15.1'
-gem 'bootstrap-sass', '~>2.3.1'
-gem 'jquery-rails', '~> 2.2.1'
-gem 'devise', '~> 3.0.0.rc'
+# Use SCSS for stylesheets
+gem 'sass-rails', '~> 4.0.0'
+
+# Use Uglifier as compressor for JavaScript assets
+gem 'uglifier', '>= 1.3.0'
+
+# Use CoffeeScript for .js.coffee assets and views
+gem 'coffee-rails', '~> 4.0.0'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+# gem 'therubyracer', platforms: :ruby
+
+# Use jquery as the JavaScript library
+gem 'jquery-rails'
+
+# jquery ui gem
+gem 'jquery-ui-rails'
+
+# turbolinks messes up the document ready calls of jquery. This fixes it
+gem 'jquery-turbolinks'
+
+# simple_form gem with bootstrap integration
+gem 'simple_form'
+
+# Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
+gem 'turbolinks'
+
+# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
+gem 'jbuilder', '~> 1.2'
+
+# Boostrap
+gem "bootstrap-sass", "~> 3.1.1.0"
+
+# Devise for authentication
+gem "devise"
+
+# Thumbs up for voting
 gem "thumbs_up", "~> 0.6.5"
 
-# Added when updating to Rails 4
-gem 'rails-observers'
-gem 'actionpack-page_caching'
-gem 'actionpack-action_caching'
-
-gem 'unicorn'
-gem 'rails_12factor'
+group :doc do
+  # bundle exec rake doc:rails generates the API under doc/api.
+  gem 'sdoc', require: false
+end
 
 group :development, :test do
-  gem 'rspec-rails', '~> 2.13.2'
-  gem 'guard-rspec', '~> 3.0.0'
-  gem "rb-fsevent", "~> 0.9.3", :require => false
-  gem 'guard-spork', '~>1.5.0'
-  gem 'childprocess', '~>0.3.9'
-  gem 'spork', '~>1.0.0rc3'
-  gem 'spork-rails', :github => 'sporkrb/spork-rails'
+  gem 'rspec-rails', '2.13.1'
+  gem 'guard-rspec', '2.5.0'
+  gem 'spork-rails', '4.0.0'
+  gem 'guard-spork', '1.5.0'
+  gem 'childprocess', '0.3.6'
 end
-
-  gem "sass-rails", "~> 4.0.0"
-  gem "coffee-rails", "~> 4.0.0"
-
-  # See https://github.com/sstephenson/execjs#readme for more supported runtimes
-  # gem 'therubyracer', :platforms => :ruby
-  gem "uglifier", "~> 2.1.2"
-
 
 group :test do
-  gem 'capybara', '~>2.1.0'
-  gem "selenium-webdriver", "~> 2.33.0"
-  gem "factory_girl_rails", "~> 4.2.1"
+  gem 'factory_girl_rails'
+  gem 'selenium-webdriver', '2.35.1'
+  gem 'capybara', '2.1.0'
 end
 
-
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
-
-# Use unicorn as the app server
-# gem 'unicorn'
-
-# Deploy with Capistrano
-# gem 'capistrano'
-
-# To use debugger
-# gem 'debugger'
+group :production do
+  gem 'rails_12factor'
+end

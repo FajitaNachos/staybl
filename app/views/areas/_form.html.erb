@@ -1,6 +1,6 @@
 <%= form_for (@area) do |f| %>
   <% if @area.errors.any? %>
-    <div id="error-box" class = "span5 offset5">
+    <div id="error-box" class = "col-md-6 ">
       <h2>It seems we have a problem.</h2>
 
       <% @area.errors.full_messages.each do |msg| %>
@@ -14,41 +14,43 @@
   <%= f.hidden_field :state, :value => @state %>
   <%= f.hidden_field :the_geom, :value => ''%>
 
-
-    <div id = "new_area_name" class="row-fluid">
-         <span class="span8 offset2">
+    <div id = "new_area_name" class="row">
+         <span class="col-md-8 col-md-offset-2 form-group">
             <h2> Area Name</h2>
-            <%= f.text_field :name, :placeholder => " " %>
+            <%= f.text_field :name, :placeholder => " ", :class => "form-control input-lg" %>
         </span>
     </div>
 
-     <div id = "new-instructions" class = "row-fluid">
-      <span class = "span8 offset2">
+     <div id = "new-instructions" class = "row">
+      <span class = "col-md-8 col-md-offset-2">
           <h2> Area Map </h2>
           <p>
           Help us put this area on the map. First, find the area on the map that you would like to highlight. Then click on Start Drawing at the top of the map. Next, click on the map to add your first point. You can add as many or as few points as you like, as long as the area is fully outlined when you are done. 
           </p>
         </span>
-    </div>
+      <span class = "col-md-12">
      <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@area.id, :state =>@state, :city => @city} do %>
         <div id = "map-canvas">
         </div>
       <%end%>
+      </span>
 
-   <!--  <div class= "row-fluid">
-        <span class="span8 offset2">
+    </div>
+
+    <div class= "row">
+        <span class="col-md-8 col-md-offset-2 form-group">
             <h2> About the Area (Optional)</h2>
             <p>
               Here you can share your knowledge of the area. We depend on both locals and frequent visitors to help us find the best areas to stay. We'll use your input to help build a comprehensive guide of the best areas to stay in <%= @city %>.  
             </p>
-          <%= f.text_area :description, :placeholder => " " %>
+          <%= f.text_area :description, :placeholder => " ", :class => "form-control input-lg" %>
         </span>
-    </div> -->
+    </div>
   
 
-  <div class="row-fluid">
-    <div class="actions center area-submit">
-        <%= f.submit(:value => 'Save This Area', :class=>'btn btn-large') %>
+  <div class="row">
+    <div class="buttons-container area-submit center">
+        <%= f.submit(:value => 'Save This Area', :class=>'btn btn-primary btn-lg') %>
     </div>
   </div>
 
