@@ -1,19 +1,18 @@
-<header class="navbar navbar-fixed-top navbar-inverse ">
-  <div class="navbar-inner">
-    <div class="container-fluid top-navbar">
-      <%= link_to "Staybl", admin_root_path, id: "logo" %><span class="admin">admin</span>
-      <nav>
-          <ul class="nav pull-right home-nav">
-          <% if administrator_signed_in? %>
-          <li><%= link_to "Sign Out", destroy_administrator_session_path, :method => :delete %></li>
-          <% end %>
-        </ul>
-      </nav>
-      <% if @map_search %>
-      <div id = "map-search">
-        <input id="map-search-box" type="text" placeholder="Search" />
-      </div>
-      <% end %>
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <%= link_to "Staybl Admin", admin_root_path, id: "logo", :class => 'navbar-brand' %>
     </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-right">
+          <li><%= link_to "Sign Out", destroy_administrator_session_path, :method => :delete %></li>
+        </ul>
+    </div><!--/.navbar-collapse -->
   </div>
-</header>
+</div>

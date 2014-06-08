@@ -1,475 +1,439 @@
-$(document).ready(function(){
-  //Only load this javascript if a user is on the map page
-  if(document.getElementById('map-canvas')){
-   
-    google.maps.Polygon.prototype.getBounds = function() {
-        var bounds = new google.maps.LatLngBounds();
-        var paths = this.getPaths();
-        var path;        
-        for (var i = 0; i < paths.getLength(); i++) {
-            path = paths.getAt(i);
-            for (var ii = 0; ii < path.getLength(); ii++) {
-                bounds.extend(path.getAt(ii));
-            }
-        }
-        return bounds;
-    }
+  $(document).ready(function(){
+ 
+  if($('#map-canvas').length >= 1){
 
-    var markers = [];
-    var marker;
-    var polygons = {};
-    var infoWindow;
-    var drawingManager;
-    var currentOverlay;
-    var mapBounds;
-    var map;
-    var id = $('#map').data('id');
-    var city = $('#map').data('city');
-    var state = $('#map').data('state');
-    var areaId = getURLParam('id');
+    var map = new Map();
+    map.init();
     
-    // Used to detect initial (useless) popstate.
-    // If history.state exists, assume browser isn't going to fire initial popstate.
-    //I copy and pasted this from stack overflow. 
-    var popped = ('state' in window.history && window.history.state !== null), initialURL = location.href;
+  }
 
-    $(window).bind('popstate', function (event) {
-      // Ignore inital popstate that some browsers fire on page load
-      var initialPop = !popped && location.href == initialURL
-      popped = true
-      if (initialPop) return;
-        removeOverlays();
-        $('.secondary').show();
-        if(areaId){
-          var area = $('[data-id="'+areaId+'"]');
-          updateAreaList(area);
-        }
-        else{
-          var area = $('[data-id="'+id+'"]');
-          updateAreaList(area);
-        }
-    });
+});
 
-    function initialize() {
-      // turns on the new google maps
-      google.maps.visualRefresh = true;
-      
-      var mapOptions = {
-        zoom: 13,
-        scrollwheel: false,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
 
-      var polygonOptions = {
-          strokeWeight: 0,
-          fillOpacity: 0.45,
-          editable: true,
-          fillColor: '#32CD32',
-          strokeColor: '#32CD32'
-      };
+var Map = function() {
+  this.id = $('#map').data('map-id');
+  this.city = $('#map').data('city');
+  this.state = $('#map').data('state');
+  this.editable = false;
+  this.polygons = [];
+  this.markers = [];
+};
 
-      map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
-      if(!map){
-        $('map-canvas').html("It looks like we are having a problem loading your map. Stand by.")
-      }
-      if($('.editable-map').length){
-        drawingManager = new google.maps.drawing.DrawingManager({
-          drawingControl:false,
-          drawingMode: google.maps.drawing.OverlayType.POLYGON,
-          polygonOptions: polygonOptions,
-          map: map
-        });
+Map.prototype.init = function(){
+    // turns on the new google maps
+    google.maps.visualRefresh = true;
+    this.extendPolygon();
 
-        if (id){
-          getArea(id);
-        }
-        else{
-          addMarker(city);
-        }
+    var mapOptions = {
+      zoom: 13,
+      scrollwheel: false,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+
+    var polygonOptions = {
+      strokeWeight: 0,
+      fillOpacity: 0.45,
+      editable: true,
+      strokeColor: '#32CD32'
+    };
+
+    this.map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+    
+    if($('.editable-map').length >= 1){
+      this.editable = true;
+      this.initDrawingManager(polygonOptions);
+      if(this.id){
+        this.getArea(this.id);
       }
       else{
-          getArea(id);
+        this.addMarker(this.city);
+        this.addDrawingControl();
       }
-     
+    }
+    else{
+      this.getArea(this.id);
+    }
 
-      infoWindow = new google.maps.InfoWindow({});
-      // Bias the autocomplete results to the map window
+    this.attachEventListeners();
+}
+
+Map.prototype.extendPolygon =  function() {
+
+  google.maps.Polygon.prototype.getBounds = function() {
+      var bounds = new google.maps.LatLngBounds();
+      var paths = this.getPaths();
+           
+      for (var i = 0; i < paths.getLength(); i++) {
+        var path = paths.getAt(i);
+
+        for (var ii = 0; ii < path.getLength(); ii++) {
+          bounds.extend(path.getAt(ii));
+        }
+      }
+      return bounds;
+    }
+}
+
+
+Map.prototype.getArea = function(id){
+    var self = this;
+    $.getJSON("/areas/fetch/"+id+'.json', function(data) {
+      self.setPolygon(data);
+    });
+}
+
+
+Map.prototype.setPolygon = function(data){
      
-      google.maps.event.addListener(drawingManager, 'overlaycomplete', function(e) {
+  var self = this;
+  var polygonData = data.the_geom.replace("POLYGON((", "");
+  polygonData = polygonData.replace("))","");
+  polygonData = polygonData.split(",");
+  
+  var polygonPath = [];
+
+  for(var i = 0; i < polygonData.length; i++){
+    var point = polygonData[i].trim().split(' ');
+    
+    var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
+
+    polygonPath.push(gPoint);
+  } 
+
+  this.polygon = new google.maps.Polygon({
+    paths: polygonPath,
+    strokeColor: '#32CD32',
+    strokeOpacity: 1,
+    strokeWeight: 1,
+    fillColor: '#32CD32',
+    fillOpacity: 0.25,
+    id:data.id,
+    clickable:false,  
+    editable:false,
+    name: data.name,
+    map: this.map 
+  }); 
+
+  this.searchYelpRestaurants(this.polygon);
+  this.searchYelpHotels(this.polygon);
+
+  if(this.editable) {
+    this.drawingManager.setDrawingMode(null);
+    this.polygon.setOptions({
+      editable: true,
+      clickable:true
+    });
+
+    $('#area_the_geom').val(data.the_geom);
+  }
+  //add the polygon to the global polygon array
+  this.polygons[data.id] = this.polygon;
+
+  this.map.fitBounds(this.polygon.getBounds());
+  
+   // Clear the current selection when the drawing mode is changed, or when the
+    // map is clicked.
+      google.maps.event.addListener(this.drawingManager, 'drawingmode_changed', this.clearSelection);
+
+      google.maps.event.addListener(this.polygon.getPath(), 'set_at', function() {
+        self.setCoordinates(self.polygon);
+      });
+
+      google.maps.event.addListener(this.polygon.getPath(), 'insert_at', function() {
+        self.setCoordinates(self.polygon);
+      });
+
+      google.maps.event.addListener(this.polygon, 'click', function(e){  
+        self.setSelection(self.polygon);
+      });
+
+      google.maps.event.addListener(this.polygon, 'rightclick', function(e){
+        if (e.vertex != null) {
+          self.polygon.getPath().removeAt(e.vertex);
+          self.setCoordinates(self.polygon);
+        }
+      });
+  
+}
+
+Map.prototype.attachEventListeners = function() {
+  var self = this;
+ 
+  if(this.editable) {
+    google.maps.event.addListener(this.drawingManager, 'overlaycomplete', function(e) {
+        console.log('overlay complete');
         if (e.type != google.maps.drawing.OverlayType.MARKER) {
           // Switch back to non-drawing mode after drawing a shape.
-          drawingManager.setDrawingMode(null);
+          self.drawingManager.setDrawingMode(null);
 
           // Add an event listener that selects the newly-drawn shape when the user
           // mouses down on it.
           var newOverlay = e.overlay;
           newOverlay.type = e.type;
           newOverlay.editable = true;
-          
-          google.maps.event.addListener(newOverlay, 'click', function(e) {
-            setInfoWindow(newOverlay, function(content){
-                infoWindow.setContent(content);
-                infoWindow.open(map);
-                infoWindow.setPosition(e.latLng);
-                addInfoWindowListeners(newOverlay);
-              });
+
+          self.setSelection(newOverlay);
+          self.setCoordinates(newOverlay);
+
+          google.maps.event.addListener(newOverlay.getPath(), 'set_at', function() {
+            self.setCoordinates(newOverlay);
           });
 
-          setSelection(newOverlay);
-          setCoordinates(newOverlay);
+          google.maps.event.addListener(newOverlay.getPath(), 'insert_at', function() {
+            self.setCoordinates(newOverlay);
+          });
         }
-
-        google.maps.event.addListener(newOverlay.getPath(), 'set_at', function() {
-          setCoordinates(newOverlay);
-        });
-
-        google.maps.event.addListener(newOverlay.getPath(), 'insert_at', function() {
-          setCoordinates(newOverlay);
-        });
-
-      });
-
-       // Clear the current selection when the drawing mode is changed, or when the
-      // map is clicked.
-      google.maps.event.addListener(drawingManager, 'drawingmode_changed', clearSelection);
-      google.maps.event.addListener(map, 'click', clearSelection);
-
-
-
-    }
-
-    // function to geocode an address and add a market to the map
-    function addMarker(city){
-      geocoder = new google.maps.Geocoder();
-      if(city){
-        geocoder.geocode({address: city}, function(results, status) {
-          var location = results[0].geometry.location;  
-          marker = new google.maps.Marker({
-            position: location,
-            visible: false,
-            map: map
-          });
-          markers.push(marker);
-          map.panTo(location);
-        });
-      }
-    }
-
-    // remove all markers in markers array
-    function removeMarkers(){
-      for (var i = 0; i < markers.length; i++) {
-       markers[i].setMap(null);
-      }
-    }
-
-    //function to retrieve the params from the URL.
-    function getURLParam(name) {
-      return decodeURIComponent((new RegExp("[?|&]" + name + "=([^&;]+?)(&|##|;|$)").exec(location.search) || [null, ""])[1].replace(/\+/g, "%20")) || null;
-    }
-
-
-    function getArea(id, callback){
-
-      $.getJSON("/admin/areas/"+id+'.json', function(data) {
-              $('#area-description').html(data.description);
-              
-              setPolygon(data);
-              if(callback){
-                callback(data);
-              }
-
-      });
-    }
-
-    function setPolygon(data){
-     
-      var polygon = data.the_geom.replace("POLYGON ((", "");
-          polygon = polygon.replace("))","");
-          polygon = polygon.split(',');
-          
-      var polygonPath = new Array();
-      for(var j=0; j<polygon.length;j++){
-        var point = polygon[j].trim().split(' ');
-    
-        var gPoint = new google.maps.LatLng(parseFloat(point[1]), parseFloat(point[0]));
-
-        polygonPath.push(gPoint);
-      } 
-
-      var polygon = new google.maps.Polygon({
-          paths: polygonPath,
-          strokeColor: '#32CD32',
-          strokeOpacity: 0.5,
-          strokeWeight: 0,
-          fillColor: '#32CD32',
-          fillOpacity: 0.5,
-          id:data.id,
-          clickable:false,  
-          editable:false,
-          name: data.name,
-          map: map 
       }); 
-
-      if($('.editable-map').length) {
-        drawingManager.setDrawingMode(null);
-        polygon.setOptions({
-          editable: true,
-          clickable:true
-        });
-
-      }
-      //add the polygon to the global polygon array
-      polygons[data.id] = polygon;
-
-      map.fitBounds(polygon.getBounds());
-     
-        
-
-      google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
-        setCoordinates(polygon);
-      });
-
-      google.maps.event.addListener(polygon.getPath(), 'insert_at', function() {
-        setCoordinates(polygon);
-      });
-
-      google.maps.event.addListener(polygon, 'click', function(e){  
-        setSelection(polygon);
-        setInfoWindow(polygon, function(content){
-          infoWindow.setContent(content);
-          infoWindow.open(map);
-          infoWindow.setPosition(e.latLng);
-          addInfoWindowListeners(polygon);
-        });
-      });
-
-        google.maps.event.addListener(polygon, 'rightclick', function(e){
-            if (e.vertex != null) {
-              polygon.getPath().removeAt(e.vertex);
-              console.log(polygon.getPaths());
-              setCoordinates(polygon);
-            }
-
-        });
-
-    }
-
-    function clearSelection() {
-      if (currentOverlay) {
-        currentOverlay.setEditable(false);
-        currentOverlay = null;
-      }
-    }
-
-    function setSelection(overlay) {
-      clearSelection();
-      currentOverlay = overlay;
-      overlay.setEditable(true);
-    }
-
-    function deleteCurrentOverlay() {
-      if (currentOverlay) {
-        currentOverlay.setMap(null);
-         drawingManager.setOptions({
-            drawingMode: google.maps.drawing.OverlayType.POLYGON
-          });
-       $('#area_the_geom').value = '';
-      }
-    }
-
-    function removeOverlays(){
-      
-      for (var id in polygons) {
-        if (polygons.hasOwnProperty(id)) { 
-          polygons[id].setMap(null);
-        }
-      }
-    }
- 
-
-    function setInfoWindow(overlay, callback){
-      if(overlay.editable){
-
-        var removeOverlay = document.createElement('span');
-        removeOverlay.id = "remove-overlay";
-        removeOverlay.innerHTML = "Remove Overlay";
-
-        var windowContent = document.createElement('div');
-        windowContent.id = 'edit-overlay';
-
-        windowContent.appendChild(removeOverlay);
-
-        callback(windowContent);
-      }
-
-      else{
-        if($('.editable-map').length){
-          setSelection(overlay);
-        }
-      }
-    }
-
-    function setCoordinates(newOverlay){
-      // complete functions
-      var path = newOverlay.getPath();
-      var xy;
-      var polygon = '';
-        // Iterate over the polygonBounds vertices.
-      for (var i = 0; i < path.length; i++) {
-        xy = path.getAt(i);
-        polygon += xy.lat() + ' ' + xy.lng() + ', ';
-      }
-
-      var final_xy = path.getAt(0);
-      polygon += final_xy.lat() + ' ' + final_xy.lng();
-  
-      var polyCoordinates = 'POLYGON((' + polygon + '))';
-
-      document.getElementById('area_the_geom').value = polyCoordinates;
-    }
-
-    function addInfoWindowListeners(polygon){
-      if($('.editable-map').length){
-        google.maps.event.addDomListener(document.getElementById('remove-overlay'), 'click', function(){
-            
-            infoWindow.close();
-            deleteCurrentOverlay();
-        });
-
-        google.maps.event.addListener(infoWindow,'closeclick',function(){
-            
-        });
-      }
-    }
-
-    function updateAreaList(area){
-       
-        var upVote = area.find('.area-up-vote');
-        var downVote = area.find('.area-down-vote');
-        var selectedArea = area.find('.area');
-        var selectedName = area.find('.area-name');
-        var selectedTally = area.find('.area-tally');
-
-        upVote.show();
-        downVote.show();
-
-       
-        selectedName.removeClass('span3 offset4').addClass('span8');
-        selectedTally.removeClass('span1').addClass('row-fluid block');
-
-        var primaryArea = $('.primary').find('.area');
-        var primaryTally = $('.primary').find('.area-tally');
-        var primaryName = $('.primary').find('.area-name');
-
-        primaryTally.removeClass('row-fluid block').addClass('span1');
-        primaryName.addClass('span3 offset4');
+    } 
+};
 
 
-        $('.primary').find('.area-name').addClass('span3 offset4');
-        $('.primary').find('.area-up-vote').hide();
-        $('.primary').find('.area-down-vote').hide();
+Map.prototype.searchYelpRestaurants = function(polygon){
+  var self = this;
+  var bounds = polygon.getBounds().toUrlValue().split(',');
 
-        $('.primary').removeClass('primary').addClass('secondary');
-        area.addClass('primary').removeClass('secondary');
-
-        var currentId = area.data('id');
-        var ul = $('#area-list');
-        var li = ul.children('.secondary');
-            li.detach().sort(function(a,b) {
-                return $(b).data('votes') - $(a).data('votes');  
-            });
-
-        ul.append(li);
-        $('.secondary').hide();
-        $('.add-area').hide();
-
-        getArea(currentId);
-
-    }
-
-    $('#show-more').on('click', function(){
-        $('.secondary').fadeIn('slow');
-        $('.add-area').fadeIn('slow');
-      });
-    
-    $('#areas').on('click', '.secondary', function(){
-       var areaId = $(this).data('id');
-        updateAreaList($(this));
-        removeOverlays();
-        history.pushState(
-                  null, 
-                  'Staybl',
-                  window.location.pathname+'?&id='+areaId);
-      });
-
-    $(document).on('ajax:complete', '.up-vote', function(event, data, status, xhr) {
-          console.log(data.responseText);
-          console.log(data);
-          switch(data.status){
-            case 200:
-              alert('upvoted!');
-              $(this).closest('#votes').html(data.responseText);    
-              break
-            case 404 :
-              alert('up vote failed');
-              $(this).closest('#votes').html(data.responseText);    
-              break
-            case 401 : 
-              console.log(event.target.pathname);
-              $('#modal-login').modal('show');
-              break
-            }
-          
+  $.ajax({
+    url: "/areas/yelp_search_restaurants",
+    data: {
+      bounding_box : bounds
+    },
+    success: function(data) { self.populateRestaurants(data);}
     });
+}
 
-    $(document).on('ajax:complete', '.down-vote', function(event, data, status, xhr) {
-         switch(data.status){
-            case 200:
-              alert('down voted!');
-              $(this).closest('#votes').html(data.responseText);    
-              break
-            case 404:
-              alert('down vote failed');
-              $(this).closest('#votes').html(data.responseText); 
-              break
-            case 401: 
-              $('#modal-login').modal('show');
-              break
-          }  
-    });
-    if($('.editable-map').length){
-      $('#area_id').on('change', function(){
-        var id = $(this).val();
-        removeOverlays();
-  
-        if(id == -1){
-          $('#new_area_name').show();
-          $('#area_the_geom').val('');
-          map.panTo(marker.position);
-        }
-        else{
-          $('#new_area_name').css('display','none');
-          
-          getArea(id, function(area){
-            
-             $('#area_the_geom').val(area.the_geom);
-          });
-        }
-      });
+Map.prototype.populateRestaurants = function(data) {
+  var restaurants = data.businesses;
+  var $container = $('div.restaurants');
 
-      if($('#area_id').length < 1){
-        $('#new_area_name').show();
-      }
+  for(var i = 0; i < restaurants.length; i++){
 
-    }
-
-
-
-
-    $('#areas').on('click', '.primary', function(){
-      $('.secondary').hide();
-      $('.add-area').hide();
-    });
-    initialize();
+    var restaurant = this.buildRestaurant(restaurants[i]);
+    $container.append(restaurant);
   }
-});
+}
+
+Map.prototype.buildRestaurant = function(restaurant) {
+  console.log(restaurant);
+  var $container = $('<div/>');
+  
+  var $a = $('<a/>',{
+    text: restaurant.name,
+    href: restaurant.url,
+    target: '_blank'
+  });
+  var $name = $('<span/>').append($a).appendTo($container);
+  var $ratingImg = $('<img/>',{
+    src: restaurant.rating_img_url
+  }).appendTo($container);
+  var $review = $('<span/>').append(restaurant.review_count + " reviews").appendTo($container);
+
+  return $container;
+
+}
+
+Map.prototype.searchYelpHotels = function(polygon){
+  var self = this;
+  var bounds = polygon.getBounds().toUrlValue().split(',');
+
+  $.ajax({
+    url: "/areas/yelp_search_hotels",
+    data: {
+      bounding_box : bounds
+    },
+    success: function(data) { self.populateHotels(data);}
+    });
+}
+
+Map.prototype.populateHotels = function(data) {
+  var hotels = data.businesses;
+  var $container = $('div.hotels');
+
+  for(var i = 0; i < hotels.length; i++){
+
+    var hotel = this.buildHotel(hotels[i]);
+    $container.append(hotel);
+  }
+}
+
+Map.prototype.buildHotel = function(hotel) {
+
+  var $container = $('<div/>');
+  
+  var $a = $('<a/>',{
+    text: hotel.name,
+    href: hotel.url,
+    target: '_blank'
+  });
+  var $name = $('<span/>').append($a).appendTo($container);
+  var $ratingImg = $('<img/>',{
+    src: hotel.rating_img_url
+  }).appendTo($container);
+  var $review = $('<span/>').append(hotel.review_count + " reviews").appendTo($container);
+
+  return $container;
+
+}
+
+Map.prototype.clearSelection = function() {
+  if (this.currentOverlay) {
+    //currentOverlay.setEditable(false);
+    this.currentOverlay.setMap(null);
+    this.currentOverlay = null;
+  }
+}
+
+Map.prototype.setSelection = function(overlay) {
+  this.clearSelection();
+  this.currentOverlay = overlay;
+  overlay.setEditable(true);
+}
+
+Map.prototype.deleteCurrentOverlay = function() {
+  if (this.currentOverlay) {
+    this.currentOverlay.setMap(null);
+    this.drawingManager.setOptions({
+      drawingMode: google.maps.drawing.OverlayType.POLYGON
+    });
+
+    $('#area_the_geom').val('');
+  }
+}
+
+Map.prototype.removeOverlays = function(){
+    
+  for (var id in this.polygons) {
+    if (this.polygons.hasOwnProperty(id)) { 
+      this.polygons[id].setMap(null);
+    }
+  }
+}
+
+Map.prototype.setCoordinates = function(newOverlay){
+  // complete functions
+
+
+  var path = newOverlay.getPath();
+
+  var polygon = '';
+  // Iterate over the polygonBounds vertices.
+  for (var i = 0; i < path.length; i++) {
+    var xy = path.getAt(i);
+    polygon += xy.lng() + ' ' + xy.lat() + ', ';
+  }
+
+  var final_xy = path.getAt(0);
+  polygon += final_xy.lng() + ' ' + final_xy.lat();
+    
+  var polyCoordinates = 'POLYGON((' + polygon + '))';
+  console.log(polyCoordinates);
+  $('#area_the_geom').val(polyCoordinates);
+}
+
+Map.prototype.initDrawingManager = function(polygonOptions) {
+   this.drawingManager = new google.maps.drawing.DrawingManager({
+      drawingControl:false,
+      drawingMode: null,
+      polygonOptions: polygonOptions,
+      map: this.map
+    });
+}
+
+Map.prototype.addMarker =  function(city){
+  var self = this;
+  var geocoder = new google.maps.Geocoder();
+
+  geocoder.geocode({ address: this.city}, function(results, status) {
+    var location = results[0].geometry.location;  
+    var marker = new google.maps.Marker({
+      position: location,
+      visible: false,
+      map: self.map
+    });
+
+    self.markers.push(marker);
+    self.map.panTo(location);
+  });
+};
+
+Map.prototype.addDrawingControl = function () {
+    var self = this;
+    var controlDiv = document.createElement('div');
+    controlDiv.className = 'control-container';
+      
+    // Set CSS styles for the DIV containing the control
+    // Setting padding to 5 px will offset the control
+    // from the edge of the map.
+    
+
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.className = 'map-control';
+    controlUI.title = 'Start Drawing';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    var controlText = document.createElement('div');
+    controlText.innerHTML = 'Start Drawing';
+    controlUI.appendChild(controlText);
+
+
+    // Setup the click event listeners
+    google.maps.event.addDomListener(controlUI, 'click', function() {
+      self.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
+      self.map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
+      self.addClearControl();
+
+    });
+    controlDiv.index = 1;
+
+    this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);  
+}
+
+Map.prototype.addClearControl = function () {
+    var self = this;
+    var controlDiv = document.createElement('div');
+    controlDiv.className = 'control-container';
+
+    // Set CSS for the control border.
+    var controlUI = document.createElement('div');
+    controlUI.className = 'map-control';
+    controlUI.title = 'Clear Selection';
+    controlDiv.appendChild(controlUI);
+
+    // Set CSS for the control interior.
+    var controlText = document.createElement('div');
+    controlText.innerHTML = 'Clear Selection';
+    controlUI.appendChild(controlText);
+
+    // Setup the click event listeners
+    google.maps.event.addDomListener(controlUI, 'click', function() {
+      
+      self.deleteCurrentOverlay();
+      self.drawingManager.setDrawingMode(null);
+      self.map.controls[google.maps.ControlPosition.TOP_CENTER].clear();
+      self.addDrawingControl();
+    });
+    controlDiv.index = 1;
+    this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(controlDiv);
+}
+
+
+Map.prototype.removeMarkers = function(){
+    for (var i = 0; i < this.markers.length; i++) {
+     this.markers[i].setMap(null);
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

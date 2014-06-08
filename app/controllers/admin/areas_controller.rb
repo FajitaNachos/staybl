@@ -5,6 +5,7 @@ class Admin::AreasController < Admin::BaseController
   def index
     @updated_areas = Area.where("updated_at > ? and created_at < ?", 1.day.ago, 1.day.ago)
     @new_areas = Area.where("created_at > ?", 1.day.ago)
+    @areas = Area.all
     
     respond_to do |format|
       format.html # index.html.erb
@@ -28,6 +29,20 @@ class Admin::AreasController < Admin::BaseController
       format.html # show.html.erb
       format.json { render json: @admin_area }
     end
+  end
+
+   def yelp_search_restaurants
+    bounding_box = { sw_latitude: params[:bounding_box][0], sw_longitude: params[:bounding_box][1], ne_latitude: params[:bounding_box][2], ne_longitude: params[:bounding_box][3]}
+    locale = { lang: 'en' }
+    parameters = { term: 'restaurants', limit: 10 }
+    render json: Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+  end
+
+   def yelp_search_hotels
+    bounding_box = { sw_latitude: params[:bounding_box][0], sw_longitude: params[:bounding_box][1], ne_latitude: params[:bounding_box][2], ne_longitude: params[:bounding_box][3]}
+    locale = { lang: 'en' }
+    parameters = { term: 'hotels', limit: 10 }
+    render json: Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
   end
 
   # GET /admin/areas/new
@@ -54,8 +69,8 @@ class Admin::AreasController < Admin::BaseController
   # GET /admin/areas/1/edit
   def edit
     @admin_area = Area.find(params[:id])
-    @city = params[:city]
-    @state = params[:state]
+    @admin_city = params[:city]
+    @admin_state = params[:state]
     @id = params[:id]
   end
 

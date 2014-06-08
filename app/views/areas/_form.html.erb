@@ -12,7 +12,7 @@
 
   <%= f.hidden_field :city, :value => @city %>
   <%= f.hidden_field :state, :value => @state %>
-  <%= f.hidden_field :the_geom, :value => ''%>
+  <%= f.hidden_field :the_geom, :value => @area.the_geom%>
 
     <div id = "new_area_name" class="row">
          <span class="col-md-8 col-md-offset-2 form-group">
@@ -29,7 +29,7 @@
           </p>
         </span>
       <span class = "col-md-12">
-     <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:id=>@area.id, :state =>@state, :city => @city} do %>
+     <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:map_id=>@area.id, :state =>@state, :city => @city} do %>
         <div id = "map-canvas">
         </div>
       <%end%>
@@ -41,7 +41,7 @@
         <span class="col-md-8 col-md-offset-2 form-group">
             <h2> About the Area (Optional)</h2>
             <p>
-              Here you can share your knowledge of the area. We depend on both locals and frequent visitors to help us find the best areas to stay. We'll use your input to help build a comprehensive guide of the best areas to stay in <%= @city %>.  
+              Share your knowledge of the area. We depend on both locals and frequent visitors to help us find the best areas to stay. We'll use your input to help build a comprehensive guide of the best areas to stay in <%= @city %>.  
             </p>
           <%= f.text_area :description, :placeholder => " ", :class => "form-control input-lg" %>
         </span>

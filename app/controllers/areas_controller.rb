@@ -31,6 +31,20 @@ class AreasController < ApplicationController
     end
   end
 
+  def yelp_search_restaurants
+    bounding_box = { sw_latitude: params[:bounding_box][0], sw_longitude: params[:bounding_box][1], ne_latitude: params[:bounding_box][2], ne_longitude: params[:bounding_box][3]}
+    locale = { lang: 'en' }
+    parameters = { term: 'restaurants', limit: 10 }
+    render json: Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+  end
+
+   def yelp_search_hotels
+    bounding_box = { sw_latitude: params[:bounding_box][0], sw_longitude: params[:bounding_box][1], ne_latitude: params[:bounding_box][2], ne_longitude: params[:bounding_box][3]}
+    locale = { lang: 'en' }
+    parameters = { term: 'hotels', limit: 10 }
+    render json: Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+  end
+
   def vote_up
     @area = Area.find(params[:id])
     begin
@@ -59,8 +73,7 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     @city = @area.city
     @state = @area.state
-    @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
-    @areas = @areas.drop(1)
+    #@areas = Area.plusminus_tally.where.not(id: @area.id).where(:areas => {:city => @city, :state => @state}).having("COUNT(votes.id) > 0")
     
     respond_to do |format|
       format.html # show.html.erb
@@ -74,7 +87,6 @@ class AreasController < ApplicationController
       format.html # .html.erb
       format.json { render json: @area }
     end
-
   end
 
   # GET /areas/new
@@ -111,7 +123,7 @@ class AreasController < ApplicationController
       respond_to do |format|
         if @area.save
           current_or_guest_user.vote_for(@area)
-          format.html { redirect_to areas_path(:state => @area.state, :city => @area.city, :id =>@area.id), notice: 'Area was successfully added.' }
+          format.html { redirect_to area_path(@area), notice: 'Area was successfully added.' }
           format.json { render json: @area, status: :created, location: @area }
         else
           @city = @area.city
@@ -129,7 +141,7 @@ class AreasController < ApplicationController
     @area = Area.find(params[:id])
     respond_to do |format|
       if @area.update(area_params)
-        format.html { redirect_to areas_path(:state => @area.state, :city=>@area.city, :id =>@area.id), notice: 'Area was successfully updated.' }
+        format.html { redirect_to area_path(@area.id), notice: 'Area was successfully updated.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

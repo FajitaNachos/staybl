@@ -43,12 +43,15 @@ gem "bootstrap-sass", "~> 3.1.1.0"
 gem "devise"
 
 # Thumbs up for voting
-gem "thumbs_up", "~> 0.6.5"
+gem 'thumbs_up', '~> 0.6.7'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
+
+# Yelp for restaurants and hotels in the area
+gem 'yelp', '~> 2.0.1'
 
 group :development, :test do
   gem 'rspec-rails', '2.13.1'

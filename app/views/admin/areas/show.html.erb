@@ -1,21 +1,19 @@
 <p id="notice"><%= notice %></p>
 
-<div id = "areas" class = "container-fluid no-padding">
-    <h1>
-     <%= @admin_area.name %>
-    </h1>
-
-    <% if @admin_area %>
-    <div id = "area-info" class = "row-fluid">
-      <div id="area-description" class="span10 center">
-      </div>
+<div id = "areas" class = "container-fluid">
+  <div class = "row">
+    <div class = "col-sm-12">
+      <h1> <%= @admin_area.name %> </h1>
+      <span><%= link_to 'Edit', edit_admin_area_path(@admin_area) %></span>
+      <span><%= link_to 'Destroy', admin_area_path(@admin_area), method: :delete, data: { confirm: 'Are you sure?' } %></span>
     </div>
-
-    <%= content_tag :div, :id => 'map', :data => {:id => @admin_area.id} do %>
+  </div>
+  <div class = "row">
+    <%= content_tag :div, :id => 'map', :data => {:map_id => @admin_area.id} do %>
         <div id = "map-canvas">
         </div>
-      <%end%>
-  <%end%>
+    <%end%>
+  </div>
 
  </div>
 

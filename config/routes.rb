@@ -13,6 +13,9 @@ Staybl::Application.routes.draw do
 
   get '/search', to: 'areas#search'
   get '/areas/fetch/(:id)', to: 'areas#fetch'  
+  get '/areas/yelp_search_hotels', to: 'areas#yelp_search_hotels'
+  get '/areas/yelp_search_restaurants', to: 'areas#yelp_search_restaurants'
+
   root to: 'home#index'
   resources :areas do
     member do

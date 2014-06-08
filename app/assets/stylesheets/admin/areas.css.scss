@@ -2,122 +2,82 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-#map, #edit-map, #new-map{
-    width:100%;
+.area-index{
+
+  .admin-search{
+    margin-top:20px;
+    h1{
+      margin-top:0;
+    }
+  }
+  span {
+    margin:0;
+    display:inline-block;
+    vertical-align: bottom;
+  }
 }
 
-#map{
- border-top:1px solid #555;
- border-bottom:1px solid #555;
-}
-
-#area-search {
-  margin-bottom:20px%;
-}
-
-#area-search input[type='text'] {
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  height:30px;
-  margin:0;
-}
-//fixes distorted scroll bar on map
-#map img, #edit-map img, #new-map img { max-width: none; }
-
+// Map
 #map-canvas{
-  height:600px;
+  height:550px;
+  border-top:1px solid #555;
+  border-bottom: 1px solid #555
 }
 
-#area-list{
-  margin:0;
-  padding:0;
+.control-container{
+  margin:5px;
+  cursor:pointer;
+
 }
 
-#new_area_name{
-  padding-left:20px;
+.map-control{
+  font-family: Roboto,Arial,sans-serif;
+  font-size: 11px;
+  font-weight: 400;
+  direction: ltr;
+  text-align: center;
+  color: rgb(0, 0, 0);
+  font-family: Roboto, Arial, sans-serif;
+  -webkit-user-select: none;
+  font-size: 11px;
+  background-color: rgb(255, 255, 255);
+  padding: 1px 6px;
+  border-radius: 2px;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.14902);
+  -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
+  width:80px;
 }
 
-#areas h1{
-  padding-top:1em;
-  padding-bottom:.5em;
-  font-weight:normal; 
+.map-control:hover{
+  background-color: rgb(235,235,235);
 }
 
-.first-area{
-  padding-top:2.5em;
-}
-
-.primary, .secondary {
-  text-decoration:none;
-}
-
-.primary{
-  cursor:default;
-  border-top:1px solid #ccc;
-  border-bottom:1px solid #ccc;
-  padding:6em;
-}
-
-.primary h2{
-  color:#333;
-  font-size: 6em;
-  margin:0;
-}
-
-.area-tally{
+#error-box {
   text-align:center;
 }
 
-.secondary{
-  cursor:pointer;
-  display:none;
+#error-box h2{
+  text-align:center;
+  color: #ff0000;
 }
 
-.secondary h3{
-  font-weight:normal;
-  font-size:1em;
-}
-#show-more{
-  cursor:pointer;
+.area-intro{
+  color: #707070
 }
 
-.add-area {
-  display:none;
+.area-name{
+  color: #444;
 }
 
-.block{
-  display:block;
-  clear:both;
+h1.area-name{ font-size: 5em;}
+h2.area-name{ text-align:center; width:100%;}
+
+.hotels, .restaurants, .attractions {
+  h3{
+    text-align:center;
+  }
 }
 
-
-
-#area-info {
-  margin-top:3%;
-}
-
-#area-description{
-  float:none;
-  margin:auto;
-}
-
-.upvoted, .downvoted {
-  color: #ED5417;
-}
-
-/* for the new area form */
-.form-element{
-  margin:auto;
-  max-width:700px;
-  display:block;
-  padding:0 20px;
-}
-
-.form-element textarea{
-  width:100%;
-
-}
-
-.area-submit{
-  padding-top:1%;
-}
