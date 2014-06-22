@@ -54,6 +54,8 @@ end
 # Yelp for restaurants and hotels in the area
 gem 'yelp', '~> 2.0.1'
 
+#gem 'unicorn'
+
 group :development, :test do
   gem 'rspec-rails', '2.13.1'
   gem 'guard-rspec', '2.5.0'
