@@ -1,16 +1,15 @@
 <div id = "areas-container" class = "container-fluid">
   <div class = "row">
-    <div class = "col-sm-12">
-      <h1>
-        The best area to stay in <span id = "city-name"><%= @city %></span> is 
-      </h1>
-    </div>
+    <span class = "col-sm-12 center">
+      <h1 class = "area-intro"> The best area to stay in <span id = "city-name"><%= @city %></span> is</h1>
+      <h1 class = "area-name"> still up for grabs. </h1>
+    </span>
   </div>
   <div class = "row">
-    <div class = "col-sm-12">
-      <h2>still up for grabs</h2>
-      <%= link_to "Tell us where you like to stay." , new_area_path(:state => @state, :city => @city) %>
-    </div>
+    <span class = "col-sm-12 center">
+      <%= link_to "Know a good place to stay in " + @city + "?" , new_area_path(:state => @state, :city => @city), :class => "new-area-link" %>
+    </span>
   </div>
+
 </div>
 

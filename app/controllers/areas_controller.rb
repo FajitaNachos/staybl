@@ -1,5 +1,5 @@
 class AreasController < ApplicationController
-  before_action :authenticate_administrator!, :only => [:destroy]
+  before_action :authenticate_administrator!, :only => [:edit, :destroy]
 
   # GET /areas
   # GET /areas.json
@@ -35,14 +35,17 @@ class AreasController < ApplicationController
     bounding_box = { sw_latitude: params[:bounding_box][0], sw_longitude: params[:bounding_box][1], ne_latitude: params[:bounding_box][2], ne_longitude: params[:bounding_box][3]}
     locale = { lang: 'en' }
     parameters = { term: 'restaurants', limit: 10 }
-    render json: Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+    restaurants = Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+    render :partial => 'areas/restaurant_listings', :layout => false, :locals => { :restaurants => restaurants.businesses }
+    
   end
 
    def yelp_search_hotels
     bounding_box = { sw_latitude: params[:bounding_box][0], sw_longitude: params[:bounding_box][1], ne_latitude: params[:bounding_box][2], ne_longitude: params[:bounding_box][3]}
     locale = { lang: 'en' }
     parameters = { term: 'hotels', limit: 10 }
-    render json: Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+    hotels = Yelp.client.search_by_bounding_box(bounding_box, parameters, locale)
+    render :partial => 'areas/hotel_listings', :layout => false, :locals => { :hotels => hotels.businesses }
   end
 
   def vote_up

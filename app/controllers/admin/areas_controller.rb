@@ -69,8 +69,8 @@ class Admin::AreasController < Admin::BaseController
   # GET /admin/areas/1/edit
   def edit
     @admin_area = Area.find(params[:id])
-    @admin_city = params[:city]
-    @admin_state = params[:state]
+    @admin_city = @admin_area.city
+    @admin_state = @admin_area.state
     @id = params[:id]
   end
 
@@ -78,9 +78,9 @@ class Admin::AreasController < Admin::BaseController
   # POST /admin/areas.json
   def create
     @admin_area = Area.new(area_params)
-
     respond_to do |format|
       if @admin_area.save
+        current_administrator.vote_for(@area)
         format.html { redirect_to @admin_area, notice: 'Area was successfully created.' }
         format.json { render json: @admin_area, status: :created, location: @admin_area }
       else

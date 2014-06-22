@@ -15,6 +15,7 @@ Staybl::Application.routes.draw do
   get '/areas/fetch/(:id)', to: 'areas#fetch'  
   get '/areas/yelp_search_hotels', to: 'areas#yelp_search_hotels'
   get '/areas/yelp_search_restaurants', to: 'areas#yelp_search_restaurants'
+  get '/areas/flickr_search_photos', to: 'areas#flickr_search_photos'
 
   root to: 'home#index'
   resources :areas do

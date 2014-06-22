@@ -1,7 +1,10 @@
 <div id = "home-container" class = "jumbotron">
+  <div class = "map"></div>
   <div class= "container">
-    <h1 class = "pull-left">Find the best area to stay.</h1>
     <div id = "search-bar" class="row">
+        <div class = "col-lg-12">
+          <h1>Find the best area to stay.</h1>
+        </div>
         <%= form_tag(search_path, :method => :get, :id=> "home-search") do %>
           <div class="form-group col-sm-10">
             <%= text_field_tag(:pac, nil, :placeholder => 'Enter a city', :class => 'form-control input-lg') %>
@@ -18,17 +21,17 @@
 
   <div class = "container">
     <div class = "row">
-      <div class = "col-md-4">
+      <div class = "city-section col-md-4">
         <h3> Chicago </h3>
-        <p> Some place holder text sould go here </p>
+        <%= link_to(image_tag("chicago_4.jpg", height: '225', width: '300', alt: 'Chicago'), area_path(@chicago)) %>
       </div>
-       <div class = "col-md-4">
+       <div class = "city-section col-md-4">
         <h3> New York</h3>
-        <p> Some place holder text sould go here </p>
+        <%= link_to(image_tag("new_york_1.jpg", height: '225', width: '300', alt: 'New York'), area_path(@new_york)) %>
       </div>
-       <div class = "col-md-4">
+       <div class = "city-section col-md-4">
         <h3> San Francisco </h3>
-        <p> Some place holder text sould go here </p>
+        <%= link_to(image_tag("san_francisco_1.jpg", height: '225', width: '300', alt: 'San Francisco'), area_path(@san_francisco)) %>
       </div>
     </div>
   </div>

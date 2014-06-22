@@ -1,55 +1,52 @@
 <%= form_for ([:admin,@admin_area]) do |f| %>
   <% if @admin_area.errors.any? %>
-    <div id="error-box" class = "col-md-6 ">
-      <h2>It seems we have a problem.</h2>
+    <div class = "row">
+      <div id="error-box" class = "col-md-6 ">
+        <h2>It seems we have a problem.</h2>
 
-      <% @area.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
+        <% @area.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </div>
     </div>
   <% end %>
 
-
-  <%= f.hidden_field :city, :value => @admin_city %>
-  <%= f.hidden_field :state, :value => @admin_state %>
-  <%= f.hidden_field :the_geom, :value => @admin_area.the_geom%>
-
-    <div id = "new_area_name" class="row">
-         <span class="col-md-8 col-md-offset-2 form-group">
-            <h2> Area Name</h2>
-            <%= f.text_field :name, :placeholder => " ", :class => "form-control input-lg" %>
-        </span>
+  <div class="row">
+    <div class = "form-group col-sm-4">
+      <label> Area Name </label>
+      <%= f.text_field :name, :placeholder => " ", :class => "form-control input-lg" %>
     </div>
+    <div class = "form-group col-sm-4">
+      <label>City</label>
+      <%= f.text_field :city, :value => @admin_city, :class => "form-control input-lg" %>
+    </div>
+    <div class = "form-group col-sm-4">
+      <label> State </label>
+      <%= f.text_field :state, :value => @admin_state, :class => "form-control input-lg"  %>
+    </div>
+    <div class = "form-group col-sm-12">
+      <label> Geometry </label>
+      <%= f.text_field :the_geom, :value => @admin_area.the_geom, :class => "form-control input-lg" %>
+      </div>
 
-     <div id = "new-instructions" class = "row">
-      <span class = "col-md-8 col-md-offset-2">
-          <h2> Area Map </h2>
-          <p>
-          Help us put this area on the map. First, find the area on the map that you would like to highlight. Then click on Start Drawing at the top of the map. Next, click on the map to add your first point. You can add as many or as few points as you like, as long as the area is fully outlined when you are done. 
-          </p>
-        </span>
-      <span class = "col-md-12">
+      <div class= "form-group col-sm-12">
+        <label> Description </label>
+        <%= f.text_area :description, :placeholder => " ", :class => "form-control input-lg" %>
+      </div>
+  </div>
+
+  <div class = "row">
+    <div class = "col-sm-12">
      <%= content_tag :div, :id => 'map', :class=>'editable-map', :data =>{:map_id=>@admin_area.id, :state =>@admin_state, :city => @admin_city} do %>
         <div id = "map-canvas">
         </div>
       <%end%>
-      </span>
-
-    </div>
-
-    <div class= "row">
-        <span class="col-md-8 col-md-offset-2 form-group">
-            <h2> About the Area (Optional)</h2>
-            <p>
-              Share your knowledge of the area. We depend on both locals and frequent visitors to help us find the best areas to stay. We'll use your input to help build a comprehensive guide of the best areas to stay in <%= @city %>.  
-            </p>
-          <%= f.text_area :description, :placeholder => " ", :class => "form-control input-lg" %>
-        </span>
-    </div>
+    <div>
+  </div>
   
 
   <div class="row">
-    <div class="buttons-container area-submit center">
+    <div class="col-sm-12 buttons-container area-submit">
         <%= f.submit(:value => 'Save This Area', :class=>'btn btn-primary btn-lg') %>
     </div>
   </div>

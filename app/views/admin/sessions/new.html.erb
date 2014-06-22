@@ -1,14 +1,21 @@
-<div class = "container center">
-<h2>Sign in</h2>
+<div class = "container">
+  <div class = "row sign-in">
+    <div class = "col-md-6 col-md-offset-3">
+      <h2 class = "center">Sign in</h2>
+      <%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+      <div class = "form-group">
+        <%= f.label :email %>
+        <%= f.email_field :email, :autofocus => true, :class => "form-control" %>
+      </div>
 
-<%= form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email, :autofocus => true %></div>
+      <div class = "form-group">
+        <%= f.label :password %>
+        <%= f.password_field :password, :class => "form-control" %>
+      </div>
 
-  <div><%= f.label :password %><br />
-  <%= f.password_field :password %></div>
-
-  <div><%= f.submit "Sign in", :class=>"btn btn-large", :id=>"sign-in" %></div>
-<% end %>
+      <%= f.submit "Sign in", :class=>"btn btn-primary", :id=>"sign-in" %>
+      <% end %>
+    <%= render "admin/shared/links" %>
+    </div>
+  </div>
 </div>
-<%= render "admin/shared/links" %>

@@ -1,12 +1,11 @@
-<div id = "areas-container" class = "container-fluid">
+<div id = "areas-container" class = "container">
   <div class = "row">
     <span class = "col-sm-12 center">
       <h1 class = "area-intro"> The best area to stay in <span id = "city-name"><%= @city %></span> is</h1>
       <h1 class = "area-name"> <%= @area.name %> </h1>
     </span>
   </div>
-  <%= @hotels.inspect %>
-  <%= @restaurants.inspect %>
+ 
   <div class = "row">
     <div class = "col-sm-12">
       <%= content_tag :div, :id => 'map', :data => {:map_id => @area.id, :state => @state, :city => @city} do %>
@@ -15,21 +14,22 @@
       <%end%>
     </div>
   </div>
-
-  <div class = "row">
-    <div class = "col-sm-8 col-sm-offset-2">
-      <h2 class = "area-name"><%= @area.name %></h2>
-      <p> <%=@area.description %> </p>
+ <!--  <% if !@area.description.blank? %>
+    <div class = "row">
+      <div class = "col-sm-8 col-sm-offset-2">
+        <h2 class = "area-name">About <%= @area.name %></h2>
+        <p> <%=@area.description %> </p>
+      </div>
     </div>
-  </div>
-  <div class = "row">
+  <%end%> -->
 
+  <div class = "row">
     <div class = "hotels col-md-6">
-      <h3> <%= @area.name %> Hotels </h3>
+      <h3> Top <%= @area.name %> Hotels </h3>
     </div>
 
     <div class = "restaurants col-md-6">
-      <h3> <%= @area.name %> Restaurants </h3>
+      <h3>Top <%= @area.name %> Restaurants </h3>
     </div>
   </div>
  </div>

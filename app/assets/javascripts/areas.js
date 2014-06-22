@@ -114,8 +114,12 @@ Map.prototype.setPolygon = function(data){
     map: this.map 
   }); 
 
-  this.searchYelpRestaurants(this.polygon);
-  this.searchYelpHotels(this.polygon);
+  var bounds = this.polygon.getBounds().toUrlValue().split(',');
+
+  this.searchYelpRestaurants(bounds);
+  this.searchYelpHotels(bounds);
+  //this.searchPanoramio(bounds)
+
 
   if(this.editable) {
     this.drawingManager.setDrawingMode(null);
@@ -187,53 +191,50 @@ Map.prototype.attachEventListeners = function() {
     } 
 };
 
+Map.prototype.searchPanoramio = function(bounds) {
 
-Map.prototype.searchYelpRestaurants = function(polygon){
+  $.ajax({
+    type: 'get',
+    dataType: 'jsonp',
+    url: 'http://www.panoramio.com/map/get_panoramas.php?set=public&from=0&to=50&minx='+bounds[1]+'&miny='+bounds[0]+'&maxx='+bounds[3]+'&maxy='+bounds[2]+'&size=medium&callback=?',
+    success: function(data) {
+      for(var i = 0; i < data.photos.length; i++){
+        var img = $('<img />',{
+          'src': data.photos[i].photo_file_url
+        })
+        $('.area-images').append(img)
+      }
+
+    }
+    });
+
+}
+
+Map.prototype.loadPhotos = function(data) {
+  console.log(data);
+}
+
+Map.prototype.searchYelpRestaurants = function(bounds){
   var self = this;
-  var bounds = polygon.getBounds().toUrlValue().split(',');
 
   $.ajax({
     url: "/areas/yelp_search_restaurants",
     data: {
       bounding_box : bounds
     },
-    success: function(data) { self.populateRestaurants(data);}
+    success: function(data) { self.populateRestaurants(data)}
     });
 }
 
 Map.prototype.populateRestaurants = function(data) {
-  var restaurants = data.businesses;
   var $container = $('div.restaurants');
-
-  for(var i = 0; i < restaurants.length; i++){
-
-    var restaurant = this.buildRestaurant(restaurants[i]);
-    $container.append(restaurant);
-  }
-}
-
-Map.prototype.buildRestaurant = function(restaurant) {
-  console.log(restaurant);
-  var $container = $('<div/>');
-  
-  var $a = $('<a/>',{
-    text: restaurant.name,
-    href: restaurant.url,
-    target: '_blank'
-  });
-  var $name = $('<span/>').append($a).appendTo($container);
-  var $ratingImg = $('<img/>',{
-    src: restaurant.rating_img_url
-  }).appendTo($container);
-  var $review = $('<span/>').append(restaurant.review_count + " reviews").appendTo($container);
-
-  return $container;
+  $container.append(data);
 
 }
 
-Map.prototype.searchYelpHotels = function(polygon){
+Map.prototype.searchYelpHotels = function(bounds){
   var self = this;
-  var bounds = polygon.getBounds().toUrlValue().split(',');
+
 
   $.ajax({
     url: "/areas/yelp_search_hotels",
@@ -245,33 +246,10 @@ Map.prototype.searchYelpHotels = function(polygon){
 }
 
 Map.prototype.populateHotels = function(data) {
-  var hotels = data.businesses;
+
   var $container = $('div.hotels');
-
-  for(var i = 0; i < hotels.length; i++){
-
-    var hotel = this.buildHotel(hotels[i]);
-    $container.append(hotel);
-  }
-}
-
-Map.prototype.buildHotel = function(hotel) {
-
-  var $container = $('<div/>');
+  $container.append(data);
   
-  var $a = $('<a/>',{
-    text: hotel.name,
-    href: hotel.url,
-    target: '_blank'
-  });
-  var $name = $('<span/>').append($a).appendTo($container);
-  var $ratingImg = $('<img/>',{
-    src: hotel.rating_img_url
-  }).appendTo($container);
-  var $review = $('<span/>').append(hotel.review_count + " reviews").appendTo($container);
-
-  return $container;
-
 }
 
 Map.prototype.clearSelection = function() {

@@ -3,11 +3,31 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 
+.restaurant, .hotel{
+  display:block;
+  margin-bottom:20px;
+  padding:10px 5px;
+
+}
+
+.restaurant-image, .hotel-image{
+  text-align: right;
+
+  img{
+    border:1px solid #777;
+  }
+}
+
+.new-area-link{
+  display:block;
+  margin-top:20px;
+}
+
 // Map
 #map-canvas{
   height:550px;
-  border-top:1px solid #555;
-  border-bottom: 1px solid #555
+  border:1px solid #777;
+  margin-bottom:50px;
 }
 
 .control-container{
@@ -51,19 +71,27 @@
 }
 
 .area-intro{
-  color: #707070
+  color: #707070;
+  margin-top:40px;
 }
 
 .area-name{
   color: #444;
 }
 
-h1.area-name{ font-size: 5em;}
-h2.area-name{ text-align:center; width:100%;}
+h1.area-name{ font-size: 5em; margin-bottom:40px;}
+h2.area-name{ text-align:center; width:100%; }
 
 .hotels, .restaurants, .attractions {
   h3{
     text-align:center;
+    margin-bottom:25px;
+    border-bottom:1px solid #ccc;
+    padding-bottom:15px;
   }
+}
+
+#area_description {
+  height:300px;
 }
 
