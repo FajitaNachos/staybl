@@ -7,7 +7,8 @@
 #logo {
   float: left;
   font-size: 1.7em;
-  color: #42AAE8;
+  color: #efefef;
+  text-shadow: 0px 1px 1px #999;
   text-transform: uppercase;
   letter-spacing: -1px;
   padding-top: 11px;
@@ -16,14 +17,16 @@
 }
 
 .navbar.navbar-top{
-  border-bottom:1px solid #eee;
-  box-shadow: 0 1px 10px rgba(0,0,0,0.1);
+  border-bottom:1px solid #387099;
   margin-bottom:0;
+  background-color:#4283B2;
+  border-radius:0;
 }
 
 #footer{
   margin-top:40px;
-  height:100px;
+  height:200px;
   border-top:1px solid #ccc;
   background-color:#efefef;
+  background-image: image-url('whitey.png');
 }

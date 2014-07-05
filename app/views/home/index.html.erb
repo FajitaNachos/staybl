@@ -1,5 +1,4 @@
 <div id = "home-container" class = "jumbotron">
-  <div class = "map"></div>
   <div class= "container">
     <div id = "search-bar" class="row">
         <div class = "col-lg-12">
@@ -19,19 +18,20 @@
   </div>
 </div>
 
-  <div class = "container">
+  <div class = "container cities">
+   
     <div class = "row">
       <div class = "city-section col-md-4">
-        <h3> Chicago </h3>
-        <%= link_to(image_tag("chicago_4.jpg", height: '225', width: '300', alt: 'Chicago'), area_path(@chicago)) %>
+        <%= link_to(image_tag("chicago_1.jpg", height: '225', width: '300', alt: 'Chicago'), area_path(@chicago)) %>
+         <h3> Chicago </h3>
       </div>
        <div class = "city-section col-md-4">
-        <h3> New York</h3>
         <%= link_to(image_tag("new_york_1.jpg", height: '225', width: '300', alt: 'New York'), area_path(@new_york)) %>
+        <h3> New York</h3>
       </div>
        <div class = "city-section col-md-4">
-        <h3> San Francisco </h3>
         <%= link_to(image_tag("san_francisco_1.jpg", height: '225', width: '300', alt: 'San Francisco'), area_path(@san_francisco)) %>
+        <h3> San Francisco </h3>
       </div>
     </div>
   </div>

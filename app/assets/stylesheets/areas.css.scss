@@ -23,11 +23,16 @@
   margin-top:20px;
 }
 
+#map{
+  padding-top:30px;
+  border-top:1px solid #ddd;
+}
 // Map
 #map-canvas{
   height:550px;
   border:1px solid #777;
   margin-bottom:50px;
+  margin-top:20px;
 }
 
 .control-container{
@@ -71,15 +76,17 @@
 }
 
 .area-intro{
-  color: #707070;
+  color: #555;
   margin-top:40px;
 }
 
-.area-name{
-  color: #444;
+h1.area-name{ 
+  font-size: 5em; 
+  margin-bottom:30px;
+  font-family: "Bitter";
+  color:#4283B2;
 }
 
-h1.area-name{ font-size: 5em; margin-bottom:40px;}
 h2.area-name{ text-align:center; width:100%; }
 
 .hotels, .restaurants, .attractions {
