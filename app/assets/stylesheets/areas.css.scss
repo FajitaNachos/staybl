@@ -21,6 +21,7 @@
 .new-area-link{
   display:block;
   margin-top:20px;
+  margin-bottom:50px;
 }
 
 #map{
@@ -48,18 +49,18 @@
   direction: ltr;
   text-align: center;
   color: rgb(0, 0, 0);
-  font-family: Roboto, Arial, sans-serif;
+  font-family: "Bitter", Arial, sans-serif;
   -webkit-user-select: none;
   font-size: 11px;
   background-color: rgb(255, 255, 255);
-  padding: 1px 6px;
+  padding: 10px 5px;
   border-radius: 2px;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid rgba(0, 0, 0, 0.14902);
   -webkit-box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
   box-shadow: rgba(0, 0, 0, 0.298039) 0px 1px 4px -1px;
-  width:80px;
+  width:120px;
 }
 
 .map-control:hover{
@@ -112,5 +113,26 @@ h2.area-name{ text-align:center; width:100%; }
 
 #area_description {
   height:300px;
+}
+
+
+
+#new-area{
+  h1{
+    margin: 30px 0 40px 0;
+    color:#555;
+    text-align:center;
+  }
+
+  h2{
+    color:#555;
+    font-size:18px;
+  }
+
+  #map{
+    border:0;
+    margin-top:0;
+    padding:0;
+  }
 }
 

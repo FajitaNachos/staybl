@@ -15,17 +15,17 @@
   <%= f.hidden_field :the_geom, :value => @area.the_geom%>
 
     <div id = "new_area_name" class="row">
-         <span class="col-md-8 col-md-offset-2 form-group">
+         <span class="col-md-10 col-md-offset-1 form-group">
             <h2> Area Name</h2>
             <%= f.text_field :name, :placeholder => " ", :class => "form-control input-lg" %>
         </span>
     </div>
 
      <div id = "new-instructions" class = "row">
-      <span class = "col-md-8 col-md-offset-2">
+      <span class = "col-md-10 col-md-offset-1">
           <h2> Area Map </h2>
           <p>
-          Help us put this area on the map. First, find the area on the map that you would like to highlight. Then click on Start Drawing at the top of the map. Next, click on the map to add your first point. You can add as many or as few points as you like, as long as the area is fully outlined when you are done. 
+          Help us put this area on the map! First, click 'Start Drawing' at the top of the map. Then, click on the map to add your first point. You can add as many or as few points as you like, as long as the area is fully outlined when you are done. 
           </p>
         </span>
       <span class = "col-md-12">
@@ -38,7 +38,7 @@
     </div>
 
     <div class= "row">
-        <span class="col-md-8 col-md-offset-2 form-group">
+        <span class="col-md-10 col-md-offset-1 form-group">
             <h2> About the Area (Optional)</h2>
             <p>
               Share your knowledge of the area. We depend on both locals and frequent visitors to help us find the best areas to stay. We'll use your input to help build a comprehensive guide of the best areas to stay in <%= @city %>.  
