@@ -4,6 +4,11 @@ Staybl::Application.routes.draw do
   
   devise_for :administrators, :path => '', :path_names => { :sign_in => "login", :sign_out => "logout"}, :controllers => { :sessions => "admin/sessions" }
 
+
+  %w( 404 422 500 ).each do |code|
+    get code, :to => "errors#show", :code => code
+  end
+
   namespace :admin do
     root to: "dashboard#index"
     get '/areas/search', to: 'areas#search' 

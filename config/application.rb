@@ -54,6 +54,9 @@ module Staybl
 
     # Recommended to add this during Devise install
     config.assets.initialize_on_precompile = false
+
+    # Custom Error pages
+    config.exceptions_app = self.routes
     
   end
 end
