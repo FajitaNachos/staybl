@@ -1,20 +1,18 @@
 <% hotels.each do |hotel| %>
   <div class = "hotel row">
-    <span class = "col-md-12">
-      <span class = "hotel-details col-md-9">
-        <h4 class = "hotel-link"> <%= link_to hotel.name, hotel.url, :html_options => { class: 'hotel-name' } %>
-        </h4>
-        <div class = "categories">
-          <%= hotel.categories.map{ |category| category[0]}.join(", ") %>
-        </div>
-        <div class = "hotel-address">
-        <%= hotel.location.display_address.join(", ") %>
-        </div>
-      </span>
-      <span class = "hotel-reviews col-md-3">
-        <img src = <%= hotel.rating_img_url %> />
-        <div class = "reviews"> <%= hotel.review_count %> reviews </div>  
-      </span>
+    <span class = "hotel-details col-md-9">
+      <h4 class = "hotel-link"> <%= link_to hotel.name, hotel.url, :html_options => { class: 'hotel-name' } %>
+      </h4>
+      <div class = "categories">
+        <%= hotel.categories.map{ |category| category[0]}.join(", ") %>
+      </div>
+      <div class = "hotel-address">
+      <%= hotel.location.display_address.join(", ") %>
+      </div>
+    </span>
+    <span class = "hotel-reviews col-md-3">
+      <img src = <%= hotel.rating_img_url %> />
+      <div class = "reviews"> <%= hotel.review_count %> reviews </div>  
     </span>
   </div>
 <%end%>

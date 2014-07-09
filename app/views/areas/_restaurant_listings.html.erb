@@ -1,23 +1,21 @@
 <% restaurants.each do |restaurant| %>
   <div class = "restaurant row">
-    <span class = "col-md-12">
-      <span class = "restaurant-details col-md-9">
-        <h4 class = "restaurant-link"> <%= link_to restaurant.name, restaurant.url, :html_options => { class: 'restaurant-name' } %>
-        </h4>
+    <span class = "restaurant-details col-md-9">
+      <h4 class = "restaurant-link"> <%= link_to restaurant.name, restaurant.url, :html_options => { class: 'restaurant-name' } %>
+      </h4>
 
-        <div class = "categories">
-          <%= restaurant.categories.map{ |category| category[0]}.join(", ") %>
-        </div>
+      <div class = "categories">
+        <%= restaurant.categories.map{ |category| category[0]}.join(", ") %>
+      </div>
 
-        <div class = "restaurant-address">
-          <%= restaurant.location.display_address.join(", ") %>
-        </div>
-         
-      </span>
-      <span class = "restaurant-reviews col-md-3">
-        <img src = <%= restaurant.rating_img_url %> />
-        <div class = "reviews"> <%= restaurant.review_count %> reviews </div>  
-      </span>
+      <div class = "restaurant-address">
+        <%= restaurant.location.display_address.join(", ") %>
+      </div>
+       
+    </span>
+    <span class = "restaurant-reviews col-md-3">
+      <img src = <%= restaurant.rating_img_url %> />
+      <div class = "reviews"> <%= restaurant.review_count %> reviews </div>  
     </span>
   </div>
 <%end%>
