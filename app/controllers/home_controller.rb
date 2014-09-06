@@ -4,7 +4,7 @@ class HomeController < ApplicationController
     @chicago = Area.where(:city => 'Chicago', :state => "IL").first
     @san_francisco = Area.where(:city => 'San Francisco', :state => "CA").first
 
-    @random_areas = Area.random(10)
+    @all_areas = Area.all
   end
 
 end
