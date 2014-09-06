@@ -21,20 +21,35 @@
   <div class = "container cities">
    
     <div class = "row">
-      <div class = "city-section col-md-4">
+      <div class = "col-sm-12 center">
+        <h2 class = "popular-cities"> Popular Cities </h2>
+      </div>
+      <div class = "city-section col-md-4 col-sm-4">
         <%= link_to(image_tag("chicago_1.jpg", height: '225', width: '300', alt: 'Chicago'), area_path(@chicago)) %>
          <h3> Chicago </h3>
       </div>
-       <div class = "city-section col-md-4">
+       <div class = "city-section col-md-4 col-sm-4">
         <%= link_to(image_tag("new_york_1.jpg", height: '225', width: '300', alt: 'New York'), area_path(@new_york)) %>
         <h3> New York</h3>
       </div>
-       <div class = "city-section col-md-4">
+       <div class = "city-section col-md-4 col-sm-4">
         <%= link_to(image_tag("san_francisco_1.jpg", height: '225', width: '300', alt: 'San Francisco'), area_path(@san_francisco)) %>
         <h3> San Francisco </h3>
       </div>
     </div>
   </div>
-  <div id = "city-results">
+  <div class = "container city-results">
+    <div class = "row">
+    <div class = "col-sm-12 center">
+      <h2 class = "random-cities">Other Cities You Might Want To Visit</h2>
+    </div>
+      <div class = "city-list col-sm-12 center">
+        <ul>
+           <% @random_areas.each_with_index do |area, index| %>
+              <li> <%= link_to area.city + ", " + area.state, area_path(area) %> </li>
+          <%end%>
+        </ul>
+      </div>
+    </div>
   </div>
  

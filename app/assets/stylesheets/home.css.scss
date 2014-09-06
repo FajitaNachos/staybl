@@ -17,7 +17,7 @@
 }
 .cities{
 
-  padding:100px 0 50px 0;
+  padding:50px 0 50px 0;
 
   .city-section{
     h3{
@@ -44,4 +44,18 @@
   &:hover{
     background-color: #387099;
   }
+}
+
+.city-list{
+    ul {
+      li {
+        font-size:18px;
+        list-style-type: none;
+        padding:5px 0;
+      }
+    }
+}
+
+.random-cities, .popular-cities {
+  margin-bottom:20px;
 }
