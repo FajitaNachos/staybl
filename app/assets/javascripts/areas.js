@@ -1,5 +1,8 @@
+var url = window.location;  
+$('.fb-like').attr('data-href', url);
+
   $(document).ready(function(){
- 
+
   if($('#map-canvas').length >= 1){
 
     var map = new Map();
@@ -8,7 +11,6 @@
   }
 
 });
-
 
 var Map = function() {
   this.id = $('#map').data('map-id');

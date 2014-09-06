@@ -29,7 +29,6 @@
 
 #map{
   padding-top:30px;
-  border-top:1px solid #ddd;
 }
 // Map
 #map-canvas{
@@ -135,4 +134,24 @@ h2.area-name{ text-align:center; width:100%; }
     padding:0;
   }
 }
+
+.social-links{
+  clear:both; 
+  text-align: center;
+  padding:20px 0 0 0;
+  width:500px;
+  margin:auto;
+  border-top:1px solid #ccc;
+
+
+  .social-prompt, a, .fb-like {
+    display: inline-block;
+    vertical-align: top;
+  } 
+
+  .social-prompt{
+    margin-right:5px;
+  }
+}
+
 
