@@ -23,15 +23,15 @@
       <div class = "col-sm-12 center">
       </div>
       <div class = "city-section col-md-4 col-sm-4">
-        <%= link_to(image_tag("chicago_1.jpg", height: '225', width: '300', alt: 'Chicago'), area_path(@chicago)) %>
+        <%= link_to(image_tag("chicago_1.jpg", height: '225', width: '300', alt: 'Chicago'), area_path(@chicago), html_options = { title: "The best area to stay in Chicago"}) %>
          <h3> Chicago </h3>
       </div>
        <div class = "city-section col-md-4 col-sm-4">
-        <%= link_to(image_tag("new_york_1.jpg", height: '225', width: '300', alt: 'New York'), area_path(@new_york)) %>
+        <%= link_to(image_tag("new_york_1.jpg", height: '225', width: '300', alt: 'New York'), area_path(@new_york), html_options = { title: "The best area to stay in New York"}) %>
         <h3> New York</h3>
       </div>
        <div class = "city-section col-md-4 col-sm-4">
-        <%= link_to(image_tag("san_francisco_1.jpg", height: '225', width: '300', alt: 'San Francisco'), area_path(@san_francisco)) %>
+        <%= link_to(image_tag("san_francisco_1.jpg", height: '225', width: '300', alt: 'San Francisco'), area_path(@san_francisco), html_options = { title: "The best area to stay in San Francisco"}) %>
         <h3> San Francisco </h3>
       </div>
     </div>
@@ -45,7 +45,7 @@
       <div class = "city-list col-sm-12">
         <ul>
            <% @all_areas.each_with_index do |area, index| %>
-              <li> <%= link_to area.city + ", " + area.state, area_path(area) %> </li>
+              <li> <%= link_to area.city + ", " + area.state, area_path(area), html_options = { title: "The best area to stay in " + area.city } %> </li>
           <%end%>
         </ul>
       </div>
