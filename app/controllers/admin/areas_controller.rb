@@ -4,6 +4,7 @@ class Admin::AreasController < Admin::BaseController
   
   def index
     @updated_areas = Area.where("updated_at > ? and created_at < ?", 1.day.ago, 1.day.ago)
+    @unapproved_areas = Area.where(:approved => false)
     @new_areas = Area.where("created_at > ?", 1.day.ago)
     @areas = Area.all
     

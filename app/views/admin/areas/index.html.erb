@@ -33,6 +33,22 @@
     <% end %>
     
     </span>
+
+     <span class = "col-sm-4">
+      <h2> Require Approval</h2>
+      <% @unapproved_areas.each do |area| %>
+        <div class = "row">
+          <div class = "col-sm-12">
+            <span><%=area.name %></span>  
+            <span><%= link_to 'Show', admin_area_path(area) %></span>
+            <span><%= link_to 'Edit', edit_admin_area_path(area) %></span>
+            <span><%= link_to 'Destroy', admin_area_path(area), method: :delete, data: { confirm: 'Are you sure?' } %></span>
+          </div>
+        </div>
+      <% end %>
+    </span>
+
+
     <span class = "col-sm-4">
       <h2> Recently Updated </h2>
       <% @updated_areas.each do |area| %>
