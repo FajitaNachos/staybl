@@ -45,7 +45,7 @@
       <div class = "city-list col-sm-12">
         <ul>
            <% @all_areas.each_with_index do |area, index| %>
-              <li> <%= link_to area.city + ", " + area.state, area_path(area), html_options = { title: "The best area to stay in " + area.city } %> </li>
+              <li> <%= link_to area.city, area_path(area), html_options = { title: "The best area to stay in " + area.city } %> </li>
           <%end%>
         </ul>
       </div>
