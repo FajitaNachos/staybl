@@ -3,7 +3,7 @@ class Area < ActiveRecord::Base
   validates :the_geom, presence: true
 
   def to_param
-    [id, city, name.parameterize].join("-").downcase
+    [id, city, name.parameterize].join("-").downcase.strip.gsub(" ", "-")
   end
 
 end
