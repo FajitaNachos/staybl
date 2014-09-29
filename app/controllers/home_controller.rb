@@ -4,7 +4,7 @@ class HomeController < ApplicationController
     @chicago = Area.where(:city => 'Chicago', :state => "IL").first
     @san_francisco = Area.where(:city => 'San Francisco', :state => "CA").first
 
-    @all_areas = Area.all
+    @all_areas = Area.where(:approved => true)
   end
 
 end

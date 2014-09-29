@@ -117,6 +117,34 @@ class Admin::AreasController < Admin::BaseController
     end
   end
 
+  def approve
+    @admin_area = Area.find(params[:id])
+    
+    respond_to do |format|
+      if @admin_area.update(:approved => true)
+        format.html { redirect_to [:admin, @admin_area], notice: 'Area was successfully approved.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @admin_area.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+  def unapprove
+    @admin_area = Area.find(params[:id])
+    
+    respond_to do |format|
+      if @admin_area.update(:approved => false)
+        format.html { redirect_to [:admin, @admin_area], notice: 'Area was successfully unapproved.' }
+        format.json { head :no_content }
+      else
+        format.html { render action: "edit" }
+        format.json { render json: @admin_area.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def area_params
     params.require(:area).permit(:name, :the_geom, :description, :city, :state)
   end

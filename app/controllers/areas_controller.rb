@@ -6,7 +6,7 @@ class AreasController < ApplicationController
   def index
     @city = params[:city]
     @state = params[:state]
-    @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
+    @areas = Area.where("city = ? AND state = ?", @city, @state)
     @area = @areas.first
 
     respond_to do |format|
@@ -21,7 +21,7 @@ class AreasController < ApplicationController
     else
       @city = params[:city]
       @state = params[:state]
-      @areas = Area.plusminus_tally.where("city = ? AND state = ?", @city, @state).having("COUNT(votes.id) > 0")
+      @areas = Area.where("city = ? AND state = ? AND approved = ?", @city, @state, true)
       @area = @areas.first
       if (@area.nil?)
         redirect_to areas_path( :state => @state, :city => @city)
@@ -126,7 +126,7 @@ class AreasController < ApplicationController
       respond_to do |format|
         if @area.save
           current_or_guest_user.vote_for(@area)
-          format.html { redirect_to area_path(@area), notice: 'Area was successfully added.' }
+          format.html { redirect_to area_path(@area), notice: 'Thanks for suggesting this area! We will review the area within 24 hours and then add it to our site.' }
           format.json { render json: @area, status: :created, location: @area }
         else
           @city = @area.city

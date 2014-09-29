@@ -11,7 +11,9 @@ Staybl::Application.routes.draw do
 
   namespace :admin do
     root to: "dashboard#index"
-    get '/areas/search', to: 'areas#search' 
+    get '/areas/search', to: 'areas#search'
+    post '/areas/approve/:id', to: 'areas#approve'
+    post '/areas/unapprove/:id', to: 'areas#unapprove'
     resources :areas
   end
 

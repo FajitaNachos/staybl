@@ -1,5 +1,12 @@
 <div id="edit-area" class="container-fluid no-padding">
-<h1>Edit <%= @admin_area.name %> Area</h1>
+<h1><%= @admin_area.name %></h1>
+<span class = "approval">Approved: <%= @admin_area.approved %> </span> 
+<% if @admin_area.approved %>
+  <%= link_to "Unapprove", {:controller => :areas, :action => :unapprove}, {:method => :post } %>
+<% else %>
+  <%= link_to "Approve", {:controller => :areas, :action => :approve}, {:method => :post } %>
+<% end %>
+
 <%= render 'form' %>
 </div>
 
