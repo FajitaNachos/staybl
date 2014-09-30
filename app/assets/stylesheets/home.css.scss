@@ -1,36 +1,37 @@
 
 .jumbotron {
-  height:300px;
+  height:350px;
   background-color:#4283B2;
   padding:30px 0;
   margin-bottom:0;
   border-top:1px solid #468CBF;
-  border-bottom:1px solid #555;
+  border-bottom:1px solid #777;
 
 
     h1{
       color:#fff;
-      text-shadow: 0px 1px 7px #777;
+      text-shadow: 0px 1px 5px #222;
       margin-bottom:30px; 
     }
   
 }
 .cities{
 
-  padding:100px 0 50px 0;
-
+  padding:100px 0 100px 0;
+  background: url('low_contrast_linen.png');
+  box-shadow:inset 0px 5px 10px #222;
   .city-section{
     h3{
-      color:#555;
+      color:#ccc;
       margin-bottom:20px;
+      text-shadow:1px 2px #222;
       font-family: "Bitter";
       font-weight:bold;
       text-align:center;
     }
 
     img{
-      border:1px solid #757575;
-      //box-shadow: 1px 1px 2px 0px #aaa;
+      box-shadow: 0px 0px 10px #222;
       display:block;
       margin:auto;
     }
@@ -38,11 +39,15 @@
 }
 
 .search-submit{
-  text-shadow:1px 1px #777;
-  background-color:#4283B2;
+  
+  background-color:#fff;
   border:1px solid #387099;
+  font-family:"Bitter";
+  color: #777;
+
   &:hover{
-    background-color: #387099;
+    color:#555;
+    background-color:#fff;
   }
 }
 
@@ -58,7 +63,7 @@
     ul {
       li {
         display:inline-block;
-        width:33%;
+        width:20%;
         font-size:18px;
         list-style-type: none;
         padding:5px 0;
@@ -70,5 +75,6 @@
 .random-cities, .popular-cities {
   margin-bottom:20px;
   color:#555;
-  font-family: "Arial"
+  font-weight:bold;
+  font-family: "Bitter"
 }
