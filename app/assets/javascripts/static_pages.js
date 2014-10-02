@@ -1,104 +1,55 @@
 $(document).ready(function(){
 
-  // the global var params is a hacky workaround to make sure that the google Autocomplete
-  // search completes before the form is submitted when a user uses the return key to
-  // submit the form 
+// the global var params is a hacky workaround to make sure that the google Autocomplete
+// search completes before the form is submitted when a user uses the return key to
+// submit the form 
 
- var params = false;
- var pac_input = document.getElementById('home-search');
- if (pac_input) {
+var params = false;
+var pac_input = document.getElementById('home-search');
+ 
+if (pac_input) {
   // Set options for the autocomplete
   var options = {
     types: ["(cities)"]
   };
-
-  (function pacSelectFirst(input) {
-      // store the original event binding function
-      var _addEventListener = (input.addEventListener) ? input.addEventListener : input.attachEvent;
-
-      function addEventListenerWrapper(type, listener) {
-          // Simulate a 'down arrow' keypress on hitting 'return' when no pac suggestion is selected,
-          // and then trigger the original listener.
-          if (type == "keydown") {
-            var orig_listener = listener;
-            listener = function(event) {
-              var suggestion_selected = $(".pac-item.pac-selected").length > 0;
-              if (event.which == 13 && !suggestion_selected) {
-                var simulated_downarrow = $.Event("keydown", {
-                  keyCode: 40,
-                  which: 40
-                });
-                orig_listener.apply(input, [simulated_downarrow]);
-              }
-
-              orig_listener.apply(input, [event]);
-            };
-          }
-
-          _addEventListener.apply(input, [type, listener]);
-        }
-
-        input.addEventListener = addEventListenerWrapper;
-        input.attachEvent = addEventListenerWrapper;
-
-      })(pac_input);
-      
-      var autocomplete = new google.maps.places.Autocomplete(pac, options);
+     
+  var autocomplete = new google.maps.places.Autocomplete(pac, options);
 
   //Submit the form when a user selects an option from the autocomplete list
-  google.maps.event.addListener(autocomplete, "place_changed", function() {
-    var autoPlace = autocomplete.getPlace();
-   
-    if(autoPlace){
-      var data = parsePlaceData(autoPlace);
-      params = true;
-      $('#state').val(data.state);
-      $('#city').val(data.city)
-      $("#home-search").submit();
-    }
-  });
+    google.maps.event.addListener(autocomplete, "place_changed", function() {
+      var autoPlace = autocomplete.getPlace();
 
-  $('#home-search').on("submit", function(event){
-    if(params == false){
-      event.preventDefault();
-      google.maps.event.trigger(autocomplete, 'place_changed');
-    }
-  });
+      if(autoPlace.address_components){
+        var data = parsePlaceData(autoPlace);
 
-  $('#search').on('click', function(){
-    var city = $('#pac').val();
-    var map = $('#map');
-    var autocompleteService = new google.maps.places.AutocompleteService();
-    
-    autocompleteService.getPlacePredictions({
-      input: city,
-      length: city.length,
-      types: ["(cities)"]
-    }, function(data){
-      var firstResult = data[0];
-      var description = firstResult.description;
-      var reference = firstResult.reference;
-      var request = {
-        reference: firstResult.reference
-      };
-      $('#pac').val(description);
-      service = new google.maps.places.PlacesService(document.getElementById('city-results'));
-      service.getDetails(request, function(city){
-        
-        var data = parsePlaceData(city); 
-        params = true;
         $('#state').val(data.state);
         $('#city').val(data.city)
         $("#home-search").submit();
+      }
+
+      else{
+        $('#search').trigger('click');
+      }
+    });
+
+     $('#home-search').on("submit", function(event){
+        if(params == false){
+          event.preventDefault();
+          google.maps.event.trigger(autocomplete, 'place_changed');
+        }
       });
+
+    $('#search').on('click', function(){
       
-      
-    })
-    return false;
-  });
+      var searchTerm = $('#pac').val();
+
+      getPlace(searchTerm);
+
+      return false;
+    });
 
     function parsePlaceData(place){
-   
+    
       var components = place.address_components;
       var placeData = {};
       for (var i =0; i<components.length;i++){
@@ -114,6 +65,47 @@ $(document).ready(function(){
       return placeData;
     }
 
+    function getPlace(searchVal) {
+     
+      var autocompleteOptions =  {
+        input: searchVal,
+        length: searchVal.length,
+        types: ["(cities)"]
+      };
+
+      var autocompleteService = new google.maps.places.AutocompleteService();
+
+      autocompleteService.getPlacePredictions(autocompleteOptions, handleAutocompletePrediction);
+ 
+    }
+
+    function handleAutocompletePrediction(data) {
+
+        var place;
+        var firstResult = data[0];
+        var description = firstResult.description;
+        var placeId = firstResult.place_id;
+
+        $('#pac').val(description);
+
+        var geocoder = new google.maps.Geocoder();
+        var geocoderRequest = { address: description };
+
+        geocoder.geocode(geocoderRequest, function(results, status){
+
+          place = results[0];
+
+          var data = parsePlaceData(place); 
+
+          params = true;
+
+          $('#state').val(data.state);
+          $('#city').val(data.city)
+          $("#home-search").submit();
+        });
+
+        
+    }
 
   }
 });
