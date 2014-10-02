@@ -15,11 +15,13 @@
     }
   
 }
+
 .cities{
 
   padding:100px 0 100px 0;
   background: image-url('low_contrast_linen.png');
   box-shadow:inset 0px 5px 10px #222;
+
   .city-section{
     h3{
       color:#ccc;
@@ -64,6 +66,7 @@
       li {
         display:inline-block;
         width:18%;
+        min-width:100px;
         font-size:18px;
         list-style-type: none;
         padding:5px 0;
