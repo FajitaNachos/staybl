@@ -22,6 +22,7 @@ if (pac_input) {
       if(autoPlace.address_components){
         var data = parsePlaceData(autoPlace);
 
+        params = true;
         $('#state').val(data.state);
         $('#city').val(data.city)
         $("#home-search").submit();
