@@ -83,6 +83,8 @@ Staybl::Application.configure do
 
   # Email via Mandrill
 
+  config.action_mailer.perform_deliveries = true
+
   config.action_mailer.smtp_settings = {
     :port =>           '587',
     :address =>        'smtp.mandrillapp.com',
