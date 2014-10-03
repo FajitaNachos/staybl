@@ -1,0 +1,6 @@
+<% if @contact.errors.any? %>
+    $('<%=escape_javascript(render :partial => "form_errors", :locals => {:contact => @contact})%>').appendTo('.error_container'); 
+<% else %>
+    $('#contact-modal').modal('hide');
+<% end %>
+

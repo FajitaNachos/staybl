@@ -105,6 +105,9 @@ GEM
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    mail_form (1.5.0)
+      actionmailer (>= 3.2, < 5)
+      activemodel (>= 3.2, < 5)
     mandrill-api (1.0.52)
       excon (>= 0.16.0, < 1.0)
       json (>= 1.7.7, < 2.0)
@@ -242,6 +245,7 @@ DEPENDENCIES
   jquery-rails
   jquery-turbolinks
   jquery-ui-rails
+  mail_form
   mandrill-api
   pg
   rails (= 4.0.2)

@@ -25,7 +25,7 @@ body{
 #logo {
   float: left;
   font-size: 1.7em;
-  color: #fff;
+  color: #f9f9f9;
   text-shadow: 0px 1px 2px #222;
   text-transform: uppercase;
   letter-spacing: -1px;
@@ -50,4 +50,12 @@ body{
 
 .error-container{
   height:100%;
+}
+
+.navbar-link a{
+  color:#f9f9f9;
+
+  &:hover{
+    color:#2a6496;
+  }
 }

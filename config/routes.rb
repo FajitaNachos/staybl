@@ -23,6 +23,9 @@ Staybl::Application.routes.draw do
   get '/areas/yelp_search_hotels', to: 'areas#yelp_search_hotels'
   get '/areas/yelp_search_restaurants', to: 'areas#yelp_search_restaurants'
   get '/areas/flickr_search_photos', to: 'areas#flickr_search_photos'
+  get '/contacts',  to: 'contacts#new'
+
+  resources "contacts", only: [:new, :create]
 
   root to: 'home#index'
   resources :areas do

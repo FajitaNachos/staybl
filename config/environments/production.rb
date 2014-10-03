@@ -81,4 +81,17 @@ Staybl::Application.configure do
   # Set up for Devise
   config.action_mailer.default_url_options = { :host => 'http://staybl.com' }
 
+  # Email via Mandrill
+
+  config.action_mailer.smtp_settings = {
+    :port =>           '587',
+    :address =>        'smtp.mandrillapp.com',
+    :user_name =>      ENV['MANDRILL_USERNAME'],
+    :password =>       ENV['MANDRILL_APIKEY'],
+    :domain =>         'heroku.com',
+    :authentication => :plain
+  }
+
+  config.action_mailer.delivery_method = :smtp
+
 end

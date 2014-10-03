@@ -39,6 +39,9 @@ gem 'jbuilder', '~> 1.2'
 # Mandrill email from MailChimp
 gem 'mandrill-api'
 
+# Mandrill email from MailChimp
+gem 'mail_form'
+
 # Boostrap
 gem "bootstrap-sass", "~> 3.1.1.0"
 

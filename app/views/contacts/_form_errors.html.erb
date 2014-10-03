@@ -1,0 +1,10 @@
+<% if @contact.errors.any? %>
+    <div id="error_explanation">
+        <h4>The following errors prevented your message from being sent:</h4>
+        <ul>
+        <% @contact.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+        <% end %>
+        </ul>
+    </div>
+<% end %>
