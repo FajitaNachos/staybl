@@ -100,11 +100,15 @@ h2.area-name{ text-align:center; width:100%; }
     font-family: "Bitter"
   }
   h4{
-    margin-bottom:0;
+    margin:0;
   }
   .categories{
     font-size:13px;
     color:#777;
+  }
+
+  .restaurant-link, .categories{
+    display:inline-block;
   }
 }
 
