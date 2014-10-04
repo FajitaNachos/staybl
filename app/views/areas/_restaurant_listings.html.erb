@@ -3,13 +3,13 @@
     <span class = "restaurant-details col-md-9">
       <h4 class = "restaurant-link"> <%= link_to restaurant.name, restaurant.url, :html_options => { class: 'restaurant-name' } %>
       </h4>
+      
+      <div class = "restaurant-address">
+        <%= restaurant.location.display_address.join(", ") %>
+      </div>
 
       <div class = "categories">
         <%= restaurant.categories.map{ |category| category[0]}.join(", ") %>
-      </div>
-
-      <div class = "restaurant-address">
-        <%= restaurant.location.display_address.join(", ") %>
       </div>
        
     </span>
