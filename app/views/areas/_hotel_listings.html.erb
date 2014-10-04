@@ -3,9 +3,6 @@
     <span class = "hotel-details col-md-9">
       <h4 class = "hotel-link"> <%= link_to hotel.name, hotel.url, :html_options => { class: 'hotel-name' } %>
       </h4>
-      <div class = "categories">
-        <%= hotel.categories.map{ |category| category[0]}.join(", ") %>
-      </div>
       <div class = "hotel-address">
       <%= hotel.location.display_address.join(", ") %>
       </div>
