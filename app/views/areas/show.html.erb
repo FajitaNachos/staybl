@@ -26,7 +26,7 @@
     <div class = "row">
       <div class = "col-sm-8 col-sm-offset-2">
         <h2 class = "area-name">About <%= @area.name %></h2>
-        <p> <%=@area.description %> </p>
+        <p> <%= h(@area.description).gsub(/\n/, '<br/>') %> </p>
       </div>
     </div>
   <%end%>
