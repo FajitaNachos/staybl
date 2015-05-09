@@ -25,7 +25,7 @@
   <% if !@area.description.blank? %>
     <div class = "row.area-description-row">
       <div class = "col-sm-8 col-sm-offset-2 area-description">
-        <h2 class = "area-name">About <%= @area.name %></h2>
+        <h3 class = "area-name">About <%= @area.name %></h2>
         <p> <%= (@area.description).gsub(/\n/, '<br/>').html_safe %> </p>
       </div>
     </div>
