@@ -25,9 +25,14 @@ Staybl::Application.routes.draw do
   get '/areas/flickr_search_photos', to: 'areas#flickr_search_photos'
   get '/contacts',  to: 'contacts#new'
 
-  resources "contacts", only: [:new, :create]
+  get '/sitemap', to: 'sitemaps#index', defaults: { format: 'xml' }
+
+
+  resources 'contacts', only: [:new, :create]
+  
 
   root to: 'home#index'
+
   resources :areas do
     member do
       post :vote_up
