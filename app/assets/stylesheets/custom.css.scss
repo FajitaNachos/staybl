@@ -10,52 +10,65 @@ body{
   text-align: center;
 }
 
-.copyright-container{
-  position:relative;
-  height:200px;
-  .copyright{
-    position:absolute;
-    text-align: center;
-    width:100%;
-    bottom:10px;
-    color:#999;
-  }
-}
-
 #logo {
   float: left;
   font-size: 1.7em;
-  color: #f9f9f9;
-  text-shadow: 0px 1px 2px #222;
+  color: #8BBD8C;
   text-transform: uppercase;
   letter-spacing: -1px;
   padding-top: 11px;
   font-weight: bold;
   line-height: 1;
+
+  &:hover {
+    color: #85B586;
+  }
 }
 
 .navbar.navbar-top{
-  border-bottom:1px solid #387099;
+  border-bottom:1px solid #ccc;
   margin-bottom:0;
-  background-color:#4283B2;
+  background-color:#f9f9f9;
   border-radius:0;
 }
 
 #footer{
-  margin-top:40px;
   border-top:1px solid #ccc;
   background-color:#efefef;
   background-image: image-url('whitey.png');
+
+  .copyright-container{
+    position:relative;
+    height:200px;
+
+    .copyright{
+      position:absolute;
+      text-align: center;
+      width:100%;
+      bottom:10px;
+      color:#999;
+    }
+  }
+}
+
+.home #footer{
+  background-color: #f5f5f5;
+  background-image:none;
+
+  .copyright-container{
+    height: 50px
+  }
 }
 
 .error-container{
   height:100%;
 }
 
-.navbar-link a{
-  color:#f9f9f9;
+.nav li a{
+  color:#8BBD8C;
 
   &:hover{
-    color:#2a6496;
+    color:#85B586;
+    background-color:inherit;
   }
 }
