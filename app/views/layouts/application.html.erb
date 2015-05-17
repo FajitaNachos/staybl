@@ -2,7 +2,7 @@
 <html>
 <head>
   <title><%= full_title(yield(:title)) %></title>
-  <meta name="description" content="Staybl helps you find the best area to stay in any city. ">
+  <meta name="description" content="<%= page_description(yield(:description))%>">
   <%= stylesheet_link_tag "application", :media => "all" %>
   <link href='http://fonts.googleapis.com/css?family=Arvo' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Bitter' rel='stylesheet' type='text/css'>
