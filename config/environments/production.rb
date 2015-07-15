@@ -96,4 +96,8 @@ Staybl::Application.configure do
 
   config.action_mailer.delivery_method = :smtp
 
+  # prerender.io
+
+  config.middleware.use Rack::Prerender, prerender_token: ENV['PRERENDER_TOKEN']
+
 end

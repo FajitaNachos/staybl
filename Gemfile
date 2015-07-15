@@ -61,7 +61,8 @@ end
 # Yelp for restaurants and hotels in the area
 gem 'yelp', '~> 2.0.1'
 
-#gem 'unicorn'
+# prerender pages for google crawling
+gem 'prerender_rails'
 
 group :development, :test do
   gem 'rspec-rails'
